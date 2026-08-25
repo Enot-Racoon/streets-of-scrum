@@ -37,6 +37,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       if (e.key.toLowerCase() === "e" || e.key.toLowerCase() === "f") {
         if (world.possessedAgent) {
           world.possessedAgent.interact();
+        } else if (world.possessedAgent !== world.selectedAgent) {
+          onPossessAgent(world.selectedAgent);
         }
       }
 
