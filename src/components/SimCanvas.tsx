@@ -607,15 +607,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     }
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const zoomDelta = e.deltaY > 0 ? -2 : 2;
-    cameraRef.current.zoom = Math.max(
-      16,
-      Math.min(64, cameraRef.current.zoom + zoomDelta),
-    );
-  };
-
   // Adjust canvas resolution to parent
   useEffect(() => {
     const handleResize = () => {
@@ -630,6 +621,23 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const zoomDelta = e.deltaY > 0 ? -2 : 2;
+      cameraRef.current.zoom = Math.max(
+        16,
+        Math.min(64, cameraRef.current.zoom + zoomDelta),
+      );
+    };
+
+    canvasRef.current.addEventListener("wheel", handleWheel);
+    return () => canvasRef.current?.removeEventListener("wheel", handleWheel);
+  }, []);
+
   return (
     <div className="relative w-full h-full bg-slate-950 overflow-hidden select-none">
       <canvas
@@ -638,7 +646,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onDoubleClick={handleDoubleClick}
-        onWheel={handleWheel}
+        // onWheel={handleWheel}
         onContextMenu={(e) => e.preventDefault()}
       />
     </div>
