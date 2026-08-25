@@ -1,4 +1,4 @@
-import { Pathfinding, Point } from '../pathfinding';
+import { Pathfinding, Point } from "../pathfinding";
 
 export class PathfindingAI {
   public agent: any;
@@ -30,7 +30,7 @@ export class PathfindingAI {
       this.targetPos.x,
       this.targetPos.y,
       this.agent.world.grid,
-      this.agent.canOpenDoors
+      this.agent.canOpenDoors,
     );
 
     this.currentWaypointIndex = 0;
@@ -48,7 +48,10 @@ export class PathfindingAI {
       return true;
     }
 
-    const dist = Math.hypot(this.agent.x - currentWP.x, this.agent.y - currentWP.y);
+    const dist = Math.hypot(
+      this.agent.x - currentWP.x,
+      this.agent.y - currentWP.y,
+    );
 
     // If near current waypoint, advance to next
     if (dist < 0.35) {
@@ -69,14 +72,17 @@ export class PathfindingAI {
       const tileX = Math.floor(activeWP.x);
       const tileY = Math.floor(activeWP.y);
       const tile = this.agent.world.getTile(tileX, tileY);
-      if (tile && tile.type === 'Door' && !tile.isOpen) {
+      if (tile && tile.type === "Door" && !tile.isOpen) {
         this.agent.interactAt(tileX, tileY);
       }
     }
 
     // Stuck detection
-    const movedDist = Math.hypot(this.agent.x - this.lastPos.x, this.agent.y - this.lastPos.y);
-    if (movedDist < 0.05 * dt) {
+    const movedDist = Math.hypot(
+      this.agent.x - this.lastPos.x,
+      this.agent.y - this.lastPos.y,
+    );
+    if (movedDist < 0.5 * dt) {
       this.stuckTimer += dt;
       if (this.stuckTimer > 0.8) {
         this.stuckTimer = 0;
