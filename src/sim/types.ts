@@ -1,3 +1,6 @@
+import type { Agent } from "./Agent";
+import type { TraitType } from "./traits";
+
 export type RelType =
   | "Neutral"
   | "Friendly"
@@ -67,7 +70,7 @@ export interface Tile {
   isOpen?: boolean; // For doors
   isLocked?: boolean;
   color?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export type GoalStatus = "Inactive" | "Active" | "Completed" | "Failed";
@@ -100,12 +103,12 @@ export interface TraitDef {
     visionRangeMult?: number;
     hateMultiplier?: number;
   };
-  onAdd?: (agent: any) => void;
-  onRemove?: (agent: any) => void;
-  onTick?: (agent: any, dt: number) => void;
-  onTakeDamage?: (agent: any, damage: number, attacker: any) => number;
-  onDealDamage?: (agent: any, damage: number, victim: any) => number;
-  onHearNoise?: (agent: any, noise: NoiseEvent) => boolean;
+  onAdd?: (agent: Agent) => void;
+  onRemove?: (agent: Agent) => void;
+  onTick?: (agent: Agent, dt: number) => void;
+  onTakeDamage?: (agent: Agent, damage: number, attacker: Agent) => number;
+  onDealDamage?: (agent: Agent, damage: number, victim: Agent) => number;
+  onHearNoise?: (agent: Agent, noise: NoiseEvent) => boolean;
 }
 
 export interface ItemDef {
@@ -124,7 +127,7 @@ export interface ItemDef {
   description: string;
   icon: string;
   healAmount?: number;
-  effectTrait?: string;
+  effectTrait?: TraitType;
 }
 
 export interface InvItem {
@@ -208,4 +211,10 @@ export interface LogEntry {
   type: "combat" | "ai" | "possession" | "system" | "crime" | "speech";
   agentId?: string;
   agentName?: string;
+}
+
+export interface AgentMemory {
+  key: string;
+  val: any;
+  expiresAt: number;
 }

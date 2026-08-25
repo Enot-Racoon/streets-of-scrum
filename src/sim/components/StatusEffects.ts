@@ -1,16 +1,17 @@
-import { getTraitDef, TRAIT_REGISTRY } from '../traits';
-import { TraitDef } from '../types';
+import type { Agent } from "../Agent";
+import { getTraitDef, type TraitType } from "../traits";
+import type { TraitDef } from "../types";
 
 export class StatusEffects {
-  public agent: any;
-  public traitNames: Set<string> = new Set();
+  public agent: Agent;
+  public traitNames: Set<TraitType> = new Set();
   public activeEffects: { id: string; duration: number; type: string }[] = [];
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
-  public addTrait(traitName: string): void {
+  public addTrait(traitName: TraitType): void {
     if (this.traitNames.has(traitName)) return;
     const def = getTraitDef(traitName);
     if (!def) return;
@@ -21,7 +22,7 @@ export class StatusEffects {
     }
   }
 
-  public removeTrait(traitName: string): void {
+  public removeTrait(traitName: TraitType): void {
     if (!this.traitNames.has(traitName)) return;
     const def = getTraitDef(traitName);
     this.traitNames.delete(traitName);
@@ -30,7 +31,7 @@ export class StatusEffects {
     }
   }
 
-  public hasTrait(traitName: string): boolean {
+  public hasTrait(traitName: TraitType): boolean {
     return this.traitNames.has(traitName);
   }
 
@@ -43,7 +44,7 @@ export class StatusEffects {
     return list;
   }
 
-  public getStatMod(modKey: keyof NonNullable<TraitDef['statMods']>): number {
+  public getStatMod(modKey: keyof NonNullable<TraitDef["statMods"]>): number {
     let result = 1.0;
     for (const name of this.traitNames) {
       const def = getTraitDef(name);

@@ -1,14 +1,15 @@
-import { GoalStatus, GoalTypeName } from '../types';
+import type { Agent } from "../Agent";
+import { GoalStatus, GoalTypeName } from "../types";
 
 export abstract class Goal {
   public name: GoalTypeName;
-  public status: GoalStatus = 'Inactive';
+  public status: GoalStatus = "Inactive";
   public subGoals: Goal[] = [];
-  public agent: any; // reference to Agent
+  public agent: Agent; // reference to Agent
   public priority: number = 0;
-  public debugInfo: string = '';
+  public debugInfo: string = "";
 
-  constructor(name: GoalTypeName, agent: any, priority: number = 0) {
+  constructor(name: GoalTypeName, agent: Agent, priority: number = 0) {
     this.name = name;
     this.agent = agent;
     this.priority = priority;
@@ -41,18 +42,18 @@ export abstract class Goal {
     // Process subgoals from top
     while (this.subGoals.length > 0) {
       const topSub = this.subGoals[this.subGoals.length - 1];
-      if (topSub.status === 'Inactive') {
+      if (topSub.status === "Inactive") {
         topSub.activate();
       }
 
       const status = topSub.process(dt);
-      if (status === 'Completed' || status === 'Failed') {
+      if (status === "Completed" || status === "Failed") {
         topSub.terminate();
         this.subGoals.pop();
       } else {
-        return 'Active';
+        return "Active";
       }
     }
-    return 'Completed';
+    return "Completed";
   }
 }

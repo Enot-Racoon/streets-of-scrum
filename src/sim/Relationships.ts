@@ -1,10 +1,12 @@
-import { RelType, RelationshipState } from "./types";
+import type { RelType, RelationshipState } from "./types";
+import type { Agent } from "./Agent";
+import type { World } from "./World";
 
 export class Relationships {
-  public agent: any;
+  public agent: Agent;
   public map: Map<string, RelationshipState> = new Map();
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
@@ -29,8 +31,8 @@ export class Relationships {
     return rel;
   }
 
-  private determineInitialRel(target: any): RelType {
-    if (!target || typeof target === "string") return "Neutral";
+  private determineInitialRel(target: Agent): RelType {
+    if (!target) return "Neutral";
 
     // Faction based initial relationships
     const myJob = this.agent.job;
@@ -126,7 +128,7 @@ export class Relationships {
     }
   }
 
-  public update(dt: number, world: any): void {
+  public update(dt: number, world: World): void {
     for (const [targetId, rel] of this.map.entries()) {
       const target = world.getAgentById(targetId);
       if (!target || target.isDead) {

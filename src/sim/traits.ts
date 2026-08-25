@@ -1,6 +1,6 @@
 import { TraitDef } from "./types";
 
-export const TRAIT_REGISTRY: Record<string, TraitDef> = {
+export const TRAIT_REGISTRY = {
   Fast: {
     name: "Fast",
     displayName: "Скорость",
@@ -205,8 +205,20 @@ export const TRAIT_REGISTRY: Record<string, TraitDef> = {
       speedMult: 0,
     },
   },
-};
+  Pacifist: {
+    name: "Pacifist",
+    displayName: "Пацифист",
+    description: "Не наносит урон другим существам.",
+    category: "special",
+    statMods: {
+      meleeDamageMult: 0,
+      bulletDamageMult: 0,
+    },
+  },
+} as const satisfies Record<string, TraitDef>;
 
-export function getTraitDef(traitName: string): TraitDef | undefined {
+export type TraitType = keyof typeof TRAIT_REGISTRY;
+
+export function getTraitDef(traitName: TraitType): TraitDef {
   return TRAIT_REGISTRY[traitName];
 }

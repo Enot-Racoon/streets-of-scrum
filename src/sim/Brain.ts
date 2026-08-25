@@ -1,14 +1,15 @@
-import { Goal } from "./goals/Goal";
-import { GoalStatus, GoalTypeName } from "./types";
+import type { Agent } from "./Agent";
+import type { Goal } from "./goals/Goal";
+import type { AgentMemory, GoalStatus, GoalTypeName } from "./types";
 
 export class Brain {
-  public agent: any;
+  public agent: Agent;
   public goalStack: Goal[] = [];
   public isSuspended: boolean = false;
   public lastThought: string = "Idle";
-  public memory: { key: string; val: any; expiresAt: number }[] = [];
+  public memory: AgentMemory[] = [];
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
@@ -126,7 +127,7 @@ export class Brain {
     });
   }
 
-  public getMemory(key: string): any {
+  public getMemory(key: string): AgentMemory | null {
     const mem = this.memory.find((m) => m.key === key);
     return mem ? mem.val : null;
   }

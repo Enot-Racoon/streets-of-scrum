@@ -1,6 +1,7 @@
 import { Goal } from "./Goal";
-import { GoalStatus, NoiseEvent } from "../types";
+import type { GoalStatus, NoiseEvent } from "../types";
 import type { Agent } from "../Agent";
+import type { Point } from "../pathfinding";
 
 /**
  * GoalIdle: Agent stands still, occasionally looks around, waits for timer
@@ -226,12 +227,12 @@ export class GoalMoveTo extends Goal {
  * GoalBattle: Tactical combat AI against target agent
  */
 export class GoalBattle extends Goal {
-  public target: any;
+  public target: Agent;
   private repathTimer: number = 0;
   private strafeDir: number = 1;
   private strafeTimer: number = 0;
 
-  constructor(agent: Agent, target: any) {
+  constructor(agent: Agent, target: Agent) {
     super("GoalBattle", agent, 10);
     this.target = target;
   }

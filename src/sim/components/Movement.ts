@@ -1,4 +1,5 @@
 import type { Agent } from "../Agent";
+import type { World } from "../World";
 
 export class Movement {
   public agent: Agent;
@@ -6,7 +7,7 @@ export class Movement {
   public vy: number = 0;
   public baseSpeed: number = 3.2;
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
@@ -40,7 +41,7 @@ export class Movement {
     this.vy = 0;
   }
 
-  public update(dt: number, world: any) {
+  public update(dt: number, world: World) {
     if (this.vx === 0 && this.vy === 0) return;
 
     const radius = this.agent.radius || 0.35;

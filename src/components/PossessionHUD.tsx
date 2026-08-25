@@ -5,8 +5,8 @@ import { ITEM_REGISTRY } from "../sim/Items";
 import {
   Zap,
   Heart,
-  Shield,
-  Radio,
+  // Shield,
+  // Radio,
   Terminal,
   ChevronUp,
   ChevronDown,

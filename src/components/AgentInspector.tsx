@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Agent } from "../sim/Agent";
-import { World } from "../sim/World";
-import { TRAIT_REGISTRY } from "../sim/traits";
+import type { Agent } from "../sim/Agent";
+import type { World } from "../sim/World";
+import { TRAIT_REGISTRY, type TraitType } from "../sim/traits";
 import { ITEM_REGISTRY } from "../sim/Items";
 import {
   GoalBattle,
@@ -20,9 +20,6 @@ import {
   Plus,
   Trash2,
   Zap,
-  Smile,
-  Skull,
-  CheckCircle2,
   ArrowRightCircle,
   Radio,
 } from "lucide-react";
@@ -44,7 +41,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
   const [activeTab, setActiveTab] = useState<
     "goals" | "relations" | "traits" | "inventory"
   >("goals");
-  const [selectedTraitToAdd, setSelectedTraitToAdd] = useState<string>("Fast");
+  const [selectedTraitToAdd, setSelectedTraitToAdd] =
+    useState<TraitType>("Fast");
   const [selectedItemToAdd, setSelectedItemToAdd] = useState<string>("pistol");
 
   if (!agent) {
@@ -62,8 +60,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
 
   const isPossessed = world.possessedAgent?.id === agent.id;
   const hpPercent = Math.round((agent.health / agent.maxHealth) * 100);
-  const equippedItem = agent.inventory.getEquippedItem();
-  const equippedWeaponDef = agent.inventory.getEquippedWeaponDef();
+  // const equippedItem = agent.inventory.getEquippedItem();
+  // const equippedWeaponDef = agent.inventory.getEquippedWeaponDef();
 
   return (
     <div className="h-full flex flex-col bg-slate-900 border-l border-slate-800 text-slate-200 overflow-hidden select-none">
@@ -442,7 +440,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                       {trait.displayName}
                     </span>
                     <button
-                      onClick={() => agent.removeTrait(trait.name)}
+                      onClick={() => agent.removeTrait(trait.name as TraitType)}
                       className="text-slate-500 hover:text-rose-400 p-0.5 transition"
                       title="Remove trait"
                     >
@@ -464,7 +462,9 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               <div className="flex gap-2">
                 <select
                   value={selectedTraitToAdd}
-                  onChange={(e) => setSelectedTraitToAdd(e.target.value)}
+                  onChange={(e) =>
+                    setSelectedTraitToAdd(e.target.value as TraitType)
+                  }
                   className="flex-1 bg-slate-950 border border-slate-700 text-xs rounded px-2 py-1.5 text-slate-200"
                 >
                   {Object.keys(TRAIT_REGISTRY).map((tName) => (

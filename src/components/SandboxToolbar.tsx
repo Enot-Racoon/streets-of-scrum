@@ -50,7 +50,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           a1.relationships.modifyHate(a2.id, 90);
         }
       }
-      a1.say("АРЕСТОВЫВАЙТЕ ВСЕХ!", true);
+      a1.say("АТТАКУЙ ВСЕХ!", true);
     }
     world.addLog({
       timestamp: Date.now(),

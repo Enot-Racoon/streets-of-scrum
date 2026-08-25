@@ -6,7 +6,6 @@ import {
   Projectile,
   Particle,
   LogEntry,
-  InvItem,
 } from "./types";
 import { Pathfinding } from "./pathfinding";
 import { sounds } from "./sound";

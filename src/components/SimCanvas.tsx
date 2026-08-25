@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import { World } from "../sim/World";
-import { Agent } from "../sim/Agent";
+import React, { useRef, useEffect } from "react";
+import type { World } from "../sim/World";
+import type { Agent } from "../sim/Agent";
 import { ITEM_REGISTRY } from "../sim/Items";
 
 interface SimCanvasProps {
@@ -677,7 +677,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         onDoubleClick={handleDoubleClick}
-        // onWheel={handleWheel}
         onContextMenu={(e) => e.preventDefault()}
       />
     </div>

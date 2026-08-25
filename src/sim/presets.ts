@@ -1,6 +1,7 @@
-import { World } from "./World";
+import type { World } from "./World";
 import { Agent } from "./Agent";
-import { JobType } from "./types";
+import type { JobType } from "./types";
+import type { TraitType } from "./traits";
 
 export interface ArchetypeDef {
   name: string;
@@ -8,7 +9,7 @@ export interface ArchetypeDef {
   avatarIcon: string;
   color: string;
   health: number;
-  traits: string[];
+  traits: TraitType[];
   startingItems: string[];
   description: string;
 }

@@ -1,18 +1,19 @@
-import { ITEM_REGISTRY, createInvItem } from '../Items';
-import { InvItem, ItemDef } from '../types';
-import { sounds } from '../sound';
+import { ITEM_REGISTRY, createInvItem } from "../Items";
+import type { InvItem, ItemDef } from "../types";
+import { sounds } from "../sound";
+import type { Agent } from "../Agent";
 
 export class InvDatabase {
-  public agent: any;
+  public agent: Agent;
   public items: InvItem[] = [];
   public equippedIndex: number = 0;
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
   public addItem(defId: string, count: number = 1): InvItem {
-    const existing = this.items.find(i => i.defId === defId);
+    const existing = this.items.find((i) => i.defId === defId);
     if (existing) {
       existing.count += count;
       return existing;
@@ -23,7 +24,7 @@ export class InvDatabase {
   }
 
   public removeItem(uid: string, count: number = 1): boolean {
-    const idx = this.items.findIndex(i => i.uid === uid);
+    const idx = this.items.findIndex((i) => i.uid === uid);
     if (idx === -1) return false;
     this.items[idx].count -= count;
     if (this.items[idx].count <= 0) {
@@ -42,8 +43,8 @@ export class InvDatabase {
 
   public getEquippedWeaponDef(): ItemDef {
     const item = this.getEquippedItem();
-    if (!item) return ITEM_REGISTRY['fists'];
-    return ITEM_REGISTRY[item.defId] || ITEM_REGISTRY['fists'];
+    if (!item) return ITEM_REGISTRY["fists"];
+    return ITEM_REGISTRY[item.defId] || ITEM_REGISTRY["fists"];
   }
 
   public equipNext(): void {
@@ -58,15 +59,18 @@ export class InvDatabase {
   }
 
   public useItem(uid: string): boolean {
-    const item = this.items.find(i => i.uid === uid);
+    const item = this.items.find((i) => i.uid === uid);
     if (!item) return false;
 
     const def = ITEM_REGISTRY[item.defId];
     if (!def) return false;
 
-    if (def.type === 'consumable') {
+    if (def.type === "consumable") {
       if (def.healAmount) {
-        this.agent.health = Math.min(this.agent.maxHealth, this.agent.health + def.healAmount);
+        this.agent.health = Math.min(
+          this.agent.maxHealth,
+          this.agent.health + def.healAmount,
+        );
         sounds.playHeal();
         this.agent.say(`Used ${def.name} (+${def.healAmount} HP)`);
       }

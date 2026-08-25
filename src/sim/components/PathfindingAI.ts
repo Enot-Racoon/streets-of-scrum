@@ -1,7 +1,8 @@
-import { Pathfinding, Point } from "../pathfinding";
+import type { Agent } from "../Agent";
+import { Pathfinding, type Point } from "../pathfinding";
 
 export class PathfindingAI {
-  public agent: any;
+  public agent: Agent;
   public path: Point[] = [];
   public currentWaypointIndex: number = 0;
   public targetPos: Point | null = null;
@@ -10,7 +11,7 @@ export class PathfindingAI {
   private stuckTimer: number = 0;
   private lastPos: Point = { x: 0, y: 0 };
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
     this.lastPos = { x: agent.x, y: agent.y };
   }

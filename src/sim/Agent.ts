@@ -8,7 +8,7 @@ import { Combat } from "./components/Combat";
 import { PathfindingAI } from "./components/PathfindingAI";
 import { GoalWander, GoalBattle, GoalFlee, GoalIdle } from "./goals/GoalTypes";
 import { JobType, SpeechBubble } from "./types";
-import { getTraitDef } from "./traits";
+import { getTraitDef, type TraitType } from "./traits";
 import { sounds } from "./sound";
 import type { World } from "./World";
 
@@ -53,7 +53,7 @@ export class Agent {
     maxHealth?: number;
     color?: string;
     avatarIcon?: string;
-    traits?: string[];
+    traits?: TraitType[];
     startingItems?: string[];
   }) {
     this.id = options.id || `agent_${agentIdCounter++}`;
@@ -98,7 +98,7 @@ export class Agent {
     this.health = this.maxHealth;
   }
 
-  public setWorld(world: any) {
+  public setWorld(world: World) {
     this.world = world;
   }
 
@@ -113,15 +113,15 @@ export class Agent {
     }
   }
 
-  public addTrait(traitName: string) {
+  public addTrait(traitName: TraitType) {
     this.statusEffects.addTrait(traitName);
   }
 
-  public removeTrait(traitName: string) {
+  public removeTrait(traitName: TraitType) {
     this.statusEffects.removeTrait(traitName);
   }
 
-  public hasTrait(traitName: string): boolean {
+  public hasTrait(traitName: TraitType): boolean {
     return this.statusEffects.hasTrait(traitName);
   }
 
@@ -167,7 +167,7 @@ export class Agent {
     }
   }
 
-  public takeDamage(amount: number, attacker?: any) {
+  public takeDamage(amount: number, attacker?: Agent) {
     if (this.isDead) return;
 
     let finalDamage = amount;
@@ -220,7 +220,7 @@ export class Agent {
     }
   }
 
-  public die(killer?: any) {
+  public die(killer?: Agent) {
     if (this.isDead) return;
     this.isDead = true;
     this.deadTime = Date.now();
@@ -230,7 +230,7 @@ export class Agent {
     if (this.world) {
       this.world.addLog({
         timestamp: Date.now(),
-        message: `☠️ ${this.name} was eliminated${killer ? ` by ${killer.name}` : ""}!`,
+        message: `☠️ ${this.name} умер${killer ? ` от рук ${killer.name}` : ""}!`,
         type: "combat",
         agentId: this.id,
         agentName: this.name,
@@ -344,7 +344,7 @@ export class Agent {
     }
   }
 
-  public update(dt: number, world: any) {
+  public update(dt: number, world: World) {
     if (this.isDead) return;
 
     // Tick speech bubble
