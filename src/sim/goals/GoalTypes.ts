@@ -1,5 +1,6 @@
 import { Goal } from "./Goal";
 import { GoalStatus, NoiseEvent } from "../types";
+import type { Agent } from "../Agent";
 
 /**
  * GoalIdle: Agent stands still, occasionally looks around, waits for timer
@@ -8,7 +9,7 @@ export class GoalIdle extends Goal {
   private duration: number;
   private timer: number = 0;
 
-  constructor(agent: any, duration: number = 2.0) {
+  constructor(agent: Agent, duration: number = 2.0) {
     super("GoalIdle", agent, 1);
     this.duration = duration;
   }
@@ -43,7 +44,7 @@ export class GoalWander extends Goal {
   private waitTimer: number = 0;
   private isMoving: boolean = false;
 
-  constructor(agent: any, radius: number = 5) {
+  constructor(agent: Agent, radius: number = 5) {
     super("GoalWander", agent, 2);
     this.radius = radius;
   }
@@ -112,7 +113,7 @@ export class GoalPatrol extends Goal {
   private currentIdx: number = 0;
   private waitTimer: number = 0;
 
-  constructor(agent: any, waypoints: { x: number; y: number }[]) {
+  constructor(agent: Agent, waypoints: { x: number; y: number }[]) {
     super("GoalPatrol", agent, 3);
     this.waypoints = waypoints;
   }
@@ -169,7 +170,7 @@ export class GoalMoveTo extends Goal {
   private tolerance: number;
 
   constructor(
-    agent: any,
+    agent: Agent,
     targetX: number,
     targetY: number,
     tolerance: number = 0.5,
@@ -230,7 +231,7 @@ export class GoalBattle extends Goal {
   private strafeDir: number = 1;
   private strafeTimer: number = 0;
 
-  constructor(agent: any, target: any) {
+  constructor(agent: Agent, target: any) {
     super("GoalBattle", agent, 10);
     this.target = target;
   }
@@ -326,7 +327,7 @@ export class GoalFlee extends Goal {
   private timer: number = 0;
   private repathTimer: number = 0;
 
-  constructor(agent: any, threat: any, duration: number = 5.0) {
+  constructor(agent: Agent, threat: any, duration: number = 5.0) {
     super("GoalFlee", agent, 12);
     this.threat = threat;
     this.duration = duration;
@@ -400,7 +401,7 @@ export class GoalInvestigate extends Goal {
   private waitTimer: number = 0;
   private reached: boolean = false;
 
-  constructor(agent: any, targetX: number, targetY: number) {
+  constructor(agent: Agent, targetX: number, targetY: number) {
     super("GoalInvestigate", agent, 6);
     this.targetX = targetX;
     this.targetY = targetY;
@@ -456,7 +457,7 @@ export class GoalNoiseReact extends Goal {
   public noise: NoiseEvent;
   private timer: number = 0;
 
-  constructor(agent: any, noise: NoiseEvent) {
+  constructor(agent: Agent, noise: NoiseEvent) {
     super("GoalNoiseReact", agent, 7);
     this.noise = noise;
   }
@@ -520,7 +521,7 @@ export class GoalTattle extends Goal {
   private crimeSource: any;
   private copTarget: any = null;
 
-  constructor(agent: any, crimeSource: any) {
+  constructor(agent: Agent, crimeSource: any) {
     super("GoalTattle", agent, 8);
     this.crimeSource = crimeSource;
   }
@@ -544,7 +545,7 @@ export class GoalTattle extends Goal {
     const world = this.agent.world;
     if (!world) return;
 
-    let closestCop: any = null;
+    let closestCop: Agent = null;
     let minDist = Infinity;
 
     for (const other of world.agents) {
@@ -611,7 +612,7 @@ export class GoalInteract extends Goal {
   private tileX: number;
   private tileY: number;
 
-  constructor(agent: any, tileX: number, tileY: number) {
+  constructor(agent: Agent, tileX: number, tileY: number) {
     super("GoalInteract", agent, 5);
     this.tileX = tileX;
     this.tileY = tileY;

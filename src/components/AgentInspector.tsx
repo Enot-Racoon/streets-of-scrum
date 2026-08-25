@@ -182,7 +182,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Sparkles className="w-3.5 h-3.5" /> Характер (
+          <Sparkles className="w-3.5 h-3.5" /> Особенности (
           {agent.statusEffects.traitNames.size})
         </button>
         <button
@@ -427,7 +427,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         {activeTab === "traits" && (
           <div className="space-y-3">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Active Data-Driven Traits
+              Список особенностей
             </span>
 
             <div className="space-y-2">
@@ -459,7 +459,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             {/* Add New Trait */}
             <div className="pt-2 border-t border-slate-800">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
-                Inject Trait
+                Добавить особенность
               </span>
               <div className="flex gap-2">
                 <select
@@ -477,7 +477,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   onClick={() => agent.addTrait(selectedTraitToAdd)}
                   className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Add
+                  <Plus className="w-3.5 h-3.5" /> Добавить
                 </button>
               </div>
             </div>
@@ -488,7 +488,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         {activeTab === "inventory" && (
           <div className="space-y-3">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Equipped & Stashed Items
+              Предметы
             </span>
 
             <div className="space-y-2">
