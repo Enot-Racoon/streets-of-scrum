@@ -1,13 +1,14 @@
-import { sounds } from '../sound';
-import { getTraitDef } from '../traits';
+import { sounds } from "../sound";
+import { getTraitDef } from "../traits";
+import type { Agent } from "../Agent";
 
 export class Combat {
-  public agent: any;
+  public agent: Agent;
   public attackCooldownTimer: number = 0;
   public isSwinging: boolean = false;
   public swingProgress: number = 0;
 
-  constructor(agent: any) {
+  constructor(agent: Agent) {
     this.agent = agent;
   }
 
@@ -32,7 +33,7 @@ export class Combat {
       this.agent.facingAngle = aimAngle;
     }
 
-    if (weapon.type === 'gun') {
+    if (weapon.type === "gun") {
       this.fireGun(weapon, aimAngle, world);
     } else {
       this.swingMelee(weapon, aimAngle, world);
@@ -43,7 +44,7 @@ export class Combat {
 
   private fireGun(weapon: any, aimAngle: number, world: any) {
     // Sound & Noise event
-    if (weapon.soundName === 'shotgun') {
+    if (weapon.soundName === "shotgun") {
       sounds.playShotgun();
     } else {
       sounds.playGunshot();
@@ -55,7 +56,7 @@ export class Combat {
       radius: 12,
       volume: 0.9,
       sourceAgentId: this.agent.id,
-      noiseType: 'gunshot'
+      noiseType: "gunshot",
     });
 
     const bulletCount = weapon.bulletCount || 1;
@@ -63,7 +64,9 @@ export class Combat {
     const bulletSpeed = weapon.bulletSpeed || 18;
     const spread = weapon.spread || 0.05;
 
-    let finalDamage = baseDamage * (this.agent.statusEffects.getStatMod('bulletDamageMult') || 1.0);
+    let finalDamage =
+      baseDamage *
+      (this.agent.statusEffects.getStatMod("bulletDamageMult") || 1.0);
 
     for (let i = 0; i < bulletCount; i++) {
       const angleOffset = (Math.random() - 0.5) * spread * 2;
@@ -81,7 +84,7 @@ export class Combat {
         lifetime: (weapon.range || 10) / bulletSpeed,
         rangeLeft: weapon.range || 10,
         radius: 0.12,
-        color: '#fbbf24'
+        color: "#fbbf24",
       });
     }
 
@@ -90,8 +93,8 @@ export class Combat {
       x: this.agent.x + Math.cos(aimAngle) * 0.45,
       y: this.agent.y + Math.sin(aimAngle) * 0.45,
       count: 5,
-      type: 'spark',
-      color: '#f59e0b'
+      type: "spark",
+      color: "#f59e0b",
     });
   }
 
@@ -106,12 +109,14 @@ export class Combat {
       radius: 4,
       volume: 0.3,
       sourceAgentId: this.agent.id,
-      noiseType: 'smash'
+      noiseType: "smash",
     });
 
     const range = weapon.range || 1.2;
     const baseDamage = weapon.damage || 10;
-    let finalDamage = baseDamage * (this.agent.statusEffects.getStatMod('meleeDamageMult') || 1.0);
+    let finalDamage =
+      baseDamage *
+      (this.agent.statusEffects.getStatMod("meleeDamageMult") || 1.0);
 
     // Apply trait hooks on deal damage
     for (const traitName of this.agent.statusEffects.traitNames) {
@@ -131,13 +136,16 @@ export class Combat {
 
       const dist = Math.hypot(other.x - this.agent.x, other.y - this.agent.y);
       if (dist <= range + (other.radius || 0.35)) {
-        const angleToTarget = Math.atan2(other.y - this.agent.y, other.x - this.agent.x);
+        const angleToTarget = Math.atan2(
+          other.y - this.agent.y,
+          other.x - this.agent.x,
+        );
         let angleDiff = Math.abs(aimAngle - angleToTarget);
         while (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
 
         if (angleDiff <= hitArc) {
           // Hit! Knockback and damage
-          const kbPower = this.agent.hasTrait('Strength') ? 6.0 : 3.0;
+          const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
           other.movement.vx += Math.cos(aimAngle) * kbPower;
           other.movement.vy += Math.sin(aimAngle) * kbPower;
 
@@ -147,8 +155,8 @@ export class Combat {
             x: other.x,
             y: other.y,
             count: 6,
-            type: 'blood',
-            color: '#ef4444'
+            type: "blood",
+            color: "#ef4444",
           });
         }
       }

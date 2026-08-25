@@ -1,50 +1,51 @@
-import { ItemDef, InvItem } from './types';
+import { ItemDef, InvItem } from "./types";
 
 export const ITEM_REGISTRY: Record<string, ItemDef> = {
   fists: {
-    id: 'fists',
-    name: 'Fists',
-    type: 'melee',
+    id: "fists",
+    name: "Кулак",
+    type: "melee",
     damage: 8,
     range: 1.1,
     attackSpeed: 2.2,
-    description: 'Bare knuckles. Fast but low damage.',
-    icon: '🥊'
+    description: "Голые кулаки. Быстро, но наносит мало урона.",
+    icon: "🥊",
   },
   knife: {
-    id: 'knife',
-    name: 'Combat Knife',
-    type: 'melee',
+    id: "knife",
+    name: "Боевой нож",
+    type: "melee",
     damage: 18,
     range: 1.2,
     attackSpeed: 2.5,
-    description: 'Sharp steel blade. Silent and deadly.',
-    icon: '🔪'
+    description: "Острое стальное лезвие. Тихий и смертоносный.",
+    icon: "🔪",
   },
   bat: {
-    id: 'bat',
-    name: 'Baseball Bat',
-    type: 'melee',
+    id: "bat",
+    name: "Бейсбольная бита",
+    type: "melee",
     damage: 24,
     range: 1.5,
     attackSpeed: 1.4,
-    description: 'Heavy wooden bat with great knockback.',
-    icon: '🏏'
+    description: "Тяжелая деревянная бита с отличной отдачей.",
+    icon: "🏏",
   },
   sledgehammer: {
-    id: 'sledgehammer',
-    name: 'Sledgehammer',
-    type: 'melee',
+    id: "sledgehammer",
+    name: "Кувалда",
+    type: "melee",
     damage: 42,
     range: 1.7,
     attackSpeed: 0.9,
-    description: 'Massive crushing power that can smash doors and crates easily.',
-    icon: '🔨'
+    description:
+      "Обладает огромной сокрушительной силой, способной с легкостью разбивать двери и ящики.",
+    icon: "🔨",
   },
   pistol: {
-    id: 'pistol',
-    name: 'Pistol',
-    type: 'gun',
+    id: "pistol",
+    name: "Пистолет",
+    type: "gun",
     damage: 16,
     range: 12,
     attackSpeed: 2.0,
@@ -53,14 +54,14 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     bulletSpeed: 18,
     spread: 0.05,
     bulletCount: 1,
-    soundName: 'gunshot',
-    description: 'Standard issue 9mm service handgun.',
-    icon: '🔫'
+    soundName: "gunshot",
+    description: "Стандартный служебный пистолет калибра 9 мм.",
+    icon: "🔫",
   },
   shotgun: {
-    id: 'shotgun',
-    name: 'Shotgun',
-    type: 'gun',
+    id: "shotgun",
+    name: "Дробовик",
+    type: "gun",
     damage: 12, // per pellet (x5)
     range: 8,
     attackSpeed: 0.9,
@@ -69,14 +70,14 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     bulletSpeed: 14,
     spread: 0.25,
     bulletCount: 5,
-    soundName: 'shotgun',
-    description: 'Devastating close-range scattergun.',
-    icon: '💥'
+    soundName: "shotgun",
+    description: "Разрушительное дробовик ближнего боя.",
+    icon: "💥",
   },
   machinegun: {
-    id: 'machinegun',
-    name: 'Machine Gun',
-    type: 'gun',
+    id: "machinegun",
+    name: "Пулемет",
+    type: "gun",
     damage: 14,
     range: 14,
     attackSpeed: 6.0,
@@ -85,14 +86,14 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     bulletSpeed: 20,
     spread: 0.12,
     bulletCount: 1,
-    soundName: 'gunshot',
-    description: 'Rapid-fire submachine gun.',
-    icon: '⚡'
+    soundName: "gunshot",
+    description: "Скорострельный пистолет-пулемет.",
+    icon: "⚡",
   },
   revolver: {
-    id: 'revolver',
-    name: 'Magnum Revolver',
-    type: 'gun',
+    id: "revolver",
+    name: "Магнум револьвер",
+    type: "gun",
     damage: 38,
     range: 15,
     attackSpeed: 1.1,
@@ -101,63 +102,66 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     bulletSpeed: 22,
     spread: 0.02,
     bulletCount: 1,
-    soundName: 'shotgun',
-    description: 'High-caliber hand cannon.',
-    icon: '🤠'
+    soundName: "shotgun",
+    description: "Высококалиберная ручная пушка.",
+    icon: "🤠",
   },
   medkit: {
-    id: 'medkit',
-    name: 'First Aid Kit',
-    type: 'consumable',
+    id: "medkit",
+    name: "Аптечка",
+    type: "consumable",
     healAmount: 40,
-    description: 'Restores 40 Health points instantly.',
-    icon: '🩹'
+    description: "Мгновенно восстанавливает 40 единиц здоровья.",
+    icon: "🩹",
   },
   beer: {
-    id: 'beer',
-    name: 'Beer Bottle',
-    type: 'consumable',
+    id: "beer",
+    name: "Пиво",
+    type: "consumable",
     healAmount: 15,
-    effectTrait: 'Drunk',
-    description: 'Restores 15 HP and provides intoxication courage.',
-    icon: '🍺'
+    effectTrait: "Drunk",
+    description:
+      "Восстанавливает 15 единиц здоровья и дает смелость интоксикации.",
+    icon: "🍺",
   },
   grenade: {
-    id: 'grenade',
-    name: 'Frag Grenade',
-    type: 'explosive',
+    id: "grenade",
+    name: "Осколочная граната",
+    type: "explosive",
     damage: 65,
     range: 8,
-    description: 'Thrown explosive that shatters walls and crowds.',
-    icon: '💣'
+    description:
+      "Взрывное метательное оружие, которое разбивает стены и толпы.",
+    icon: "💣",
   },
   lockpick: {
-    id: 'lockpick',
-    name: 'Lockpick',
-    type: 'tool',
-    description: 'Silently picks locked doors and security safes.',
-    icon: '🗝️'
+    id: "lockpick",
+    name: "Отмычка",
+    type: "tool",
+    description: "Бесшумно открывает запертые двери и сейфы.",
+    icon: "🗝️",
   },
   zombie_claws: {
-    id: 'zombie_claws',
-    name: 'Infected Claws',
-    type: 'melee',
+    id: "zombie_claws",
+    name: "Инфицированные когти",
+    type: "melee",
     damage: 14,
     range: 1.1,
     attackSpeed: 1.8,
-    description: 'Infectious bite and claw attack.',
-    icon: '🧟'
-  }
+    description:
+      "Инфекционное поражение кожи в результате укуса и когтевого нападения.",
+    icon: "🧟",
+  },
 };
 
 let uidCounter = 1;
 
 export function createInvItem(defId: string, count: number = 1): InvItem {
-  const def = ITEM_REGISTRY[defId] || ITEM_REGISTRY['fists'];
+  const def = ITEM_REGISTRY[defId] || ITEM_REGISTRY["fists"];
   return {
     uid: `item_${uidCounter++}_${defId}`,
     defId,
     count,
-    ammo: def.ammo
+    ammo: def.ammo,
   };
 }
