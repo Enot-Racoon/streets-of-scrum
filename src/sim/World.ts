@@ -494,6 +494,7 @@ export class World {
       const tile = this.getTile(tx, ty);
 
       if (!tile || !tile.walkable) {
+        // && tile.type !== "Door")) { // todo: only opened doors
         this.damageTile(tx, ty, p.damage);
         this.projectiles.splice(i, 1);
         continue;
