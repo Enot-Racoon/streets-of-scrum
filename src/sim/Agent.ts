@@ -291,6 +291,13 @@ export class Agent {
     }
   }
 
+  public interact() {
+    const interactDist = 1.3;
+    const tx = Math.floor(this.x + Math.cos(this.facingAngle) * interactDist);
+    const ty = Math.floor(this.y + Math.sin(this.facingAngle) * interactDist);
+    this.interactAt(tx, ty);
+  }
+
   public possess() {
     this.isPlayerControlled = true;
     this.brain.suspend();

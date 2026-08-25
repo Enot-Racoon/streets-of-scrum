@@ -36,11 +36,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       // Interact hotkey (E / F)
       if (e.key.toLowerCase() === "e" || e.key.toLowerCase() === "f") {
         if (world.possessedAgent) {
-          const p = world.possessedAgent;
-          const interactDist = 1.3;
-          const tx = Math.floor(p.x + Math.cos(p.facingAngle) * interactDist);
-          const ty = Math.floor(p.y + Math.sin(p.facingAngle) * interactDist);
-          p.interactAt(tx, ty);
+          world.possessedAgent.interact();
         }
       }
 
@@ -589,6 +585,9 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           onSelectAgent(clickedAgent);
         }
       }
+    }
+    if (e.buttons === 2 && world.possessedAgent) {
+      world.possessedAgent.interact();
     }
   };
 
