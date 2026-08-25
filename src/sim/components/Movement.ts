@@ -1,5 +1,7 @@
+import type { Agent } from "../Agent";
+
 export class Movement {
-  public agent: any;
+  public agent: Agent;
   public vx: number = 0;
   public vy: number = 0;
   public baseSpeed: number = 3.2;
@@ -10,7 +12,7 @@ export class Movement {
 
   public getSpeed(): number {
     let speed = this.baseSpeed;
-    const speedMult = this.agent.statusEffects.getStatMod('speedMult') || 1.0;
+    const speedMult = this.agent.statusEffects.getStatMod("speedMult") ?? 1.0;
     return speed * speedMult;
   }
 
@@ -20,7 +22,12 @@ export class Movement {
     this.vy = Math.sin(angle) * spd;
   }
 
-  public moveTowards(targetX: number, targetY: number, dt: number, speedRatio: number = 1.0) {
+  public moveTowards(
+    targetX: number,
+    targetY: number,
+    dt: number,
+    speedRatio: number = 1.0,
+  ) {
     const dx = targetX - this.agent.x;
     const dy = targetY - this.agent.y;
     const angle = Math.atan2(dy, dx);
@@ -41,14 +48,28 @@ export class Movement {
     let nextY = this.agent.y + this.vy * dt;
 
     // Slide on X axis
-    if (world.canMoveToCircle(nextX, this.agent.y, radius, this.agent.canOpenDoors)) {
+    if (
+      world.canMoveToCircle(
+        nextX,
+        this.agent.y,
+        radius,
+        this.agent.canOpenDoors,
+      )
+    ) {
       this.agent.x = nextX;
     } else {
       this.vx = 0;
     }
 
     // Slide on Y axis
-    if (world.canMoveToCircle(this.agent.x, nextY, radius, this.agent.canOpenDoors)) {
+    if (
+      world.canMoveToCircle(
+        this.agent.x,
+        nextY,
+        radius,
+        this.agent.canOpenDoors,
+      )
+    ) {
       this.agent.y = nextY;
     } else {
       this.vy = 0;

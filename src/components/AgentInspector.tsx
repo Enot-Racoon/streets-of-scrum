@@ -89,6 +89,10 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             </div>
           </div>
 
+          <div>
+            Позиция: {agent.x.toFixed(2)} x {agent.y.toFixed(2)}
+          </div>
+
           <div className="flex items-center gap-1.5">
             {isPossessed ? (
               <button
