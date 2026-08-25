@@ -5,18 +5,13 @@ import { sounds } from "../sim/sound";
 import {
   Play,
   Pause,
-  FastForward,
-  RotateCcw,
-  Volume2,
-  VolumeX,
   PlusCircle,
   Flame,
-  ShieldAlert,
   Skull,
   HelpCircle,
-  Layers,
   MapPin,
 } from "lucide-react";
+import { VolumeControll } from "./VolumeControll";
 
 interface SandboxToolbarProps {
   world: World;
@@ -33,12 +28,6 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
 }) => {
   const [selectedArchetype, setSelectedArchetype] =
     useState<string>("Gangster_Crepe");
-  const [audioEnabled, setAudioEnabled] = useState<boolean>(sounds.enabled);
-
-  const toggleAudio = () => {
-    sounds.enabled = !sounds.enabled;
-    setAudioEnabled(sounds.enabled);
-  };
 
   const handleSpawnAgent = () => {
     // Find walkable center location
@@ -218,22 +207,10 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
 
         <div className="h-6 w-px bg-slate-800" />
 
-        {/* Audio Toggle */}
-        <button
-          onClick={toggleAudio}
-          className={`p-1.5 rounded transition ${
-            audioEnabled
-              ? "text-slate-300 hover:text-white"
-              : "text-slate-500 hover:text-slate-400"
-          }`}
-          title={audioEnabled ? "Mute SFX" : "Enable SFX"}
-        >
-          {audioEnabled ? (
-            <Volume2 className="w-4 h-4" />
-          ) : (
-            <VolumeX className="w-4 h-4" />
-          )}
-        </button>
+        <VolumeControll
+          initialValue={sounds.masterVolume}
+          onChange={(v) => (sounds.masterVolume = v)}
+        />
 
         {/* Architecture Knowledge Guide Modal */}
         <button

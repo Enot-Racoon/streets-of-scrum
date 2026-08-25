@@ -2,19 +2,38 @@
  * Web Audio API synthesizer for Streets of Rogue-style sound effects.
  */
 
+const volumeStore = (val?: number): number | null => {
+  const KEY = "sound_volume";
+  if (val !== undefined) {
+    localStorage.setItem(KEY, val.toString());
+    return val;
+  }
+  const saved = localStorage.getItem(KEY);
+  return saved ? parseFloat(saved) : null;
+};
+
 class SoundSystem {
   private ctx: AudioContext | null = null;
   public enabled: boolean = true;
-  public masterVolume: number = 0.4;
+  private _masterVolume: number = volumeStore() ?? volumeStore(0.4);
+
+  public get masterVolume(): number {
+    return this._masterVolume;
+  }
+  public set masterVolume(v: number) {
+    this._masterVolume = Math.max(0, Math.min(v, 1));
+    volumeStore(this._masterVolume);
+  }
 
   private initCtx() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!this.ctx && typeof window !== "undefined") {
+      const AudioCtx =
+        window.AudioContext || (window as any).webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
       }
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
+    if (this.ctx && this.ctx.state === "suspended") {
       this.ctx.resume();
     }
   }
@@ -28,7 +47,7 @@ class SoundSystem {
     const gain = this.ctx.createGain();
     const now = this.ctx.currentTime;
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(140, now);
     osc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
 
@@ -53,14 +72,15 @@ class SoundSystem {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.03));
+      data[i] =
+        (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.03));
     }
 
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
 
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(3000, now);
     filter.frequency.exponentialRampToValueAtTime(300, now + 0.15);
 
@@ -86,7 +106,8 @@ class SoundSystem {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.06));
+      data[i] =
+        (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.06));
     }
 
     const noise = this.ctx.createBufferSource();
@@ -113,14 +134,15 @@ class SoundSystem {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.12));
+      data[i] =
+        (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.12));
     }
 
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
 
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(600, now);
     filter.frequency.exponentialRampToValueAtTime(50, now + 0.45);
 
@@ -144,7 +166,7 @@ class SoundSystem {
     const gain = this.ctx.createGain();
     const now = this.ctx.currentTime;
 
-    osc.type = 'sawtooth';
+    osc.type = "sawtooth";
     osc.frequency.setValueAtTime(580, now);
     osc.frequency.setValueAtTime(880, now + 0.08);
 
@@ -167,7 +189,7 @@ class SoundSystem {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(220, now);
     osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
     osc.frequency.exponentialRampToValueAtTime(440, now + 0.35);
@@ -191,7 +213,7 @@ class SoundSystem {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(660, now);
     osc.frequency.exponentialRampToValueAtTime(220, now + 0.25);
 
@@ -214,7 +236,7 @@ class SoundSystem {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'square';
+    osc.type = "square";
     osc.frequency.setValueAtTime(900, now);
     osc.frequency.setValueAtTime(600, now + 0.15);
 
@@ -237,7 +259,7 @@ class SoundSystem {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(330, now);
     osc.frequency.setValueAtTime(440, now + 0.08);
     osc.frequency.setValueAtTime(660, now + 0.16);
@@ -261,7 +283,7 @@ class SoundSystem {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(180, now);
     osc.frequency.exponentialRampToValueAtTime(90, now + 0.1);
 
