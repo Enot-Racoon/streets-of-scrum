@@ -196,6 +196,15 @@ export const TRAIT_REGISTRY: Record<string, TraitDef> = {
       meleeDamageMult: 1.6,
     },
   },
+  Paralyzed: {
+    name: "Paralyzed",
+    displayName: "Парализованный",
+    description: "Парализует движения.",
+    category: "special",
+    statMods: {
+      speedMult: 0,
+    },
+  },
 };
 
 export function getTraitDef(traitName: string): TraitDef | undefined {
