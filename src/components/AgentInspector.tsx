@@ -26,6 +26,7 @@ import {
   ArrowRightCircle,
   Radio,
 } from "lucide-react";
+import { JobNames } from "../sim/types";
 
 interface AgentInspectorProps {
   agent: Agent | null;
@@ -68,7 +69,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
     <div className="h-full flex flex-col bg-slate-900 border-l border-slate-800 text-slate-200 overflow-hidden select-none">
       {/* Header Info */}
       <div className="p-4 bg-slate-950/80 border-b border-slate-800">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2">
             <span className="text-2xl">{agent.avatarIcon}</span>
             <div>
@@ -76,13 +77,14 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                 {agent.name}
                 {isPossessed && (
                   <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-1.5 py-0.5 rounded font-mono font-normal">
-                    POSSESSED
+                    ОДЕРЖИМ
                   </span>
                 )}
               </h2>
               <p className="text-xs text-slate-400 font-mono">
-                Job: <span className="text-sky-400">{agent.job}</span> | ID: #
-                {agent.id.slice(-6)}
+                Роль:{" "}
+                <span className="text-sky-400">{JobNames[agent.job]}</span> |
+                ID: #{agent.id.slice(-6)}
               </p>
             </div>
           </div>
@@ -91,9 +93,9 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             {isPossessed ? (
               <button
                 onClick={onUnpossess}
-                className="px-2.5 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white rounded transition flex items-center gap-1 shadow-sm"
+                className="px-2.5 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white rounded transition flex items-center gap-1 shadow-sm whitespace-nowrap"
               >
-                <Zap className="w-3.5 h-3.5" /> Release (Esc)
+                <Zap className="w-3.5 h-3.5" /> Отпустить (Esc)
               </button>
             ) : (
               <button
@@ -101,7 +103,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                 disabled={agent.isDead}
                 className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white rounded transition flex items-center gap-1 shadow-sm"
               >
-                <Zap className="w-3.5 h-3.5" /> Possess
+                <Zap className="w-3.5 h-3.5" /> Завладеть телом
               </button>
             )}
           </div>
@@ -112,7 +114,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
           <div className="flex justify-between text-xs font-mono text-slate-300">
             <span className="flex items-center gap-1">
               <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />{" "}
-              Health
+              Здоровье
             </span>
             <span>
               {agent.health.toFixed(0)} / {agent.maxHealth} ({hpPercent}%)
@@ -136,18 +138,16 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         <div className="mt-3 p-2 bg-slate-900 rounded border border-slate-800/80 flex items-start gap-2">
           <BrainIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
           <div className="text-xs">
-            <span className="text-slate-400 font-mono">Brain State: </span>
+            <span className="text-slate-400 font-mono">Занят: </span>
             <span className="text-sky-200 font-medium">
-              {isPossessed
-                ? "Player Controlling Soul"
-                : agent.brain.lastThought}
+              {isPossessed ? "Контролирует игрок" : agent.brain.lastThought}
             </span>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-800 bg-slate-950/40 text-xs font-medium">
+      <div className="flex border-b border-slate-800 bg-slate-950/40 text-xs font-medium gap-3 px-3 whitespace-nowrap overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
         <button
           onClick={() => setActiveTab("goals")}
           className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 border-b-2 transition ${
@@ -156,7 +156,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <BrainIcon className="w-3.5 h-3.5" /> Goal Stack (
+          <BrainIcon className="w-3.5 h-3.5" /> Список задач (
           {agent.brain.goalStack.length})
         </button>
         <button
@@ -167,7 +167,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Users className="w-3.5 h-3.5" /> Relations (
+          <Users className="w-3.5 h-3.5" /> Отношения (
           {agent.relationships.map.size})
         </button>
         <button
@@ -178,7 +178,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Sparkles className="w-3.5 h-3.5" /> Traits (
+          <Sparkles className="w-3.5 h-3.5" /> Характер (
           {agent.statusEffects.traitNames.size})
         </button>
         <button
@@ -189,7 +189,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Package className="w-3.5 h-3.5" /> Items (
+          <Package className="w-3.5 h-3.5" /> Инвентарь (
           {agent.inventory.items.length})
         </button>
       </div>
@@ -201,7 +201,9 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                Goal Stack Hierarchy (Top = Active)
+                Список задач
+                <br />{" "}
+                <small className="text-slate-500">(верх = активная)</small>
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -209,22 +211,23 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   disabled={agent.brain.goalStack.length === 0}
                   className="px-2 py-0.5 text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-30 rounded text-slate-300"
                 >
-                  Pop Top
+                  Убрать
                 </button>
                 <button
                   onClick={() => agent.brain.clearAllGoals()}
                   disabled={agent.brain.goalStack.length === 0}
                   className="px-2 py-0.5 text-[11px] bg-rose-950/60 hover:bg-rose-900 text-rose-300 disabled:opacity-30 rounded"
                 >
-                  Clear
+                  Очистить
                 </button>
               </div>
             </div>
 
             {agent.brain.goalStack.length === 0 ? (
               <div className="p-3 bg-slate-950/50 rounded border border-dashed border-slate-800 text-center text-xs text-slate-500">
-                Goal stack empty. Agent will trigger default behavior on next
-                tick.
+                Цели закончились.
+                <br />
+                Агент переключится на поведение по умолчанию.
               </div>
             ) : (
               <div className="space-y-2">
@@ -276,7 +279,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             {/* Force Goal Injections */}
             <div className="pt-2 border-t border-slate-800">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-                Force Push Goal
+                Назначить цель
               </span>
               <div className="grid grid-cols-2 gap-1.5">
                 <button
@@ -290,7 +293,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   }}
                   className="px-2 py-1.5 text-xs bg-rose-900/40 hover:bg-rose-800 text-rose-200 border border-rose-800/60 rounded flex items-center justify-center gap-1"
                 >
-                  <Crosshair className="w-3.5 h-3.5" /> Battle Nearby
+                  <Crosshair className="w-3.5 h-3.5" /> Атаковать прохожих
                 </button>
                 <button
                   onClick={() => {
@@ -303,19 +306,19 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   }}
                   className="px-2 py-1.5 text-xs bg-amber-900/40 hover:bg-amber-800 text-amber-200 border border-amber-800/60 rounded flex items-center justify-center gap-1"
                 >
-                  <ShieldAlert className="w-3.5 h-3.5" /> Flee Threat
+                  <ShieldAlert className="w-3.5 h-3.5" /> Напугать
                 </button>
                 <button
                   onClick={() => agent.brain.pushGoal(new GoalWander(agent, 6))}
                   className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
                 >
-                  Wander
+                  Бродить
                 </button>
                 <button
                   onClick={() => agent.brain.pushGoal(new GoalIdle(agent, 4.0))}
                   className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
                 >
-                  Idle (4s)
+                  Бездельничать (4s)
                 </button>
               </div>
             </div>
@@ -326,12 +329,12 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         {activeTab === "relations" && (
           <div className="space-y-2">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Dynamic Relationship Table
+              Отношения
             </span>
 
             {agent.relationships.map.size === 0 ? (
               <div className="p-3 bg-slate-950/50 rounded border border-dashed border-slate-800 text-center text-xs text-slate-500">
-                No active relationship states tracked yet.
+                Отношения не отслеживаются.
               </div>
             ) : (
               <div className="space-y-2">
@@ -379,10 +382,10 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                         </div>
                         <div className="flex justify-between pt-1">
                           <span>
-                            LOS: {rel.hasLOS ? "👁️ Visible" : "🙈 Hidden"}
+                            LOS: {rel.hasLOS ? "👁️ Видно" : "🙈 Не видно"}
                           </span>
-                          <span>Dist: {rel.distance.toFixed(1)}m</span>
-                          <span>Strikes: {rel.strikes}</span>
+                          <span>Расстояние: {rel.distance.toFixed(1)}м</span>
+                          <span>Ударов: {rel.strikes}</span>
                         </div>
                       </div>
 
@@ -394,7 +397,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           }
                           className="flex-1 py-0.5 text-[10px] bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded"
                         >
-                          Make Hostile
+                          Сделать врагом
                         </button>
                         <button
                           onClick={() =>
@@ -405,7 +408,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           }
                           className="flex-1 py-0.5 text-[10px] bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 rounded"
                         >
-                          Make Friendly
+                          Сделать другом
                         </button>
                       </div>
                     </div>
@@ -506,7 +509,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           {def.name}
                           {isEquipped && (
                             <span className="text-[10px] bg-sky-500/20 text-sky-300 px-1 py-0.2 rounded font-mono">
-                              EQUIPPED
+                              НАДЕНО
                             </span>
                           )}
                         </div>
@@ -522,7 +525,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           onClick={() => agent.inventory.useItem(item.uid)}
                           className="px-2 py-1 text-[11px] bg-emerald-600 hover:bg-emerald-500 text-white rounded"
                         >
-                          Use
+                          Применить
                         </button>
                       ) : (
                         <button
@@ -530,7 +533,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           disabled={isEquipped}
                           className="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 rounded"
                         >
-                          Equip
+                          Надеть
                         </button>
                       )}
                       <button
@@ -549,7 +552,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             {/* Add Item to Inventory */}
             <div className="pt-2 border-t border-slate-800">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
-                Give Item
+                Дать предмет
               </span>
               <div className="flex gap-2">
                 <select
@@ -567,7 +570,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   onClick={() => agent.inventory.addItem(selectedItemToAdd, 1)}
                   className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Give
+                  <Plus className="w-3.5 h-3.5" /> Дать
                 </button>
               </div>
             </div>

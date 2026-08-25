@@ -1,11 +1,11 @@
-import { Goal } from './goals/Goal';
-import { GoalStatus, GoalTypeName } from './types';
+import { Goal } from "./goals/Goal";
+import { GoalStatus, GoalTypeName } from "./types";
 
 export class Brain {
   public agent: any;
   public goalStack: Goal[] = [];
   public isSuspended: boolean = false;
-  public lastThought: string = 'Idle';
+  public lastThought: string = "Idle";
   public memory: { key: string; val: any; expiresAt: number }[] = [];
 
   constructor(agent: any) {
@@ -42,7 +42,7 @@ export class Brain {
     // Activate new top goal if inactive
     if (this.goalStack.length > 0 && !this.isSuspended) {
       const top = this.goalStack[this.goalStack.length - 1];
-      if (top.status === 'Inactive') {
+      if (top.status === "Inactive") {
         top.activate();
       }
     }
@@ -50,11 +50,13 @@ export class Brain {
   }
 
   public getTopGoal(): Goal | null {
-    return this.goalStack.length > 0 ? this.goalStack[this.goalStack.length - 1] : null;
+    return this.goalStack.length > 0
+      ? this.goalStack[this.goalStack.length - 1]
+      : null;
   }
 
   public hasGoal(name: GoalTypeName): boolean {
-    return this.goalStack.some(g => g.name === name);
+    return this.goalStack.some((g) => g.name === name);
   }
 
   public removeGoalType(name: GoalTypeName): void {
@@ -75,17 +77,17 @@ export class Brain {
 
   public suspend(): void {
     this.isSuspended = true;
-    this.lastThought = 'Controlled by Player';
+    this.lastThought = "Контролирует игрок";
   }
 
   public resume(): void {
     this.isSuspended = false;
     if (this.goalStack.length > 0) {
       const top = this.goalStack[this.goalStack.length - 1];
-      if (top.status === 'Inactive') {
+      if (top.status === "Inactive") {
         top.activate();
       }
-      this.lastThought = `Resumed ${top.name}`;
+      this.lastThought = `Возвращаюсь к: ${top.name}`;
     }
   }
 
@@ -94,7 +96,7 @@ export class Brain {
 
     // Clean expired memory
     const now = Date.now();
-    this.memory = this.memory.filter(m => m.expiresAt > now);
+    this.memory = this.memory.filter((m) => m.expiresAt > now);
 
     // Process top goal
     if (this.goalStack.length === 0) {
@@ -104,14 +106,14 @@ export class Brain {
     }
 
     const currentGoal = this.goalStack[this.goalStack.length - 1];
-    if (currentGoal.status === 'Inactive') {
+    if (currentGoal.status === "Inactive") {
       currentGoal.activate();
     }
 
     const status: GoalStatus = currentGoal.process(dt);
     this.lastThought = `${currentGoal.name}: ${currentGoal.debugInfo || status}`;
 
-    if (status === 'Completed' || status === 'Failed') {
+    if (status === "Completed" || status === "Failed") {
       this.popGoal();
     }
   }
@@ -120,12 +122,12 @@ export class Brain {
     this.memory.push({
       key,
       val,
-      expiresAt: Date.now() + durationMs
+      expiresAt: Date.now() + durationMs,
     });
   }
 
   public getMemory(key: string): any {
-    const mem = this.memory.find(m => m.key === key);
+    const mem = this.memory.find((m) => m.key === key);
     return mem ? mem.val : null;
   }
 }

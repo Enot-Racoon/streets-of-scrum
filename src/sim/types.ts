@@ -1,24 +1,60 @@
-export type RelType = 'Neutral' | 'Friendly' | 'Hostile' | 'Annoyed' | 'Loyal' | 'Submissive' | 'Fearful';
+export type RelType =
+  | "Neutral"
+  | "Friendly"
+  | "Hostile"
+  | "Annoyed"
+  | "Loyal"
+  | "Submissive"
+  | "Fearful";
 
-export type JobType = 
-  | 'Citizen' 
-  | 'Cop' 
-  | 'Gangster_Crepe' 
-  | 'Gangster_Blahd' 
-  | 'Thief' 
-  | 'Scientist' 
-  | 'Soldier' 
-  | 'Bouncer' 
-  | 'Bartender' 
-  | 'Doctor' 
-  | 'Zombie' 
-  | 'Gorilla' 
-  | 'Assassin' 
-  | 'Hacker' 
-  | 'Supercop'
-  | 'Custom';
+export type JobType =
+  | "Citizen"
+  | "Cop"
+  | "Gangster_Crepe"
+  | "Gangster_Blahd"
+  | "Thief"
+  | "Scientist"
+  | "Soldier"
+  | "Bouncer"
+  | "Bartender"
+  | "Doctor"
+  | "Zombie"
+  | "Gorilla"
+  | "Assassin"
+  | "Hacker"
+  | "Supercop"
+  | "Custom";
 
-export type TileType = 'Floor' | 'Wall' | 'Door' | 'Glass' | 'Crate' | 'Barrel' | 'ATM' | 'Vent' | 'FireHazard' | 'Water';
+export const JobNames = {
+  Citizen: "Горожанин",
+  Cop: "Полицейский",
+  Gangster_Crepe: "Бандит Крепов",
+  Gangster_Blahd: "Бандит Блад",
+  Thief: "Вор",
+  Scientist: "Ученый",
+  Soldier: "Солдат",
+  Bouncer: "Вышибала",
+  Bartender: "Бармен",
+  Doctor: "Доктор",
+  Zombie: "Зомби",
+  Gorilla: "Горилла",
+  Assassin: "Ассасин",
+  Hacker: "Хакер",
+  Supercop: "Супер коп",
+  Custom: "Пользователь",
+} as const satisfies Record<JobType, string>;
+
+export type TileType =
+  | "Floor"
+  | "Wall"
+  | "Door"
+  | "Glass"
+  | "Crate"
+  | "Barrel"
+  | "ATM"
+  | "Vent"
+  | "FireHazard"
+  | "Water";
 
 export interface Tile {
   x: number;
@@ -34,28 +70,28 @@ export interface Tile {
   metadata?: Record<string, any>;
 }
 
-export type GoalStatus = 'Inactive' | 'Active' | 'Completed' | 'Failed';
+export type GoalStatus = "Inactive" | "Active" | "Completed" | "Failed";
 
 export type GoalTypeName =
-  | 'GoalIdle'
-  | 'GoalWander'
-  | 'GoalPatrol'
-  | 'GoalMoveTo'
-  | 'GoalBattle'
-  | 'GoalFlee'
-  | 'GoalInvestigate'
-  | 'GoalNoiseReact'
-  | 'GoalTattle'
-  | 'GoalInteract'
-  | 'GoalSteal'
-  | 'GoalBite'
-  | 'GoalExtinguishFire';
+  | "GoalIdle"
+  | "GoalWander"
+  | "GoalPatrol"
+  | "GoalMoveTo"
+  | "GoalBattle"
+  | "GoalFlee"
+  | "GoalInvestigate"
+  | "GoalNoiseReact"
+  | "GoalTattle"
+  | "GoalInteract"
+  | "GoalSteal"
+  | "GoalBite"
+  | "GoalExtinguishFire";
 
 export interface TraitDef {
   name: string;
   displayName: string;
   description: string;
-  category: 'positive' | 'negative' | 'special';
+  category: "positive" | "negative" | "special";
   statMods?: {
     maxHealthMult?: number;
     speedMult?: number;
@@ -75,7 +111,7 @@ export interface TraitDef {
 export interface ItemDef {
   id: string;
   name: string;
-  type: 'melee' | 'gun' | 'consumable' | 'tool' | 'explosive';
+  type: "melee" | "gun" | "consumable" | "tool" | "explosive";
   damage?: number;
   range?: number;
   attackSpeed?: number; // attacks per second
@@ -105,7 +141,14 @@ export interface NoiseEvent {
   radius: number;
   volume: number; // 0..1
   sourceAgentId?: string;
-  noiseType: 'gunshot' | 'footstep' | 'shout' | 'explosion' | 'smash' | 'alarm' | 'scream';
+  noiseType:
+    | "gunshot"
+    | "footstep"
+    | "shout"
+    | "explosion"
+    | "smash"
+    | "alarm"
+    | "scream";
   timestamp: number;
 }
 
@@ -133,7 +176,7 @@ export interface Particle {
   maxLife: number;
   color: string;
   size: number;
-  type: 'spark' | 'blood' | 'smoke' | 'fire' | 'teleport' | 'possession';
+  type: "spark" | "blood" | "smoke" | "fire" | "teleport" | "possession";
 }
 
 export interface SpeechBubble {
@@ -162,7 +205,7 @@ export interface LogEntry {
   id: string;
   timestamp: number;
   message: string;
-  type: 'combat' | 'ai' | 'possession' | 'system' | 'crime' | 'speech';
+  type: "combat" | "ai" | "possession" | "system" | "crime" | "speech";
   agentId?: string;
   agentName?: string;
 }
