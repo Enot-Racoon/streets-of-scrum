@@ -563,7 +563,13 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     }
   };
 
+  const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    keysDownRef.current[`mouse-${e.button}`] = false;
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    keysDownRef.current[`mouse-${e.button}`] = true;
+
     if (e.button === 0) {
       // Left click: if possessed, attack in aim direction; else select agent or inspect tile
       if (world.possessedAgent && !world.possessedAgent.isDead) {
@@ -643,6 +649,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         ref={canvasRef}
         className="w-full h-full cursor-crosshair block"
         onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         onDoubleClick={handleDoubleClick}
         // onWheel={handleWheel}
