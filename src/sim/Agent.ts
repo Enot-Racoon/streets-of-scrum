@@ -10,6 +10,7 @@ import { GoalWander, GoalBattle, GoalFlee, GoalIdle } from "./goals/GoalTypes";
 import { JobType, SpeechBubble } from "./types";
 import { getTraitDef } from "./traits";
 import { sounds } from "./sound";
+import type { World } from "./World";
 
 let agentIdCounter = 1;
 
@@ -30,7 +31,7 @@ export class Agent {
   public color: string = "#60a5fa";
   public avatarIcon: string = "👤";
   public speechBubble: SpeechBubble | null = null;
-  public world: any = null;
+  public world: World = null;
 
   // Components (SoR Architecture)
   public brain: Brain;

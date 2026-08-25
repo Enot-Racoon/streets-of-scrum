@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { World } from '../sim/World';
-import { Agent } from '../sim/Agent';
-import { ITEM_REGISTRY } from '../sim/Items';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { World } from "../sim/World";
+import { Agent } from "../sim/Agent";
+import { ITEM_REGISTRY } from "../sim/Items";
 
 interface SimCanvasProps {
   world: World;
@@ -9,7 +9,11 @@ interface SimCanvasProps {
   onPossessAgent: (agent: Agent) => void;
 }
 
-export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPossessAgent }) => {
+export const SimCanvas: React.FC<SimCanvasProps> = ({
+  world,
+  onSelectAgent,
+  onPossessAgent,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cameraRef = useRef({ x: 12, y: 10, zoom: 34 });
   const mousePosRef = useRef({ x: 0, y: 0, worldX: 0, worldY: 0 });
@@ -22,7 +26,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       keysDownRef.current[e.code.toLowerCase()] = true;
 
       // Unpossess hotkey (Escape or Tab)
-      if (e.key === 'Escape' || e.key === 'Tab') {
+      if (e.key === "Escape" || e.key === "Tab") {
         e.preventDefault();
         if (world.possessedAgent) {
           world.unpossessCurrent();
@@ -30,7 +34,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       }
 
       // Interact hotkey (E / F)
-      if (e.key.toLowerCase() === 'e' || e.key.toLowerCase() === 'f') {
+      if (e.key.toLowerCase() === "e" || e.key.toLowerCase() === "f") {
         if (world.possessedAgent) {
           const p = world.possessedAgent;
           const interactDist = 1.3;
@@ -54,11 +58,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       keysDownRef.current[e.code.toLowerCase()] = false;
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [world]);
 
@@ -77,10 +81,14 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         let moveX = 0;
         let moveY = 0;
 
-        if (keysDownRef.current['w'] || keysDownRef.current['arrowup']) moveY -= 1;
-        if (keysDownRef.current['s'] || keysDownRef.current['arrowdown']) moveY += 1;
-        if (keysDownRef.current['a'] || keysDownRef.current['arrowleft']) moveX -= 1;
-        if (keysDownRef.current['d'] || keysDownRef.current['arrowright']) moveX += 1;
+        if (keysDownRef.current["w"] || keysDownRef.current["arrowup"])
+          moveY -= 1;
+        if (keysDownRef.current["s"] || keysDownRef.current["arrowdown"])
+          moveY += 1;
+        if (keysDownRef.current["a"] || keysDownRef.current["arrowleft"])
+          moveX -= 1;
+        if (keysDownRef.current["d"] || keysDownRef.current["arrowright"])
+          moveX += 1;
 
         if (moveX !== 0 || moveY !== 0) {
           const moveAngle = Math.atan2(moveY, moveX);
@@ -92,7 +100,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         // Aim towards mouse world position
         p.facingAngle = Math.atan2(
           mousePosRef.current.worldY - p.y,
-          mousePosRef.current.worldX - p.x
+          mousePosRef.current.worldX - p.x,
         );
 
         // Center camera smoothly on possessed agent via ref without trigger component re-render
@@ -106,7 +114,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       // 3. Draw to Canvas
       const canvas = canvasRef.current;
       if (canvas) {
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (ctx) {
           drawScene(ctx, canvas.width, canvas.height);
         }
@@ -120,7 +128,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
   }, [world]);
 
   // Draw scene
-  const drawScene = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  const drawScene = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+  ) => {
     ctx.clearRect(0, 0, width, height);
 
     const zoom = cameraRef.current.zoom;
@@ -128,7 +140,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
     const offsetY = height / 2 - cameraRef.current.y * zoom;
 
     // Dark grid background
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = "#0f172a";
     ctx.fillRect(0, 0, width, height);
 
     ctx.save();
@@ -142,43 +154,43 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         const ty = y * zoom;
 
         // Floor
-        ctx.fillStyle = (x + y) % 2 === 0 ? '#1e293b' : '#334155';
+        ctx.fillStyle = (x + y) % 2 === 0 ? "#1e293b" : "#334155";
         ctx.fillRect(tx, ty, zoom, zoom);
-        ctx.strokeStyle = '#0f172a';
+        ctx.strokeStyle = "#0f172a";
         ctx.lineWidth = 1;
         ctx.strokeRect(tx, ty, zoom, zoom);
 
         // Tile specific graphics
-        if (tile.type === 'Wall') {
-          ctx.fillStyle = '#475569';
+        if (tile.type === "Wall") {
+          ctx.fillStyle = "#475569";
           ctx.fillRect(tx, ty, zoom, zoom);
           // 3D wall top bevel
-          ctx.fillStyle = '#64748b';
+          ctx.fillStyle = "#64748b";
           ctx.fillRect(tx + 2, ty + 2, zoom - 4, zoom - 6);
-          ctx.strokeStyle = '#1e293b';
+          ctx.strokeStyle = "#1e293b";
           ctx.strokeRect(tx, ty, zoom, zoom);
-        } else if (tile.type === 'Door') {
+        } else if (tile.type === "Door") {
           if (tile.isOpen) {
-            ctx.fillStyle = '#854d0e';
+            ctx.fillStyle = "#854d0e";
             ctx.fillRect(tx, ty, 6, zoom);
           } else {
-            ctx.fillStyle = '#b45309';
+            ctx.fillStyle = "#b45309";
             ctx.fillRect(tx + 2, ty + 2, zoom - 4, zoom - 4);
-            ctx.fillStyle = '#fef08a';
+            ctx.fillStyle = "#fef08a";
             ctx.beginPath();
             ctx.arc(tx + zoom / 2, ty + zoom / 2, 3, 0, Math.PI * 2);
             ctx.fill();
           }
-        } else if (tile.type === 'Glass') {
-          ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+        } else if (tile.type === "Glass") {
+          ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
           ctx.fillRect(tx + 3, ty + 3, zoom - 6, zoom - 6);
-          ctx.strokeStyle = '#38bdf8';
+          ctx.strokeStyle = "#38bdf8";
           ctx.lineWidth = 2;
           ctx.strokeRect(tx + 3, ty + 3, zoom - 6, zoom - 6);
-        } else if (tile.type === 'Crate') {
-          ctx.fillStyle = '#92400e';
+        } else if (tile.type === "Crate") {
+          ctx.fillStyle = "#92400e";
           ctx.fillRect(tx + 4, ty + 4, zoom - 8, zoom - 8);
-          ctx.strokeStyle = '#78350f';
+          ctx.strokeStyle = "#78350f";
           ctx.lineWidth = 2;
           ctx.strokeRect(tx + 4, ty + 4, zoom - 8, zoom - 8);
           // X pattern
@@ -188,26 +200,26 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
           ctx.moveTo(tx + zoom - 4, ty + 4);
           ctx.lineTo(tx + 4, ty + zoom - 4);
           ctx.stroke();
-        } else if (tile.type === 'Barrel') {
-          ctx.fillStyle = '#dc2626';
+        } else if (tile.type === "Barrel") {
+          ctx.fillStyle = "#dc2626";
           ctx.beginPath();
           ctx.arc(tx + zoom / 2, ty + zoom / 2, zoom * 0.36, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = '#fbbf24';
+          ctx.fillStyle = "#fbbf24";
           ctx.font = `bold ${zoom * 0.35}px monospace`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('⚡', tx + zoom / 2, ty + zoom / 2);
-        } else if (tile.type === 'ATM') {
-          ctx.fillStyle = '#0284c7';
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("⚡", tx + zoom / 2, ty + zoom / 2);
+        } else if (tile.type === "ATM") {
+          ctx.fillStyle = "#0284c7";
           ctx.fillRect(tx + 4, ty + 4, zoom - 8, zoom - 8);
-          ctx.fillStyle = '#38bdf8';
+          ctx.fillStyle = "#38bdf8";
           ctx.fillRect(tx + 6, ty + 6, zoom - 12, zoom * 0.3);
-          ctx.fillStyle = '#ffffff';
+          ctx.fillStyle = "#ffffff";
           ctx.font = `bold ${zoom * 0.3}px monospace`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('$', tx + zoom / 2, ty + zoom * 0.7);
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("$", tx + zoom / 2, ty + zoom * 0.7);
         }
       }
     }
@@ -219,7 +231,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       if (age < 1.2) {
         const radius = age * (noise.radius * 0.9) * zoom;
         const alpha = Math.max(0, 1.0 - age / 1.2) * 0.4;
-        ctx.strokeStyle = noise.noiseType === 'gunshot' ? `rgba(239, 68, 68, ${alpha})` : `rgba(234, 179, 8, ${alpha})`;
+        ctx.strokeStyle =
+          noise.noiseType === "gunshot"
+            ? `rgba(239, 68, 68, ${alpha})`
+            : `rgba(234, 179, 8, ${alpha})`;
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.arc(noise.x * zoom, noise.y * zoom, radius, 0, Math.PI * 2);
@@ -233,15 +248,15 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       const ix = item.x * zoom;
       const iy = item.y * zoom;
 
-      ctx.fillStyle = 'rgba(234, 179, 8, 0.25)';
+      ctx.fillStyle = "rgba(234, 179, 8, 0.25)";
       ctx.beginPath();
       ctx.arc(ix, iy, zoom * 0.28, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.font = `${zoom * 0.4}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(def ? def.icon : '📦', ix, iy);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(def ? def.icon : "📦", ix, iy);
     }
 
     // 4. Draw Dead Agent Corpses
@@ -251,20 +266,20 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         const ay = agent.y * zoom;
 
         // Blood pool
-        ctx.fillStyle = 'rgba(185, 28, 28, 0.75)';
+        ctx.fillStyle = "rgba(185, 28, 28, 0.75)";
         ctx.beginPath();
         ctx.arc(ax, ay, zoom * 0.4, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = "#64748b";
         ctx.beginPath();
         ctx.arc(ax, ay, zoom * 0.28, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.font = `${zoom * 0.35}px sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('💀', ax, ay);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("💀", ax, ay);
       }
     }
 
@@ -280,19 +295,25 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
 
       // Selection / Possession Ring
       if (isPossessed) {
-        ctx.strokeStyle = '#c084fc';
+        ctx.strokeStyle = "#c084fc";
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.arc(ax, ay, radius + 6, 0, Math.PI * 2);
         ctx.stroke();
 
         // Pulsing glow
-        ctx.fillStyle = 'rgba(192, 132, 252, 0.2)';
+        ctx.fillStyle = "rgba(192, 132, 252, 0.2)";
         ctx.beginPath();
-        ctx.arc(ax, ay, radius + 8 + Math.sin(Date.now() * 0.008) * 3, 0, Math.PI * 2);
+        ctx.arc(
+          ax,
+          ay,
+          radius + 8 + Math.sin(Date.now() * 0.008) * 3,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       } else if (isSelected) {
-        ctx.strokeStyle = '#38bdf8';
+        ctx.strokeStyle = "#38bdf8";
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -308,8 +329,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         const vCone = Math.PI * 0.45;
 
         const grad = ctx.createRadialGradient(ax, ay, 0, ax, ay, vRange);
-        grad.addColorStop(0, isPossessed ? 'rgba(168, 85, 247, 0.2)' : 'rgba(56, 189, 248, 0.15)');
-        grad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+        grad.addColorStop(
+          0,
+          isPossessed ? "rgba(168, 85, 247, 0.2)" : "rgba(56, 189, 248, 0.15)",
+        );
+        grad.addColorStop(1, "rgba(56, 189, 248, 0.0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
@@ -320,13 +344,21 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       }
 
       // Path line preview for AI debugging
-      if (isSelected && !agent.isPlayerControlled && agent.pathfindingAI.hasPath) {
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.6)';
+      if (
+        isSelected &&
+        !agent.isPlayerControlled &&
+        agent.pathfindingAI.hasPath
+      ) {
+        ctx.strokeStyle = "rgba(251, 191, 36, 0.6)";
         ctx.lineWidth = 2;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
         ctx.moveTo(ax, ay);
-        for (let i = agent.pathfindingAI.currentWaypointIndex; i < agent.pathfindingAI.path.length; i++) {
+        for (
+          let i = agent.pathfindingAI.currentWaypointIndex;
+          i < agent.pathfindingAI.path.length;
+          i++
+        ) {
           const wp = agent.pathfindingAI.path[i];
           ctx.lineTo(wp.x * zoom, wp.y * zoom);
         }
@@ -339,7 +371,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       ctx.beginPath();
       ctx.arc(ax, ay, radius, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#0f172a';
+      ctx.strokeStyle = "#0f172a";
       ctx.lineWidth = 2;
       ctx.stroke();
 
@@ -351,7 +383,13 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       ctx.fillStyle = agent.color;
       // Left hand
       ctx.beginPath();
-      ctx.arc(ax + Math.cos(handAngle1) * handDist, ay + Math.sin(handAngle1) * handDist, radius * 0.35, 0, Math.PI * 2);
+      ctx.arc(
+        ax + Math.cos(handAngle1) * handDist,
+        ay + Math.sin(handAngle1) * handDist,
+        radius * 0.35,
+        0,
+        Math.PI * 2,
+      );
       ctx.fill();
       ctx.stroke();
 
@@ -368,8 +406,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       const gunTipX = ax + Math.cos(agent.facingAngle) * (radius * 1.6);
       const gunTipY = ay + Math.sin(agent.facingAngle) * (radius * 1.6);
 
-      if (weapon.type === 'gun') {
-        ctx.strokeStyle = '#334155';
+      if (weapon.type === "gun") {
+        ctx.strokeStyle = "#334155";
         ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(rhX, rhY);
@@ -377,23 +415,29 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         ctx.stroke();
       } else if (agent.combat.isSwinging) {
         // Melee swing arc
-        ctx.strokeStyle = '#f87171';
+        ctx.strokeStyle = "#f87171";
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.arc(ax, ay, radius * 1.6, agent.facingAngle - 0.7, agent.facingAngle + 0.7);
+        ctx.arc(
+          ax,
+          ay,
+          radius * 1.6,
+          agent.facingAngle - 0.7,
+          agent.facingAngle + 0.7,
+        );
         ctx.stroke();
       }
 
       // Icon Avatar
       ctx.font = `${radius * 1.0}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       ctx.fillText(agent.avatarIcon, ax, ay);
 
       // Name & Job Tag
-      ctx.font = 'bold 11px sans-serif';
-      ctx.fillStyle = '#f8fafc';
-      ctx.shadowColor = '#000000';
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillStyle = "#f8fafc";
+      ctx.shadowColor = "#000000";
       ctx.shadowBlur = 4;
       ctx.fillText(agent.name, ax, ay - radius - 14);
       ctx.shadowBlur = 0;
@@ -405,40 +449,41 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       const hpBarX = ax - hpWidth / 2;
       const hpBarY = ay - radius - 8;
 
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = "#1e293b";
       ctx.fillRect(hpBarX, hpBarY, hpWidth, hpHeight);
-      ctx.fillStyle = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
+      ctx.fillStyle =
+        hpRatio > 0.5 ? "#22c55e" : hpRatio > 0.25 ? "#eab308" : "#ef4444";
       ctx.fillRect(hpBarX, hpBarY, hpWidth * hpRatio, hpHeight);
-      ctx.strokeStyle = '#090d16';
+      ctx.strokeStyle = "#090d16";
       ctx.lineWidth = 1;
       ctx.strokeRect(hpBarX, hpBarY, hpWidth, hpHeight);
 
       // Goal badge / Thought above head
       if (!agent.isPlayerControlled && agent.brain.getTopGoal()) {
         const topGoal = agent.brain.getTopGoal()!;
-        let goalIcon = '💭';
-        if (topGoal.name === 'GoalBattle') goalIcon = '⚔️';
-        if (topGoal.name === 'GoalFlee') goalIcon = '💨';
-        if (topGoal.name === 'GoalInvestigate') goalIcon = '🔍';
-        if (topGoal.name === 'GoalTattle') goalIcon = '📢';
+        let goalIcon = "💭";
+        if (topGoal.name === "GoalBattle") goalIcon = "⚔️";
+        if (topGoal.name === "GoalFlee") goalIcon = "💨";
+        if (topGoal.name === "GoalInvestigate") goalIcon = "🔍";
+        if (topGoal.name === "GoalTattle") goalIcon = "📢";
 
-        ctx.font = '10px sans-serif';
-        ctx.fillStyle = '#e2e8f0';
+        ctx.font = "10px sans-serif";
+        ctx.fillStyle = "#e2e8f0";
         ctx.fillText(goalIcon, ax + radius + 6, ay - radius);
       }
 
       // Speech Bubble
       if (agent.speechBubble) {
         const text = agent.speechBubble.text;
-        ctx.font = '11px sans-serif';
+        ctx.font = "11px sans-serif";
         const textMetrics = ctx.measureText(text);
         const bubbleW = textMetrics.width + 12;
         const bubbleH = 20;
         const bubbleX = ax - bubbleW / 2;
         const bubbleY = ay - radius - 38;
 
-        ctx.fillStyle = agent.speechBubble.isYell ? '#ef4444' : '#ffffff';
-        ctx.strokeStyle = '#0f172a';
+        ctx.fillStyle = agent.speechBubble.isYell ? "#ef4444" : "#ffffff";
+        ctx.strokeStyle = "#0f172a";
         ctx.lineWidth = 2;
 
         ctx.beginPath();
@@ -455,22 +500,28 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = agent.speechBubble.isYell ? '#ffffff' : '#0f172a';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.fillStyle = agent.speechBubble.isYell ? "#ffffff" : "#0f172a";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText(text, ax, bubbleY + bubbleH / 2);
       }
     }
 
     // 6. Draw Projectiles
     for (const p of world.projectiles) {
-      ctx.fillStyle = p.color || '#fbbf24';
+      ctx.fillStyle = p.color || "#fbbf24";
       ctx.beginPath();
-      ctx.arc(p.x * zoom, p.y * zoom, (p.radius || 0.12) * zoom, 0, Math.PI * 2);
+      ctx.arc(
+        p.x * zoom,
+        p.y * zoom,
+        (p.radius || 0.12) * zoom,
+        0,
+        Math.PI * 2,
+      );
       ctx.fill();
 
       // Tracer
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
+      ctx.strokeStyle = "rgba(251, 191, 36, 0.4)";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(p.x * zoom, p.y * zoom);
@@ -522,12 +573,15 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       if (world.possessedAgent && !world.possessedAgent.isDead) {
         world.possessedAgent.combat.attack(
           mousePosRef.current.worldX,
-          mousePosRef.current.worldY
+          mousePosRef.current.worldY,
         );
       } else {
         // Select agent under cursor
-        const clickedAgent = world.agents.find(a => {
-          const dist = Math.hypot(a.x - mousePosRef.current.worldX, a.y - mousePosRef.current.worldY);
+        const clickedAgent = world.agents.find((a) => {
+          const dist = Math.hypot(
+            a.x - mousePosRef.current.worldX,
+            a.y - mousePosRef.current.worldY,
+          );
           return dist <= (a.radius || 0.4) + 0.2;
         });
 
@@ -540,8 +594,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     // Double click to possess agent
-    const clickedAgent = world.agents.find(a => {
-      const dist = Math.hypot(a.x - mousePosRef.current.worldX, a.y - mousePosRef.current.worldY);
+    const clickedAgent = world.agents.find((a) => {
+      const dist = Math.hypot(
+        a.x - mousePosRef.current.worldX,
+        a.y - mousePosRef.current.worldY,
+      );
       return dist <= (a.radius || 0.4) + 0.2;
     });
 
@@ -553,7 +610,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const zoomDelta = e.deltaY > 0 ? -2 : 2;
-    cameraRef.current.zoom = Math.max(16, Math.min(64, cameraRef.current.zoom + zoomDelta));
+    cameraRef.current.zoom = Math.max(
+      16,
+      Math.min(64, cameraRef.current.zoom + zoomDelta),
+    );
   };
 
   // Adjust canvas resolution to parent
@@ -566,8 +626,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
       }
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -579,7 +639,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({ world, onSelectAgent, onPo
         onMouseDown={handleMouseDown}
         onDoubleClick={handleDoubleClick}
         onWheel={handleWheel}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault()}
       />
     </div>
   );
