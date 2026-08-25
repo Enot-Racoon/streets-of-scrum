@@ -1,5 +1,5 @@
-import { Goal } from './Goal';
-import { GoalStatus, NoiseEvent } from '../types';
+import { Goal } from "./Goal";
+import { GoalStatus, NoiseEvent } from "../types";
 
 /**
  * GoalIdle: Agent stands still, occasionally looks around, waits for timer
@@ -9,29 +9,29 @@ export class GoalIdle extends Goal {
   private timer: number = 0;
 
   constructor(agent: any, duration: number = 2.0) {
-    super('GoalIdle', agent, 1);
+    super("GoalIdle", agent, 1);
     this.duration = duration;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.timer = 0;
     this.agent.movement.stop();
-    this.debugInfo = `Idling for ${this.duration.toFixed(1)}s`;
+    this.debugInfo = `Бездельничает ${this.duration.toFixed(1)}с`;
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
     this.timer += dt;
     if (this.timer >= this.duration) {
-      this.status = 'Completed';
-      return 'Completed';
+      this.status = "Completed";
+      return "Completed";
     }
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
   }
 }
 
@@ -44,12 +44,12 @@ export class GoalWander extends Goal {
   private isMoving: boolean = false;
 
   constructor(agent: any, radius: number = 5) {
-    super('GoalWander', agent, 2);
+    super("GoalWander", agent, 2);
     this.radius = radius;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.pickNextDestination();
   }
 
@@ -69,7 +69,7 @@ export class GoalWander extends Goal {
       if (world.isWalkable(tx, ty)) {
         this.agent.pathfindingAI.setDestination(targetX, targetY);
         this.isMoving = true;
-        this.debugInfo = `Wandering to (${tx}, ${ty})`;
+        this.debugInfo = `Блуждает до (${tx}, ${ty})`;
         return;
       }
     }
@@ -79,7 +79,7 @@ export class GoalWander extends Goal {
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     if (this.isMoving) {
       const reached = this.agent.pathfindingAI.update(dt);
@@ -95,11 +95,11 @@ export class GoalWander extends Goal {
       }
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -113,28 +113,28 @@ export class GoalPatrol extends Goal {
   private waitTimer: number = 0;
 
   constructor(agent: any, waypoints: { x: number; y: number }[]) {
-    super('GoalPatrol', agent, 3);
+    super("GoalPatrol", agent, 3);
     this.waypoints = waypoints;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.currentIdx = 0;
     this.moveToCurrentWaypoint();
   }
 
   private moveToCurrentWaypoint() {
     if (this.waypoints.length === 0) {
-      this.status = 'Completed';
+      this.status = "Completed";
       return;
     }
     const wp = this.waypoints[this.currentIdx];
     this.agent.pathfindingAI.setDestination(wp.x, wp.y);
-    this.debugInfo = `Patrolling to pt #${this.currentIdx + 1} (${wp.x.toFixed(0)}, ${wp.y.toFixed(0)})`;
+    this.debugInfo = `Патрулирует до тчк #${this.currentIdx + 1} (${wp.x.toFixed(0)}, ${wp.y.toFixed(0)})`;
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     if (this.waitTimer > 0) {
       this.waitTimer -= dt;
@@ -142,7 +142,7 @@ export class GoalPatrol extends Goal {
         this.currentIdx = (this.currentIdx + 1) % this.waypoints.length;
         this.moveToCurrentWaypoint();
       }
-      return 'Active';
+      return "Active";
     }
 
     const reached = this.agent.pathfindingAI.update(dt);
@@ -151,11 +151,11 @@ export class GoalPatrol extends Goal {
       this.agent.movement.stop();
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -168,46 +168,55 @@ export class GoalMoveTo extends Goal {
   private targetY: number;
   private tolerance: number;
 
-  constructor(agent: any, targetX: number, targetY: number, tolerance: number = 0.5, priority: number = 4) {
-    super('GoalMoveTo', agent, priority);
+  constructor(
+    agent: any,
+    targetX: number,
+    targetY: number,
+    tolerance: number = 0.5,
+    priority: number = 4,
+  ) {
+    super("GoalMoveTo", agent, priority);
     this.targetX = targetX;
     this.targetY = targetY;
     this.tolerance = tolerance;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.agent.pathfindingAI.setDestination(this.targetX, this.targetY);
-    this.debugInfo = `Navigating to (${this.targetX.toFixed(1)}, ${this.targetY.toFixed(1)})`;
+    this.debugInfo = `Идёт к (${this.targetX.toFixed(1)}, ${this.targetY.toFixed(1)})`;
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
-    const dist = Math.hypot(this.agent.x - this.targetX, this.agent.y - this.targetY);
+    const dist = Math.hypot(
+      this.agent.x - this.targetX,
+      this.agent.y - this.targetY,
+    );
     if (dist <= this.tolerance) {
-      this.status = 'Completed';
+      this.status = "Completed";
       this.agent.movement.stop();
-      return 'Completed';
+      return "Completed";
     }
 
     const reached = this.agent.pathfindingAI.update(dt);
     if (reached) {
-      this.status = 'Completed';
+      this.status = "Completed";
       this.agent.movement.stop();
-      return 'Completed';
+      return "Completed";
     }
 
     if (!this.agent.pathfindingAI.hasPath && dist > this.tolerance) {
-      this.status = 'Failed';
-      return 'Failed';
+      this.status = "Failed";
+      return "Failed";
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -222,35 +231,46 @@ export class GoalBattle extends Goal {
   private strafeTimer: number = 0;
 
   constructor(agent: any, target: any) {
-    super('GoalBattle', agent, 10);
+    super("GoalBattle", agent, 10);
     this.target = target;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.repathTimer = 0;
-    this.debugInfo = `Battling ${this.target.name || 'target'}`;
-    this.agent.say('You picked the wrong fight!', true);
+    this.debugInfo = `Сражается с ${this.target.name || "target"}`;
+    this.agent.say("Ты выбрал не ту драку", true);
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     if (!this.target || this.target.isDead || !this.target.world) {
-      this.agent.say('Target down!');
-      this.status = 'Completed';
-      return 'Completed';
+      this.agent.say("Цель уничтожена!");
+      this.status = "Completed";
+      return "Completed";
     }
 
-    const dist = Math.hypot(this.agent.x - this.target.x, this.agent.y - this.target.y);
-    const hasLOS = this.agent.world.hasLineOfSight(this.agent.x, this.agent.y, this.target.x, this.target.y);
+    const dist = Math.hypot(
+      this.agent.x - this.target.x,
+      this.agent.y - this.target.y,
+    );
+    const hasLOS = this.agent.world.hasLineOfSight(
+      this.agent.x,
+      this.agent.y,
+      this.target.x,
+      this.target.y,
+    );
 
     // Aim towards target
-    const aimAngle = Math.atan2(this.target.y - this.agent.y, this.target.x - this.agent.x);
+    const aimAngle = Math.atan2(
+      this.target.y - this.agent.y,
+      this.target.x - this.agent.x,
+    );
     this.agent.facingAngle = aimAngle;
 
     const currentWeapon = this.agent.inventory.getEquippedWeaponDef();
-    const isGun = currentWeapon.type === 'gun';
+    const isGun = currentWeapon.type === "gun";
     const idealRange = isGun ? Math.min(6, currentWeapon.range || 6) : 1.0;
 
     // Movement logic
@@ -288,11 +308,11 @@ export class GoalBattle extends Goal {
       this.agent.combat.attack(this.target.x, this.target.y);
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -307,17 +327,17 @@ export class GoalFlee extends Goal {
   private repathTimer: number = 0;
 
   constructor(agent: any, threat: any, duration: number = 5.0) {
-    super('GoalFlee', agent, 12);
+    super("GoalFlee", agent, 12);
     this.threat = threat;
     this.duration = duration;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.timer = 0;
     this.repathTimer = 0;
-    this.debugInfo = `Fleeing from ${this.threat ? this.threat.name : 'danger'}!`;
-    this.agent.say('Help! Get me out of here!', true);
+    this.debugInfo = `Fleeing from ${this.threat ? this.threat.name : "danger"}!`;
+    this.agent.say("Помогите! Спасите меня!", true);
     this.findEscapeRoute();
   }
 
@@ -325,7 +345,10 @@ export class GoalFlee extends Goal {
     const world = this.agent.world;
     if (!world || !this.threat) return;
 
-    const awayAngle = Math.atan2(this.agent.y - this.threat.y, this.agent.x - this.threat.x);
+    const awayAngle = Math.atan2(
+      this.agent.y - this.threat.y,
+      this.agent.x - this.threat.x,
+    );
     for (let offset = 0; offset <= Math.PI; offset += Math.PI / 4) {
       for (const sign of [1, -1]) {
         const testAngle = awayAngle + offset * sign;
@@ -344,12 +367,12 @@ export class GoalFlee extends Goal {
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     this.timer += dt;
     if (this.timer >= this.duration) {
-      this.status = 'Completed';
-      return 'Completed';
+      this.status = "Completed";
+      return "Completed";
     }
 
     this.repathTimer -= dt;
@@ -359,11 +382,11 @@ export class GoalFlee extends Goal {
     }
 
     this.agent.pathfindingAI.update(dt);
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -378,47 +401,50 @@ export class GoalInvestigate extends Goal {
   private reached: boolean = false;
 
   constructor(agent: any, targetX: number, targetY: number) {
-    super('GoalInvestigate', agent, 6);
+    super("GoalInvestigate", agent, 6);
     this.targetX = targetX;
     this.targetY = targetY;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.reached = false;
     this.agent.pathfindingAI.setDestination(this.targetX, this.targetY);
-    this.debugInfo = `Investigating (${this.targetX.toFixed(0)}, ${this.targetY.toFixed(0)})`;
-    this.agent.say('What was that sound?');
+    this.debugInfo = `Исследует (${this.targetX.toFixed(0)}, ${this.targetY.toFixed(0)})`;
+    this.agent.say("Что за звук?");
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     if (!this.reached) {
       const arrived = this.agent.pathfindingAI.update(dt);
-      const dist = Math.hypot(this.agent.x - this.targetX, this.agent.y - this.targetY);
+      const dist = Math.hypot(
+        this.agent.x - this.targetX,
+        this.agent.y - this.targetY,
+      );
       if (arrived || dist <= 1.2) {
         this.reached = true;
         this.waitTimer = 2.5; // Look around for 2.5 seconds
         this.agent.movement.stop();
-        this.debugInfo = 'Searching area...';
+        this.debugInfo = "Осматривается...";
       }
     } else {
       this.waitTimer -= dt;
       // Turn around to look for suspects
       this.agent.facingAngle += dt * 3;
       if (this.waitTimer <= 0) {
-        this.agent.say('Must have been nothing.');
-        this.status = 'Completed';
-        return 'Completed';
+        this.agent.say("Похоже, показалось.");
+        this.status = "Completed";
+        return "Completed";
       }
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -431,30 +457,37 @@ export class GoalNoiseReact extends Goal {
   private timer: number = 0;
 
   constructor(agent: any, noise: NoiseEvent) {
-    super('GoalNoiseReact', agent, 7);
+    super("GoalNoiseReact", agent, 7);
     this.noise = noise;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.timer = 0;
     // Turn facing towards noise source
-    this.agent.facingAngle = Math.atan2(this.noise.y - this.agent.y, this.noise.x - this.agent.x);
+    this.agent.facingAngle = Math.atan2(
+      this.noise.y - this.agent.y,
+      this.noise.x - this.agent.x,
+    );
     this.agent.movement.stop();
-    this.debugInfo = `Reacting to ${this.noise.noiseType}`;
+    this.debugInfo = `Реагирует на ${this.noise.noiseType}`;
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     this.timer += dt;
     if (this.timer >= 0.4) {
       const nx = this.noise.x;
       const ny = this.noise.y;
-      const shouldInvestigate = this.agent.hasTrait('Cop') || this.agent.hasTrait('Aggressive') || this.agent.job === 'Cop' || this.agent.job === 'Soldier';
-      const shouldFlee = this.agent.hasTrait('Coward');
+      const shouldInvestigate =
+        this.agent.hasTrait("Cop") ||
+        this.agent.hasTrait("Aggressive") ||
+        this.agent.job === "Cop" ||
+        this.agent.job === "Soldier";
+      const shouldFlee = this.agent.hasTrait("Coward");
 
-      this.status = 'Completed';
+      this.status = "Completed";
 
       // Push follow-up goal next frame cleanly
       setTimeout(() => {
@@ -462,19 +495,21 @@ export class GoalNoiseReact extends Goal {
           if (shouldInvestigate) {
             this.agent.brain.pushGoal(new GoalInvestigate(this.agent, nx, ny));
           } else if (shouldFlee) {
-            this.agent.brain.pushGoal(new GoalFlee(this.agent, { x: nx, y: ny }));
+            this.agent.brain.pushGoal(
+              new GoalFlee(this.agent, { x: nx, y: ny }),
+            );
           }
         }
       }, 0);
 
-      return 'Completed';
+      return "Completed";
     }
 
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
   }
 }
 
@@ -486,19 +521,22 @@ export class GoalTattle extends Goal {
   private copTarget: any = null;
 
   constructor(agent: any, crimeSource: any) {
-    super('GoalTattle', agent, 8);
+    super("GoalTattle", agent, 8);
     this.crimeSource = crimeSource;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.findNearestCop();
     if (this.copTarget) {
-      this.agent.pathfindingAI.setDestination(this.copTarget.x, this.copTarget.y);
-      this.agent.say('Police! Help! There is a criminal!', true);
-      this.debugInfo = `Tattling to ${this.copTarget.name}`;
+      this.agent.pathfindingAI.setDestination(
+        this.copTarget.x,
+        this.copTarget.y,
+      );
+      this.agent.say("Полиция! Помогите! Тут преступник!", true);
+      this.debugInfo = `Жалуется ${this.copTarget.name}`;
     } else {
-      this.status = 'Failed';
+      this.status = "Failed";
     }
   }
 
@@ -510,7 +548,13 @@ export class GoalTattle extends Goal {
     let minDist = Infinity;
 
     for (const other of world.agents) {
-      if (other.id !== this.agent.id && !other.isDead && (other.job === 'Cop' || other.hasTrait('Cop') || other.job === 'Supercop')) {
+      if (
+        other.id !== this.agent.id &&
+        !other.isDead &&
+        (other.job === "Cop" ||
+          other.hasTrait("Cop") ||
+          other.job === "Supercop")
+      ) {
         const d = Math.hypot(other.x - this.agent.x, other.y - this.agent.y);
         if (d < minDist) {
           minDist = d;
@@ -523,34 +567,39 @@ export class GoalTattle extends Goal {
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
     if (!this.copTarget || this.copTarget.isDead) {
-      this.status = 'Failed';
-      return 'Failed';
+      this.status = "Failed";
+      return "Failed";
     }
 
-    const dist = Math.hypot(this.agent.x - this.copTarget.x, this.agent.y - this.copTarget.y);
+    const dist = Math.hypot(
+      this.agent.x - this.copTarget.x,
+      this.agent.y - this.copTarget.y,
+    );
     if (dist <= 2.0) {
       // Inform the cop!
-      this.copTarget.say('Hands in the air, criminal!', true);
+      this.copTarget.say("Руки вверх, преступник!", true);
       if (this.crimeSource && !this.crimeSource.isDead) {
-        this.copTarget.relationships.setRelType(this.crimeSource.id, 'Hostile');
+        this.copTarget.relationships.setRelType(this.crimeSource.id, "Hostile");
         this.copTarget.relationships.modifyHate(this.crimeSource.id, 80);
-        this.copTarget.brain.pushGoal(new GoalBattle(this.copTarget, this.crimeSource));
+        this.copTarget.brain.pushGoal(
+          new GoalBattle(this.copTarget, this.crimeSource),
+        );
       }
-      this.agent.say('Thank you, Officer!');
-      this.status = 'Completed';
-      return 'Completed';
+      this.agent.say("Спасибо, Офицер!");
+      this.status = "Completed";
+      return "Completed";
     }
 
     this.agent.pathfindingAI.setDestination(this.copTarget.x, this.copTarget.y);
     this.agent.pathfindingAI.update(dt);
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }
@@ -563,33 +612,36 @@ export class GoalInteract extends Goal {
   private tileY: number;
 
   constructor(agent: any, tileX: number, tileY: number) {
-    super('GoalInteract', agent, 5);
+    super("GoalInteract", agent, 5);
     this.tileX = tileX;
     this.tileY = tileY;
   }
 
   public activate(): void {
-    this.status = 'Active';
+    this.status = "Active";
     this.agent.pathfindingAI.setDestination(this.tileX + 0.5, this.tileY + 0.5);
-    this.debugInfo = `Interacting at (${this.tileX}, ${this.tileY})`;
+    this.debugInfo = `Взаимодействие с объектом в (${this.tileX}, ${this.tileY})`;
   }
 
   public process(dt: number): GoalStatus {
-    if (this.status !== 'Active') return this.status;
+    if (this.status !== "Active") return this.status;
 
-    const dist = Math.hypot(this.agent.x - (this.tileX + 0.5), this.agent.y - (this.tileY + 0.5));
+    const dist = Math.hypot(
+      this.agent.x - (this.tileX + 0.5),
+      this.agent.y - (this.tileY + 0.5),
+    );
     if (dist <= 1.4) {
       this.agent.interactAt(this.tileX, this.tileY);
-      this.status = 'Completed';
-      return 'Completed';
+      this.status = "Completed";
+      return "Completed";
     }
 
     this.agent.pathfindingAI.update(dt);
-    return 'Active';
+    return "Active";
   }
 
   public terminate(): void {
-    this.status = 'Inactive';
+    this.status = "Inactive";
     this.agent.movement.stop();
   }
 }

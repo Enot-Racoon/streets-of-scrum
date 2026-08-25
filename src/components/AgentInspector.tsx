@@ -587,7 +587,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
           Исцелить!
         </button>
         <button
-          onClick={() => agent.say("Hey there, everyone!", true)}
+          onClick={() => agent.say("Эй всем привет", true)}
           className="py-1.5 bg-sky-950/60 hover:bg-sky-900 text-sky-300 border border-sky-800/60 rounded font-medium text-center"
         >
           Make Shout

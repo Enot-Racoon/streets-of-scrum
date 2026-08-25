@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { World } from '../sim/World';
-import { Agent } from '../sim/Agent';
-import { ITEM_REGISTRY } from '../sim/Items';
-import { Zap, Heart, Shield, Radio, Terminal, ChevronUp, ChevronDown } from 'lucide-react';
+import React, { useState } from "react";
+import { World } from "../sim/World";
+import { Agent } from "../sim/Agent";
+import { ITEM_REGISTRY } from "../sim/Items";
+import {
+  Zap,
+  Heart,
+  Shield,
+  Radio,
+  Terminal,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 
 interface PossessionHUDProps {
   world: World;
@@ -10,7 +18,11 @@ interface PossessionHUDProps {
   onSelectAgent: (agent: Agent) => void;
 }
 
-export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess, onSelectAgent }) => {
+export const PossessionHUD: React.FC<PossessionHUDProps> = ({
+  world,
+  onUnpossess,
+  onSelectAgent,
+}) => {
   const [logsExpanded, setLogsExpanded] = useState<boolean>(false);
   const possessed = world.possessedAgent;
 
@@ -29,7 +41,9 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-purple-200">{possessed.name}</span>
+                <span className="font-bold text-sm text-purple-200">
+                  {possessed.name}
+                </span>
                 <span className="text-[10px] bg-purple-900/60 text-purple-300 px-1.5 py-0.5 rounded font-mono border border-purple-700/50">
                   {possessed.job}
                 </span>
@@ -40,7 +54,12 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess
                   {possessed.health.toFixed(0)}/{possessed.maxHealth}
                 </span>
                 <span>•</span>
-                <span>Speed: x{(possessed.statusEffects.getStatMod('speedMult') || 1.0).toFixed(1)}</span>
+                <span>
+                  Скорость: x
+                  {(
+                    possessed.statusEffects.getStatMod("speedMult") || 1.0
+                  ).toFixed(1)}
+                </span>
               </div>
             </div>
           </div>
@@ -58,13 +77,17 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess
                   onClick={() => possessed.inventory.equipIndex(idx)}
                   className={`px-2 py-1 rounded border flex items-center gap-1.5 text-xs font-mono transition ${
                     isEquipped
-                      ? 'bg-purple-900/50 border-purple-400 text-purple-200 shadow-md'
-                      : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? "bg-purple-900/50 border-purple-400 text-purple-200 shadow-md"
+                      : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700"
                   }`}
                 >
-                  <span className="text-[10px] text-slate-500 font-bold">[{idx + 1}]</span>
+                  <span className="text-[10px] text-slate-500 font-bold">
+                    [{idx + 1}]
+                  </span>
                   <span>{def?.icon}</span>
-                  <span className="font-sans font-medium text-slate-200">{def?.name}</span>
+                  <span className="font-sans font-medium text-slate-200">
+                    {def?.name}
+                  </span>
                 </button>
               );
             })}
@@ -75,8 +98,8 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess
           {/* Control hints & Unpossess */}
           <div className="flex items-center gap-2">
             <div className="text-[10px] text-slate-400 font-mono text-right leading-tight hidden sm:block">
-              <div>WASD: Move | Click: Attack</div>
-              <div>E: Open Door | Esc: Release</div>
+              <div>WASD: Двигаться | Клик: Атаковать</div>
+              <div>E: Открыть дверь | Esc: Отпустить</div>
             </div>
             <button
               onClick={onUnpossess}
@@ -96,39 +119,57 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({ world, onUnpossess
         >
           <div className="flex items-center gap-2">
             <Terminal className="w-3.5 h-3.5 text-sky-400" />
-            <span className="font-semibold text-slate-200">Simulation Event Stream</span>
-            <span className="text-[10px] text-slate-500 font-sans">({world.logs.length} events)</span>
+            <span className="font-semibold text-slate-200">
+              Simulation Event Stream
+            </span>
+            <span className="text-[10px] text-slate-500 font-sans">
+              ({world.logs.length} events)
+            </span>
           </div>
           <button className="text-slate-400 hover:text-slate-200">
-            {logsExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+            {logsExpanded ? (
+              <ChevronDown className="w-4 h-4" />
+            ) : (
+              <ChevronUp className="w-4 h-4" />
+            )}
           </button>
         </div>
 
         {/* Log Entries */}
         <div
           className={`p-2 space-y-1 font-mono text-[11px] overflow-y-auto transition-all ${
-            logsExpanded ? 'max-h-48' : 'max-h-14'
+            logsExpanded ? "max-h-48" : "max-h-14"
           }`}
         >
           {world.logs.length === 0 ? (
             <p className="text-slate-500 italic">No events logged yet...</p>
           ) : (
-            world.logs.slice(0, logsExpanded ? 20 : 3).map(log => {
+            world.logs.slice(0, logsExpanded ? 20 : 3).map((log) => {
               const typeColor =
-                log.type === 'combat'
-                  ? 'text-rose-400'
-                  : log.type === 'possession'
-                  ? 'text-purple-400'
-                  : log.type === 'speech'
-                  ? 'text-sky-300'
-                  : log.type === 'crime'
-                  ? 'text-amber-400'
-                  : 'text-slate-400';
+                log.type === "combat"
+                  ? "text-rose-400"
+                  : log.type === "possession"
+                    ? "text-purple-400"
+                    : log.type === "speech"
+                      ? "text-sky-300"
+                      : log.type === "crime"
+                        ? "text-amber-400"
+                        : "text-slate-400";
 
               return (
-                <div key={log.id} className={`flex items-start gap-1.5 ${typeColor}`}>
+                <div
+                  key={log.id}
+                  className={`flex items-start gap-1.5 ${typeColor}`}
+                >
                   <span className="text-slate-600 shrink-0">
-                    [{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]
+                    [
+                    {new Date(log.timestamp).toLocaleTimeString([], {
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
+                    ]
                   </span>
                   <span>{log.message}</span>
                 </div>

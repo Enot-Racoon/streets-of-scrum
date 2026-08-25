@@ -174,7 +174,7 @@ export class World {
     }
   }
 
-  public removeAgent(id: string) {
+  public removeAgent({ id }: Pick<Agent, "id">) {
     const idx = this.agents.findIndex((a) => a.id === id);
     if (idx !== -1) {
       if (this.possessedAgent?.id === id) {
@@ -439,7 +439,7 @@ export class World {
             // Defend ally
             other.relationships.modifyHate(attacker.id, 60);
             other.relationships.setRelType(attacker.id, "Hostile");
-            other.say(`Leave ${victim.name} alone!`, true);
+            other.say(`${victim.name} Отстань от меня!`, true);
           }
         }
       }
@@ -526,7 +526,7 @@ export class World {
         if (dist <= 0.6) {
           agent.inventory.addItem(item.defId, item.count);
           sounds.playHeal();
-          agent.say(`Picked up ${ITEM_REGISTRY[item.defId]?.name || "Item"}`);
+          agent.say(`Поднял ${ITEM_REGISTRY[item.defId]?.name || "Предмет"}`);
           this.droppedItems.splice(j, 1);
         }
       }

@@ -61,11 +61,11 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           a1.relationships.modifyHate(a2.id, 90);
         }
       }
-      a1.say("RIOT IN THE STREETS!", true);
+      a1.say("АРЕСТОВЫВАЙТЕ ВСЕХ!", true);
     }
     world.addLog({
       timestamp: Date.now(),
-      message: "🚨 CITYWIDE RIOT TRIGGERED! All agents turned hostile!",
+      message: "🚨 ГОРОДСКОЙ БУНТ! Все агенты стали враждебными!",
       type: "crime",
     });
     sounds.playAlarm();
@@ -104,16 +104,16 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
         {/* Preset scenario dropdown */}
         <div className="flex items-center gap-1.5">
           <MapPin className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-xs text-slate-400">Map:</span>
+          <span className="text-xs text-slate-400">Карта:</span>
           <select
             onChange={(e) => onLoadScenario(e.target.value as any)}
             className="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200 font-medium"
             defaultValue="district"
           >
-            <option value="district">Downtown District (Balanced)</option>
-            <option value="gangwar">Gang War Alley (Crepe vs Blahd)</option>
-            <option value="zombie">Zombie Outbreak Lab</option>
-            <option value="bar">Bar Brawl & Casino</option>
+            <option value="district">Даунтаун (Сбалансированно)</option>
+            <option value="gangwar">Аллея войны банд (Crepe vs Blahd)</option>
+            <option value="zombie">Лаборатория зомби</option>
+            <option value="bar">Бар и казино</option>
           </select>
         </div>
       </div>
@@ -194,7 +194,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
             onClick={handleSpawnAgent}
             className="px-2 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-medium flex items-center gap-1"
           >
-            <PlusCircle className="w-3.5 h-3.5" /> Spawn
+            <PlusCircle className="w-3.5 h-3.5" /> Создать
           </button>
         </div>
 

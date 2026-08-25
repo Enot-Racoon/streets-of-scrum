@@ -24,6 +24,7 @@ export class Agent {
   public health: number = 100;
   public maxHealth: number = 100;
   public isDead: boolean = false;
+  public deadTime: number | null = null;
   public isPlayerControlled: boolean = false;
   public canOpenDoors: boolean = true;
   public color: string = "#60a5fa";
@@ -221,6 +222,7 @@ export class Agent {
   public die(killer?: any) {
     if (this.isDead) return;
     this.isDead = true;
+    this.deadTime = Date.now();
     this.health = 0;
     this.say("Ааарргх...", true);
 
@@ -245,10 +247,23 @@ export class Agent {
         }
       }
 
+      if (!this.isDead) return;
+
       // Drop loot on death
       for (const item of this.inventory.items) {
         this.world.spawnDroppedItem(this.x, this.y, item.defId, item.count);
       }
+
+      setTimeout(() => {
+        this.world.removeAgent(this);
+        this.world.addLog({
+          timestamp: Date.now(),
+          message: `${this.name} покинул нас...`,
+          type: "combat",
+          agentId: this.id,
+          agentName: this.name,
+        });
+      }, 3_000);
     }
 
     this.brain.clearAllGoals();
