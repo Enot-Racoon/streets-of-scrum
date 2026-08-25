@@ -25,11 +25,19 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       keysDownRef.current[e.key.toLowerCase()] = true;
       keysDownRef.current[e.code.toLowerCase()] = true;
 
-      // Unpossess hotkey (Escape or Tab)
-      if (e.key === "Escape" || e.key === "Tab") {
+      // Unpossess hotkey (Escape)
+      if (e.key === "Escape") {
         e.preventDefault();
         if (world.possessedAgent) {
           world.unpossessCurrent();
+        }
+      }
+
+      if (e.key === "Tab") {
+        if (world.possessedAgent) {
+          world.possessNextAgent();
+        } else if (world.selectedAgent) {
+          world.selectNextAgent();
         }
       }
 

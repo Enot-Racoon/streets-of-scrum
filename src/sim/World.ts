@@ -187,6 +187,26 @@ export class World {
     }
   }
 
+  public selectNextAgent() {
+    if (!this.selectedAgent) return;
+    const idx = this.agents.findIndex((a) => a.id === this.selectedAgent.id);
+    if (idx !== -1) {
+      this.selectedAgent = this.agents[(idx + 1) % this.agents.length];
+    }
+  }
+
+  public possessNextAgent() {
+    if (!this.possessedAgent) return;
+    const idx = this.agents.findIndex((a) => a.id === this.possessedAgent.id);
+    if (idx !== -1) {
+      const nextAgent = this.agents[(idx + 1) % this.agents.length];
+      if (nextAgent && nextAgent !== this.selectedAgent) {
+        this.unpossessCurrent();
+        this.possessAgent(nextAgent);
+      }
+    }
+  }
+
   public getAgentById(id: string): Agent | null {
     return this.agents.find((a) => a.id === id) || null;
   }
