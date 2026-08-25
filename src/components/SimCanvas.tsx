@@ -35,8 +35,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       if (e.key === "Tab") {
         if (world.possessedAgent) {
+          e.preventDefault();
           world.possessNextAgent();
         } else if (world.selectedAgent) {
+          e.preventDefault();
           world.selectNextAgent();
         }
       }
