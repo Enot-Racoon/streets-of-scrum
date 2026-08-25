@@ -493,7 +493,7 @@ export class World {
       const ty = Math.floor(p.y);
       const tile = this.getTile(tx, ty);
 
-      if (!tile || (!tile.walkable && tile.type !== "Door")) {
+      if (!tile || !tile.walkable) {
         this.damageTile(tx, ty, p.damage);
         this.projectiles.splice(i, 1);
         continue;

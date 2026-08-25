@@ -1,6 +1,7 @@
 import { sounds } from "../sound";
 import { getTraitDef } from "../traits";
 import type { Agent } from "../Agent";
+import type { World } from "../World";
 
 export class Combat {
   public agent: Agent;
@@ -42,7 +43,7 @@ export class Combat {
     return true;
   }
 
-  private fireGun(weapon: any, aimAngle: number, world: any) {
+  private fireGun(weapon: any, aimAngle: number, world: World) {
     // Sound & Noise event
     if (weapon.soundName === "shotgun") {
       sounds.playShotgun();
@@ -98,7 +99,7 @@ export class Combat {
     });
   }
 
-  private swingMelee(weapon: any, aimAngle: number, world: any) {
+  private swingMelee(weapon: any, aimAngle: number, world: World) {
     sounds.playPunch();
     this.isSwinging = true;
     this.swingProgress = 0;

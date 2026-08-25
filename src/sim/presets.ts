@@ -220,11 +220,11 @@ export function buildDistrictMap(world: World) {
 
   // Spawn District Agents
   // Cops in precinct
-  world.addAgent(spawnArchetype("Cop", 4, 3, "Офицер Девис"));
+  world.addAgent(spawnArchetype("Cop", 4, 4, "Офицер Девис"));
   world.addAgent(spawnArchetype("Cop", 5, 5, "Офицер Миллер"));
 
   // Scientists in lab
-  world.addAgent(spawnArchetype("Scientist", 19, 3, "Доктор Арис"));
+  world.addAgent(spawnArchetype("Scientist", 19, 4, "Доктор Арис"));
   world.addAgent(spawnArchetype("Scientist", 20, 4, "Доктор Чен"));
 
   // Crepe Gangsters in southwest turf
