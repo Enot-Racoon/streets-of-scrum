@@ -629,7 +629,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const zoomDelta = e.deltaY > 0 ? -2 : 2;
       cameraRef.current.zoom = Math.max(
         16,
-        Math.min(64, cameraRef.current.zoom + zoomDelta),
+        Math.min(64, cameraRef.current.zoom + zoomDelta * 0.1),
       );
     };
 
