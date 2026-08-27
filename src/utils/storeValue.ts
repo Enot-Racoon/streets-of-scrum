@@ -1,6 +1,6 @@
-export default function storeValue(key: string) {
-  return (value?: string): string | null =>
+export default function storeValue<T extends string = string>(key: string) {
+  return (value?: T): T | null =>
     value === undefined
-      ? (localStorage.getItem(key) ?? null)
-      : (localStorage.setItem(key, value), value);
+      ? ((localStorage.getItem(key) ?? null) as T)
+      : ((localStorage.setItem(key, value), value) as T);
 }

@@ -18,6 +18,31 @@ import { AgentInspector } from "./components/AgentInspector";
 import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
+import storeValue from "./utils/storeValue";
+
+type ScenarioName = "district" | "gangwar" | "zombie" | "bar";
+
+const scenarioStore = storeValue<ScenarioName>("scenario");
+
+const buildScenario = (scenario: ScenarioName, world: World) => {
+  world.agents = [];
+  world.projectiles = [];
+  world.particles = [];
+  world.noiseEvents = [];
+  world.droppedItems = [];
+  world.logs = [];
+  world.possessedAgent = null;
+
+  if (scenario === "district") {
+    buildDistrictMap(world);
+  } else if (scenario === "gangwar") {
+    buildGangWarScenario(world);
+  } else if (scenario === "zombie") {
+    buildZombieOutbreakScenario(world);
+  } else if (scenario === "bar") {
+    buildBarCasinoScenario(world);
+  }
+};
 
 export default function App() {
   const worldRef = useRef<World | null>(null);
@@ -29,7 +54,7 @@ export default function App() {
   // Initialize World on mount
   if (!worldRef.current) {
     const w = new World(24, 20);
-    buildDistrictMap(w);
+    buildScenario(scenarioStore() ?? "district", w);
     worldRef.current = w;
   }
 
@@ -43,27 +68,9 @@ export default function App() {
     return () => clearInterval(interval);
   }, [forceRefresh]);
 
-  const handleLoadScenario = (
-    scenario: "district" | "gangwar" | "zombie" | "bar",
-  ) => {
-    world.agents = [];
-    world.projectiles = [];
-    world.particles = [];
-    world.noiseEvents = [];
-    world.droppedItems = [];
-    world.logs = [];
-    world.possessedAgent = null;
-
-    if (scenario === "district") {
-      buildDistrictMap(world);
-    } else if (scenario === "gangwar") {
-      buildGangWarScenario(world);
-    } else if (scenario === "zombie") {
-      buildZombieOutbreakScenario(world);
-    } else if (scenario === "bar") {
-      buildBarCasinoScenario(world);
-    }
-
+  const handleLoadScenario = (scenario: ScenarioName) => {
+    scenarioStore(scenario);
+    buildScenario(scenario, world);
     setSelectedAgent(world.agents[0] || null);
     forceRefresh();
   };

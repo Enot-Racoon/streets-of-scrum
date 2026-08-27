@@ -95,7 +95,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           <MapPin className="w-3.5 h-3.5 text-slate-400" />
           <span className="text-xs text-slate-400">Карта:</span>
           <select
-            onChange={(e) => onLoadScenario(e.target.value as any)}
+            onChange={(e) => onLoadScenario(e.target.value as never)}
             className="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200 font-medium"
             defaultValue="district"
           >

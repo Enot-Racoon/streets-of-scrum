@@ -33,11 +33,11 @@ interface AgentInspectorProps {
   onUnpossess: () => void;
 }
 
-const setActiveTabStore = storeValue("active_tab");
-const selectedTraitToAddStore = storeValue("selected_trait_to_add");
-const selectedItemToAddStore = storeValue("selected_item_to_add");
-
 type TabName = "goals" | "relations" | "traits" | "inventory";
+
+const setActiveTabStore = storeValue<TabName>("active_tab");
+const selectedTraitToAddStore = storeValue<TraitType>("selected_trait_to_add");
+const selectedItemToAddStore = storeValue("selected_item_to_add");
 
 export const AgentInspector: React.FC<AgentInspectorProps> = ({
   agent,
@@ -46,7 +46,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
   onUnpossess,
 }) => {
   const [activeTab, _setActiveTab] = useState<TabName>(
-    (setActiveTabStore() as TabName) ?? "goals",
+    setActiveTabStore() ?? "goals",
   );
   const setActiveTab = (value: TabName) => {
     _setActiveTab(value);
@@ -54,7 +54,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
   };
 
   const [selectedTraitToAdd, _setSelectedTraitToAdd] = useState<TraitType>(
-    (selectedTraitToAddStore() as TraitType) ?? "Fast",
+    selectedTraitToAddStore() ?? "Fast",
   );
   const setSelectedTraitToAdd = (value: TraitType) => {
     _setSelectedTraitToAdd(value);
@@ -549,7 +549,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                           {def.name}
                           {isEquipped && (
                             <span className="text-[10px] bg-sky-500/20 text-sky-300 px-1 py-0.2 rounded font-mono">
-                              НАДЕНО
+                              НАДЕТО
                             </span>
                           )}
                         </div>
