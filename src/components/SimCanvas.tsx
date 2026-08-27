@@ -37,8 +37,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         e.preventDefault();
         if (world.possessedAgent) {
           world.possessNextAgent();
+          onSelectAgent(world.possessedAgent);
         } else {
           world.selectNextAgent();
+          onSelectAgent(world.selectedAgent!);
         }
       }
 
@@ -361,7 +363,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       // Path line preview for AI debugging
       if (
-        isSelected &&
+        // isSelected &&
         !agent.isPlayerControlled &&
         agent.pathfindingAI.hasPath
       ) {
