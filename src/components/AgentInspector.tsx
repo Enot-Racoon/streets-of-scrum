@@ -32,18 +32,48 @@ interface AgentInspectorProps {
   onUnpossess: () => void;
 }
 
+const storeValue =
+  (key: string) =>
+  (value?: string): string | null =>
+    value === undefined
+      ? (localStorage.getItem(key) ?? null)
+      : (localStorage.setItem(key, value), value);
+
+const setActiveTabStore = storeValue("active_tab");
+const selectedTraitToAddStore = storeValue("selected_trait_to_add");
+const selectedItemToAddStore = storeValue("selected_item_to_add");
+
+type TabName = "goals" | "relations" | "traits" | "inventory";
+
 export const AgentInspector: React.FC<AgentInspectorProps> = ({
   agent,
   world,
   onPossess,
   onUnpossess,
 }) => {
-  const [activeTab, setActiveTab] = useState<
-    "goals" | "relations" | "traits" | "inventory"
-  >("goals");
-  const [selectedTraitToAdd, setSelectedTraitToAdd] =
-    useState<TraitType>("Fast");
-  const [selectedItemToAdd, setSelectedItemToAdd] = useState<string>("pistol");
+  const [activeTab, _setActiveTab] = useState<TabName>(
+    (setActiveTabStore() as TabName) ?? "goals",
+  );
+  const setActiveTab = (value: TabName) => {
+    _setActiveTab(value);
+    setActiveTabStore(value);
+  };
+
+  const [selectedTraitToAdd, _setSelectedTraitToAdd] = useState<TraitType>(
+    (selectedTraitToAddStore() as TraitType) ?? "Fast",
+  );
+  const setSelectedTraitToAdd = (value: TraitType) => {
+    _setSelectedTraitToAdd(value);
+    selectedTraitToAddStore(value);
+  };
+
+  const [selectedItemToAdd, _setSelectedItemToAdd] = useState<string>(
+    selectedItemToAddStore() ?? "pistol",
+  );
+  const setSelectedItemToAdd = (value: string) => {
+    _setSelectedItemToAdd(value);
+    selectedItemToAddStore(value);
+  };
 
   if (!agent) {
     return (
