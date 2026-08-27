@@ -3,30 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { World } from './sim/World';
-import { Agent } from './sim/Agent';
-import { 
-  buildDistrictMap, 
-  buildGangWarScenario, 
-  buildZombieOutbreakScenario, 
-  buildBarCasinoScenario 
-} from './sim/presets';
-import { SimCanvas } from './components/SimCanvas';
-import { SandboxToolbar } from './components/SandboxToolbar';
-import { AgentInspector } from './components/AgentInspector';
-import { PossessionHUD } from './components/PossessionHUD';
-import { GuideModal } from './components/GuideModal';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { World } from "./sim/World";
+import { Agent } from "./sim/Agent";
+import {
+  buildDistrictMap,
+  buildGangWarScenario,
+  buildZombieOutbreakScenario,
+  buildBarCasinoScenario,
+} from "./sim/presets";
+import { SimCanvas } from "./components/SimCanvas";
+import { SandboxToolbar } from "./components/SandboxToolbar";
+import { AgentInspector } from "./components/AgentInspector";
+import { PossessionHUD } from "./components/PossessionHUD";
+import { GuideModal } from "./components/GuideModal";
+import useForceUpdate from "./utils/useForceUpdate";
 
 export default function App() {
   const worldRef = useRef<World | null>(null);
-  const [, setTick] = useState(0);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
 
-  const forceRefresh = useCallback(() => {
-    setTick(t => t + 1);
-  }, []);
+  const forceRefresh = useForceUpdate();
 
   // Initialize World on mount
   if (!worldRef.current) {
@@ -45,7 +43,9 @@ export default function App() {
     return () => clearInterval(interval);
   }, [forceRefresh]);
 
-  const handleLoadScenario = (scenario: 'district' | 'gangwar' | 'zombie' | 'bar') => {
+  const handleLoadScenario = (
+    scenario: "district" | "gangwar" | "zombie" | "bar",
+  ) => {
     world.agents = [];
     world.projectiles = [];
     world.particles = [];
@@ -54,13 +54,13 @@ export default function App() {
     world.logs = [];
     world.possessedAgent = null;
 
-    if (scenario === 'district') {
+    if (scenario === "district") {
       buildDistrictMap(world);
-    } else if (scenario === 'gangwar') {
+    } else if (scenario === "gangwar") {
       buildGangWarScenario(world);
-    } else if (scenario === 'zombie') {
+    } else if (scenario === "zombie") {
       buildZombieOutbreakScenario(world);
-    } else if (scenario === 'bar') {
+    } else if (scenario === "bar") {
       buildBarCasinoScenario(world);
     }
 
@@ -116,7 +116,9 @@ export default function App() {
         {/* Right Inspector & Goal Stack Sidebar */}
         <div className="w-80 md:w-96 h-full flex-shrink-0 z-10 shadow-2xl">
           <AgentInspector
-            agent={selectedAgent || world.selectedAgent || world.agents[0] || null}
+            agent={
+              selectedAgent || world.selectedAgent || world.agents[0] || null
+            }
             world={world}
             onPossess={handlePossessAgent}
             onUnpossess={handleUnpossess}
