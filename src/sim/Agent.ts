@@ -151,8 +151,8 @@ export class Agent {
       this.world.emitNoise({
         x: this.x,
         y: this.y,
-        radius: 8,
-        volume: 0.6,
+        radius: 3,
+        volume: 0.3,
         sourceAgentId: this.id,
         noiseType: "shout",
       });
