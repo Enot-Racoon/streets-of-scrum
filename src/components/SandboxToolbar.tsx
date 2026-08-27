@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { World } from "../sim/World";
-import { ARCHETYPES, spawnArchetype } from "../sim/presets";
+import { type ArchetypeName, ARCHETYPES, spawnArchetype } from "../sim/presets";
 import { sounds } from "../sim/sound";
 import {
   Play,
@@ -12,6 +12,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { VolumeControll } from "./VolumeControll";
+import storeValue from "../utils/storeValue";
 
 interface SandboxToolbarProps {
   world: World;
@@ -20,14 +21,22 @@ interface SandboxToolbarProps {
   onRefresh: () => void;
 }
 
+const selectedArchetypeStore = storeValue<ArchetypeName>("selected_archetype");
+
 export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
   world,
   onLoadScenario,
   onOpenGuide,
   onRefresh,
 }) => {
-  const [selectedArchetype, setSelectedArchetype] =
-    useState<string>("Gangster_Crepe");
+  const [selectedArchetype, _setSelectedArchetype] = useState<ArchetypeName>(
+    selectedArchetypeStore() ?? "Gangster_Crepe",
+  );
+
+  const setSelectedArchetype = (val: ArchetypeName) => {
+    _setSelectedArchetype(val);
+    selectedArchetypeStore(val);
+  };
 
   const handleSpawnAgent = () => {
     // Find walkable center location
@@ -166,7 +175,9 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
         <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded">
           <select
             value={selectedArchetype}
-            onChange={(e) => setSelectedArchetype(e.target.value)}
+            onChange={(e) =>
+              setSelectedArchetype(e.target.value as ArchetypeName)
+            }
             className="bg-transparent text-xs text-slate-200 font-medium px-1.5 py-0.5 outline-none"
           >
             {Object.keys(ARCHETYPES).map((key) => (

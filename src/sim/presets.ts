@@ -14,7 +14,7 @@ export interface ArchetypeDef {
   description: string;
 }
 
-export const ARCHETYPES: Record<string, ArchetypeDef> = {
+export const ARCHETYPES = {
   Cop: {
     name: "Обычный полицейский",
     job: "Cop",
@@ -153,7 +153,9 @@ export const ARCHETYPES: Record<string, ArchetypeDef> = {
     description:
       "Живет своей жизнью, доносит на полицию, если на него нападают.",
   },
-};
+} as const satisfies Record<string, ArchetypeDef>;
+
+export type ArchetypeName = keyof typeof ARCHETYPES;
 
 export function buildDistrictMap(world: World) {
   world.initEmptyGrid();
@@ -348,12 +350,12 @@ export function buildBarCasinoScenario(world: World) {
 }
 
 export function spawnArchetype(
-  key: string,
+  key: ArchetypeName,
   x: number,
   y: number,
   customName?: string,
 ): Agent {
-  const def = ARCHETYPES[key] || ARCHETYPES["Citizen"];
+  const def = ARCHETYPES[key];
   return new Agent({
     name: customName || def.name,
     job: def.job,
