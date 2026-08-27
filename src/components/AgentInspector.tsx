@@ -141,8 +141,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             <div className="flex justify-between text-xs font-mono text-slate-300">
               <span className="text-rose-500">
                 {agent.killedBy
-                  ? `Убит ${agent.killedBy.name}`
-                  : "Мертв (сам?)"}
+                  ? `Убит ${agent.killedBy !== agent ? agent.killedBy.name : "собой"}`
+                  : "Убит (сам?)"}
               </span>
             </div>
           ) : null}
