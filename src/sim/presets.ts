@@ -157,6 +157,64 @@ export const ARCHETYPES = {
 
 export type ArchetypeName = keyof typeof ARCHETYPES;
 
+export function spawnArchetype(
+  key: ArchetypeName,
+  x: number,
+  y: number,
+  customName?: string,
+): Agent {
+  const def = ARCHETYPES[key];
+  return new Agent({
+    name: customName || def.name,
+    job: def.job,
+    x,
+    y,
+    health: def.health,
+    maxHealth: def.health,
+    color: def.color,
+    avatarIcon: def.avatarIcon,
+    traits: [...def.traits],
+    startingItems: [...def.startingItems],
+  });
+}
+
+export const Scenarios = {
+  district: "Даунтаун",
+  gangwar: "Война банд",
+  zombie: "Лаборатория зомби",
+  bar: "Бар",
+  sandbox: "Песочница",
+} as const satisfies Record<string, string>;
+
+export type ScenarioName =
+  | "district"
+  | "gangwar"
+  | "zombie"
+  | "bar"
+  | "sandbox";
+
+export const buildScenario = (scenario: ScenarioName, world: World) => {
+  world.agents = [];
+  world.projectiles = [];
+  world.particles = [];
+  world.noiseEvents = [];
+  world.droppedItems = [];
+  world.logs = [];
+  world.possessedAgent = null;
+
+  if (scenario === "district") {
+    buildDistrictMap(world);
+  } else if (scenario === "gangwar") {
+    buildGangWarScenario(world);
+  } else if (scenario === "zombie") {
+    buildZombieOutbreakScenario(world);
+  } else if (scenario === "bar") {
+    buildBarCasinoScenario(world);
+  } else if (scenario === "sandbox") {
+    buildSandboxScenario(world);
+  }
+};
+
 export function buildDistrictMap(world: World) {
   world.initEmptyGrid();
 
@@ -349,23 +407,17 @@ export function buildBarCasinoScenario(world: World) {
   world.addAgent(spawnArchetype("Cop", 12, 2, "Патрульный Полицейский"));
 }
 
-export function spawnArchetype(
-  key: ArchetypeName,
-  x: number,
-  y: number,
-  customName?: string,
-): Agent {
-  const def = ARCHETYPES[key];
-  return new Agent({
-    name: customName || def.name,
-    job: def.job,
-    x,
-    y,
-    health: def.health,
-    maxHealth: def.health,
-    color: def.color,
-    avatarIcon: def.avatarIcon,
-    traits: [...def.traits],
-    startingItems: [...def.startingItems],
-  });
+export function buildSandboxScenario(world: World) {
+  world.initEmptyGrid();
+
+  for (let x = 4; x <= 12; x++) {
+    world.setTile(x, 6, "Barrel");
+  }
+  world.setTile(4, 7, "Barrel");
+  world.setTile(4, 8, "Barrel");
+
+  world.setTile(2, 2, "Barrel");
+  world.setTile(3, 2, "Barrel");
+  world.setTile(21, 2, "Barrel");
+  world.setTile(21, 17, "Barrel");
 }

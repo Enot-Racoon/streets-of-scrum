@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { World } from "../sim/World";
-import { type ArchetypeName, ARCHETYPES, spawnArchetype } from "../sim/presets";
+import {
+  type ArchetypeName,
+  ARCHETYPES,
+  Scenarios,
+  type ScenarioName,
+  spawnArchetype,
+} from "../sim/presets";
 import { sounds } from "../sim/sound";
 import {
   Play,
@@ -14,7 +20,6 @@ import {
 } from "lucide-react";
 import { VolumeControll } from "./VolumeControll";
 import storeValue from "../utils/storeValue";
-import type { ScenarioName } from "../types";
 
 interface SandboxToolbarProps {
   world: World;
@@ -119,10 +124,11 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
             className="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200 font-medium"
             defaultValue={initScenario}
           >
-            <option value="district">Даунтаун (Сбалансированно)</option>
-            <option value="gangwar">Аллея войны банд (Crepe vs Blahd)</option>
-            <option value="zombie">Лаборатория зомби</option>
-            <option value="bar">Бар и казино</option>
+            {Object.entries(Scenarios).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option>
+            ))}
           </select>
         </div>
       </div>

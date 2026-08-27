@@ -19,29 +19,9 @@ import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
 import storeValue from "./utils/storeValue";
-import type { ScenarioName } from "./types";
+import { type ScenarioName, buildScenario } from "./sim/presets";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
-
-const buildScenario = (scenario: ScenarioName, world: World) => {
-  world.agents = [];
-  world.projectiles = [];
-  world.particles = [];
-  world.noiseEvents = [];
-  world.droppedItems = [];
-  world.logs = [];
-  world.possessedAgent = null;
-
-  if (scenario === "district") {
-    buildDistrictMap(world);
-  } else if (scenario === "gangwar") {
-    buildGangWarScenario(world);
-  } else if (scenario === "zombie") {
-    buildZombieOutbreakScenario(world);
-  } else if (scenario === "bar") {
-    buildBarCasinoScenario(world);
-  }
-};
 
 const initScenario = scenarioStore() ?? "district";
 
