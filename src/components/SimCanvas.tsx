@@ -3,6 +3,7 @@ import type { World } from "../sim/World";
 import type { Agent } from "../sim/Agent";
 import type { Camera, MousePos } from "../sim/types";
 import drawScene from "./drawScene";
+import storeValue from "../utils/storeValue";
 
 interface SimCanvasProps {
   world: World;
@@ -10,13 +11,19 @@ interface SimCanvasProps {
   onPossessAgent: (agent: Agent) => void;
 }
 
+const zoomStore = storeValue("camera-zoom");
+
 export const SimCanvas: React.FC<SimCanvasProps> = ({
   world,
   onSelectAgent,
   onPossessAgent,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cameraRef = useRef<Camera>({ x: 12, y: 10, zoom: 34 });
+  const cameraRef = useRef<Camera>({
+    x: 12,
+    y: 10,
+    zoom: parseInt(zoomStore()) || 34,
+  });
   const mousePosRef = useRef<MousePos>({ x: 0, y: 0, worldX: 0, worldY: 0 });
   const keysDownRef = useRef<Record<string, boolean>>({});
 
@@ -249,6 +256,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         16,
         Math.min(64, cameraRef.current.zoom + zoomDelta * smooth),
       );
+      zoomStore(cameraRef.current.zoom.toString());
     };
 
     canvasRef.current.addEventListener("wheel", handleWheel);
