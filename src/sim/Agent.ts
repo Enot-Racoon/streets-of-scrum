@@ -225,6 +225,10 @@ export class Agent {
   public die(killer?: Agent) {
     if (this.isDead) return;
 
+    if (this.isPlayerControlled) {
+      this.unpossess();
+    }
+
     this.killedBy = killer;
     this.isDead = true;
     this.deadTime = Date.now();
