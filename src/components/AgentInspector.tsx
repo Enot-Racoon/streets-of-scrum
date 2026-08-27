@@ -117,7 +117,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             </div>
           </div>
 
-          <div>
+          <div className="text-xs text-slate-400 font-mono">
             Позиция: {agent.x.toFixed(2)} x {agent.y.toFixed(2)}
           </div>
 
