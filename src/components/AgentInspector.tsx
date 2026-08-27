@@ -621,13 +621,10 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
       {/* Quick Agent Actions Footer */}
       <div className="p-3 bg-slate-950 border-t border-slate-800 grid grid-cols-3 gap-1.5 text-xs">
         <button
-          onClick={() => {
-            agent.health = agent.maxHealth;
-            agent.say("Полностью исцелён!");
-          }}
+          onClick={() => agent.resurrect()}
           className="py-1.5 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 rounded font-medium text-center"
         >
-          Исцелить!
+          {agent.isDead ? "Воскресить" : "Исцелить"}
         </button>
         <button
           onClick={() => agent.say("Эй всем привет", true)}

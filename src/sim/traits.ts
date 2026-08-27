@@ -68,9 +68,9 @@ export const TRAIT_REGISTRY = {
   },
   AboveTheLaw: {
     name: "AboveTheLaw",
-    displayName: "Above The Law",
+    displayName: "Вне закона",
     description:
-      "Law enforcement ignores your suspicious actions and trespassing.",
+      "Правоохранительные органы игнорируют ваши подозрительные действия и незаконное проникновение на чужую территорию.",
     category: "positive",
   },
   Pyromaniac: {

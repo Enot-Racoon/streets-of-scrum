@@ -225,20 +225,10 @@ export class Agent {
   public die(killer?: Agent) {
     if (this.isDead) return;
 
-    if (this.isPlayerControlled) {
-      this.unpossess();
-    }
-
     this.killedBy = killer;
     this.isDead = true;
     this.deadTime = Date.now();
     this.health = 0;
-
-    if (!killer || killer.id === this.id) {
-      this.kills--;
-    } else {
-      killer.kills++;
-    }
 
     this.say("Ааарргх...", true);
 
@@ -270,6 +260,16 @@ export class Agent {
         this.world.spawnDroppedItem(this.x, this.y, item.defId, item.count);
       }
 
+      if (this.isPlayerControlled) {
+        this.unpossess();
+      }
+
+      if (!killer || killer.id === this.id) {
+        this.kills--;
+      } else {
+        killer.kills++;
+      }
+
       setTimeout(() => {
         this.world.removeAgent(this);
         this.world.addLog({
@@ -283,6 +283,32 @@ export class Agent {
     }
 
     this.brain.clearAllGoals();
+  }
+
+  public resurrect() {
+    this.health = this.maxHealth;
+
+    if (!this.isDead) {
+      this.say("Полностью исцелён!");
+      return;
+    }
+
+    this.killedBy = null;
+    this.isDead = false;
+    this.deadTime = 0;
+
+    this.say("Я снова жив!", true);
+
+    if (this.world) {
+      this.world.addAgent(this);
+      this.world.addLog({
+        timestamp: Date.now(),
+        message: `💀 ${this.name} ожил! `,
+        type: "combat",
+        agentId: this.id,
+        agentName: this.name,
+      });
+    }
   }
 
   public interactAt(tileX: number, tileY: number) {
