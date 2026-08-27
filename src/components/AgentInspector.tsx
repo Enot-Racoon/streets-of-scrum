@@ -24,6 +24,7 @@ import {
   Radio,
 } from "lucide-react";
 import { JobNames } from "../sim/types";
+import storeValue from "../utils/storeValue";
 
 interface AgentInspectorProps {
   agent: Agent | null;
@@ -31,13 +32,6 @@ interface AgentInspectorProps {
   onPossess: (agent: Agent) => void;
   onUnpossess: () => void;
 }
-
-const storeValue =
-  (key: string) =>
-  (value?: string): string | null =>
-    value === undefined
-      ? (localStorage.getItem(key) ?? null)
-      : (localStorage.setItem(key, value), value);
 
 const setActiveTabStore = storeValue("active_tab");
 const selectedTraitToAddStore = storeValue("selected_trait_to_add");
