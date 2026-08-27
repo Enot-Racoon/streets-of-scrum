@@ -8,6 +8,7 @@ export class Combat {
   public agent: Agent;
   public attackCooldownTimer: number = 0;
   public isSwinging: boolean = false;
+  public swiningHand: "left" | "right" = "right";
   public swingProgress: number = 0;
 
   constructor(agent: Agent) {
@@ -100,10 +101,28 @@ export class Combat {
     });
   }
 
-  private swingMelee(weapon: ItemDef, aimAngle: number, world: World) {
-    sounds.playPunch();
+  private isEquipedFists() {
+    const weapon = this.agent.inventory.getEquippedWeaponDef();
+    return weapon.id === "fists";
+  }
+
+  private startSwinging() {
     this.isSwinging = true;
     this.swingProgress = 0;
+    if (this.isEquipedFists()) {
+      this.swiningHand = Math.random() > 0.5 ? "left" : "right";
+    }
+  }
+
+  private stopSwinging() {
+    this.isSwinging = false;
+    this.swingProgress = 0;
+    this.swiningHand = "right";
+  }
+
+  private swingMelee(weapon: ItemDef, aimAngle: number, world: World) {
+    sounds.playPunch();
+    this.startSwinging();
 
     world.emitNoise({
       x: this.agent.x,
@@ -177,8 +196,7 @@ export class Combat {
     if (this.isSwinging) {
       this.swingProgress += dt * 8;
       if (this.swingProgress >= 1) {
-        this.isSwinging = false;
-        this.swingProgress = 0;
+        this.stopSwinging();
       }
     }
   }

@@ -7,7 +7,7 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     type: "melee",
     damage: 8,
     range: 1.1,
-    attackSpeed: 2.2,
+    attackSpeed: 4.2,
     description: "Голые кулаки. Быстро, но наносит мало урона.",
     icon: "🥊",
   },

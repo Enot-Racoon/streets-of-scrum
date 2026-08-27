@@ -248,16 +248,30 @@ function drawLivingAgents(
     ctx.stroke();
 
     // Direction / Hands / Weapon
-    const handDist = radius * 0.9;
-    const handAngle1 = agent.facingAngle - 0.5;
-    const handAngle2 = agent.facingAngle + 0.5;
+    let lhAngle = agent.facingAngle - 0.5;
+    let rhAngle = agent.facingAngle + 0.5;
+    let handDist = radius * 0.9;
+    const swinigDist = 0.6;
+
+    let lhDist = handDist;
+    let rhDist = handDist;
+
+    if (agent.combat.isSwinging) {
+      if (agent.combat.swiningHand === "left") {
+        lhDist += handDist * swinigDist;
+        lhAngle += 0.5 * agent.combat.swingProgress;
+      } else {
+        rhDist += handDist * swinigDist;
+        rhAngle += -0.5 * agent.combat.swingProgress;
+      }
+    }
 
     ctx.fillStyle = agent.color;
     // Left hand
     ctx.beginPath();
     ctx.arc(
-      ax + Math.cos(handAngle1) * handDist,
-      ay + Math.sin(handAngle1) * handDist,
+      ax + Math.cos(lhAngle) * lhDist,
+      ay + Math.sin(lhAngle) * lhDist,
       radius * 0.35,
       0,
       Math.PI * 2,
@@ -266,8 +280,8 @@ function drawLivingAgents(
     ctx.stroke();
 
     // Right hand & Weapon
-    const rhX = ax + Math.cos(handAngle2) * handDist;
-    const rhY = ay + Math.sin(handAngle2) * handDist;
+    const rhX = ax + Math.cos(rhAngle) * rhDist;
+    const rhY = ay + Math.sin(rhAngle) * rhDist;
     ctx.beginPath();
     ctx.arc(rhX, rhY, radius * 0.35, 0, Math.PI * 2);
     ctx.fill();
@@ -286,6 +300,7 @@ function drawLivingAgents(
       ctx.lineTo(gunTipX, gunTipY);
       ctx.stroke();
     } else if (agent.combat.isSwinging) {
+      console.log("Melee swing arc");
       // Melee swing arc
       ctx.strokeStyle = "#f87171";
       ctx.lineWidth = 3;
