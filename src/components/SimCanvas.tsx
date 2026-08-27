@@ -131,8 +131,9 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         );
 
         // Center camera smoothly on possessed agent via ref without trigger component re-render
-        cameraRef.current.x += (p.x - cameraRef.current.x) * 0.12;
-        cameraRef.current.y += (p.y - cameraRef.current.y) * 0.12;
+        const smooth = 0.06;
+        cameraRef.current.x += (p.x - cameraRef.current.x) * smooth;
+        cameraRef.current.y += (p.y - cameraRef.current.y) * smooth;
       }
 
       // 2. Update World simulation
