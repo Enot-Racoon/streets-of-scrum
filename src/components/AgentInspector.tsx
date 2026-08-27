@@ -113,6 +113,18 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
 
         {/* Health Bar & Vital Stats */}
         <div className="space-y-1.5 mt-3">
+          {agent.isDead ? (
+            <div className="flex justify-between text-xs font-mono text-slate-300">
+              <span className="text-rose-500">
+                {agent.killedBy
+                  ? `Убит ${agent.killedBy.name}`
+                  : "Мертв (сам?)"}
+              </span>
+            </div>
+          ) : null}
+          <div className="flex justify-between text-xs font-mono text-slate-300">
+            Убийств: {agent.kills}
+          </div>
           <div className="flex justify-between text-xs font-mono text-slate-300">
             <span className="flex items-center gap-1">
               <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />{" "}

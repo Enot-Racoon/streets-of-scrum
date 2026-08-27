@@ -30,7 +30,7 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
     <div className="absolute bottom-3 left-3 right-3 pointer-events-none flex flex-col items-center gap-2 select-none z-10">
       {/* POSSESSED HUD BANNER */}
       {possessed && !possessed.isDead && (
-        <div className="pointer-events-auto bg-slate-950/90 border-2 border-purple-500/60 shadow-xl backdrop-blur-md rounded-xl p-3 flex items-center gap-5 text-slate-100 max-w-2xl w-full">
+        <div className="pointer-events-auto bg-slate-950/90 border-2 border-purple-500/60 shadow-xl backdrop-blur-md rounded-xl p-3 flex items-center gap-5 text-slate-100 max-w-5xl w-full">
           {/* Avatar & Soul Indicator */}
           <div className="flex items-center gap-2.5">
             <div className="relative">
@@ -97,9 +97,11 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
 
           {/* Control hints & Unpossess */}
           <div className="flex items-center gap-2">
-            <div className="text-[10px] text-slate-400 font-mono text-right leading-tight hidden sm:block">
-              <div>WASD: Двигаться | Клик: Атаковать</div>
-              <div>E: Открыть дверь | Esc: Отпустить</div>
+            <div className="text-[10px] text-slate-400 font-mono leading-tight hidden sm:block">
+              <div>WASD: Двигаться</div>
+              <div>Клик: Атаковать</div>
+              <div>E: Открыть дверь</div>
+              <div>Esc: Отпустить</div>
             </div>
             <button
               onClick={onUnpossess}

@@ -26,6 +26,8 @@ export class Agent {
   public maxHealth: number = 100;
   public isDead: boolean = false;
   public deadTime: number | null = null;
+  public killedBy: Agent | null = null;
+  public kills: number = 0;
   public isPlayerControlled: boolean = false;
   public canOpenDoors: boolean = true;
   public color: string = "#60a5fa";
@@ -222,9 +224,18 @@ export class Agent {
 
   public die(killer?: Agent) {
     if (this.isDead) return;
+
+    this.killedBy = killer;
     this.isDead = true;
     this.deadTime = Date.now();
     this.health = 0;
+
+    if (!killer || killer.id === this.id) {
+      this.kills--;
+    } else {
+      killer.kills++;
+    }
+
     this.say("Ааарргх...", true);
 
     if (this.world) {
