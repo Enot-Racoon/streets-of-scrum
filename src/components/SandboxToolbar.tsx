@@ -10,6 +10,7 @@ import {
   Skull,
   HelpCircle,
   MapPin,
+  Bone,
 } from "lucide-react";
 import { VolumeControll } from "./VolumeControll";
 import storeValue from "../utils/storeValue";
@@ -80,6 +81,13 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           world.damageTile(x, y, 999);
         }
       }
+    }
+    onRefresh();
+  };
+
+  const handleKillAll = () => {
+    for (const agent of world.agents) {
+      agent.die();
     }
     onRefresh();
   };
@@ -216,6 +224,18 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
             title="Detonate all explosive barrels"
           >
             <Skull className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleKillAll}
+            className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/60 rounded"
+            title="Kill all agents"
+          >
+            <span className="relative">
+              <Skull className="w-4 h-4 opacity-0" />
+              <Skull className="w-3 h-3 right-[0.125em] absolute -top-[0.125em]" />
+              <Bone className="w-3 h-3 right-[0.125em] absolute top-2 rotate-[20deg]" />
+              <Bone className="w-3 h-3 right-[0.125em] absolute top-2 rotate-[70deg]" />
+            </span>
           </button>
         </div>
 
