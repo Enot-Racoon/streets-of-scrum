@@ -1,7 +1,0 @@
-{
-  "name": "Streets of Rogue: AI Agent & Possession Sandbox",
-  "description": "Immersive simulation sandbox based on Streets of Rogue architecture: Goal Stack AI, data-driven Traits, dynamic Relationships, A* pathfinding, and direct Agent Possession.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
-

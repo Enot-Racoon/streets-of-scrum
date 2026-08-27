@@ -135,7 +135,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Architecture Guide & SoR AI Documentation Modal */}
+      {/* Architecture Guide & SoS AI Documentation Modal */}
       <GuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
     </div>
   );

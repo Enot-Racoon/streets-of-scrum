@@ -35,7 +35,7 @@ export class Agent {
   public speechBubble: SpeechBubble | null = null;
   public world: World = null;
 
-  // Components (SoR Architecture)
+  // Components (SoS Architecture)
   public brain: Brain;
   public brainUpdate: BrainUpdate;
   public relationships: Relationships;

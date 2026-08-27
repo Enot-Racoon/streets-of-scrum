@@ -100,7 +100,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           <span className="text-xl">🏙️</span>
           <div>
             <h1 className="font-bold text-sm text-slate-100 leading-tight">
-              Streets of Rogue
+              Streets of Scrum
             </h1>
             <p className="text-[10px] text-sky-400 font-mono">
               Agent Simulation Sandbox
@@ -251,7 +251,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           onClick={onOpenGuide}
           className="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded flex items-center gap-1.5 font-medium transition"
         >
-          <HelpCircle className="w-3.5 h-3.5 text-sky-400" /> Guide & SoR AI
+          <HelpCircle className="w-3.5 h-3.5 text-sky-400" /> Guide & SoS AI
           Docs
         </button>
       </div>

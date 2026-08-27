@@ -1,5 +1,5 @@
 /**
- * Web Audio API synthesizer for Streets of Rogue-style sound effects.
+ * Web Audio API synthesizer for Streets of Scrum-style sound effects.
  */
 
 const volumeStore = (val?: number): number | null => {

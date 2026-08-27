@@ -27,7 +27,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-sky-400" />
             <h2 className="font-bold text-base text-slate-100">
-              Streets of Rogue Architecture & Knowledge Base
+              Streets of Scrum Architecture & Knowledge Base
             </h2>
           </div>
           <button
@@ -48,7 +48,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
             </h3>
             <p className="text-slate-300">
               Unlike a Finite State Machine (FSM) where states overwrite each
-              other, SoR uses a <strong>hierarchical Goal Stack</strong>. When a
+              other, SoS uses a <strong>hierarchical Goal Stack</strong>. When a
               citizen is wandering (<code>GoalWander</code>) and hears a
               gunshot, <code>GoalNoiseReact</code> is pushed to the top of the
               stack. When done investigating, the goal is popped and the agent
