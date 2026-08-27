@@ -19,8 +19,7 @@ import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
 import storeValue from "./utils/storeValue";
-
-type ScenarioName = "district" | "gangwar" | "zombie" | "bar";
+import type { ScenarioName } from "./types";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
 
@@ -44,6 +43,8 @@ const buildScenario = (scenario: ScenarioName, world: World) => {
   }
 };
 
+const initScenario = scenarioStore() ?? "district";
+
 export default function App() {
   const worldRef = useRef<World | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -54,7 +55,7 @@ export default function App() {
   // Initialize World on mount
   if (!worldRef.current) {
     const w = new World(24, 20);
-    buildScenario(scenarioStore() ?? "district", w);
+    buildScenario(initScenario, w);
     worldRef.current = w;
   }
 
@@ -97,6 +98,7 @@ export default function App() {
       {/* Top Sandbox Navigation Bar */}
       <SandboxToolbar
         world={world}
+        initScenario={initScenario}
         onLoadScenario={handleLoadScenario}
         onOpenGuide={() => setIsGuideOpen(true)}
         onRefresh={forceRefresh}

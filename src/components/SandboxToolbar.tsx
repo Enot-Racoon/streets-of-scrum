@@ -13,10 +13,12 @@ import {
 } from "lucide-react";
 import { VolumeControll } from "./VolumeControll";
 import storeValue from "../utils/storeValue";
+import type { ScenarioName } from "../types";
 
 interface SandboxToolbarProps {
   world: World;
-  onLoadScenario: (scenario: "district" | "gangwar" | "zombie" | "bar") => void;
+  initScenario: ScenarioName;
+  onLoadScenario: (scenario: ScenarioName) => void;
   onOpenGuide: () => void;
   onRefresh: () => void;
 }
@@ -25,6 +27,7 @@ const selectedArchetypeStore = storeValue<ArchetypeName>("selected_archetype");
 
 export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
   world,
+  initScenario,
   onLoadScenario,
   onOpenGuide,
   onRefresh,
@@ -106,7 +109,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           <select
             onChange={(e) => onLoadScenario(e.target.value as never)}
             className="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200 font-medium"
-            defaultValue="district"
+            defaultValue={initScenario}
           >
             <option value="district">Даунтаун (Сбалансированно)</option>
             <option value="gangwar">Аллея войны банд (Crepe vs Blahd)</option>
