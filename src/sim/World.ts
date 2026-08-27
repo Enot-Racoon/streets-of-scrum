@@ -186,30 +186,48 @@ export class World {
     }
   }
 
-  p;
+  public getAgentByStep(step: number): Agent | null {
+    if (step === 0) {
+      return this.selectedAgent;
+    }
 
-  public selectNextAgent() {
-    if (this.selectedAgent) {
-      const idx = this.agents.findIndex((a) => a.id === this.selectedAgent.id);
-      if (idx !== -1) {
-        this.selectedAgent = this.agents[(idx + 1) % this.agents.length];
-        return;
+    const agents = this.agents;
+    if (!agents.length) {
+      return null;
+    }
+
+    const direction = Math.sign(step);
+    let remaining = Math.abs(step);
+
+    let index = this.selectedAgent
+      ? agents.findIndex((agent) => agent?.id === this.selectedAgent?.id)
+      : -1;
+
+    while (remaining > 0) {
+      index = (index + direction + agents.length) % agents.length;
+
+      if (agents[index]) {
+        remaining--;
       }
     }
 
-    this.selectedAgent = this.agents[0] ?? null;
+    return agents[index] ?? null;
+  }
+
+  public selectPrevAgent() {
+    this.selectedAgent = this.getAgentByStep(-1);
+  }
+
+  public selectNextAgent() {
+    this.selectedAgent = this.getAgentByStep(+1);
+  }
+
+  public possessPrevAgent() {
+    this.possessAgent(this.getAgentByStep(-1));
   }
 
   public possessNextAgent() {
-    if (!this.possessedAgent) return;
-    const idx = this.agents.findIndex((a) => a.id === this.possessedAgent.id);
-    if (idx !== -1) {
-      const nextAgent = this.agents[(idx + 1) % this.agents.length];
-      if (nextAgent && nextAgent !== this.selectedAgent) {
-        this.unpossessCurrent();
-        this.possessAgent(nextAgent);
-      }
-    }
+    this.possessAgent(this.getAgentByStep(+1));
   }
 
   public getAgentById(id: string): Agent | null {
@@ -217,6 +235,8 @@ export class World {
   }
 
   public possessAgent(agent: Agent) {
+    if (!agent || agent === this.possessedAgent) return;
+
     if (this.possessedAgent) {
       this.possessedAgent.unpossess();
     }

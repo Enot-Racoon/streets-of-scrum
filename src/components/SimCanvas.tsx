@@ -43,11 +43,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       if (e.key === "Tab") {
         e.preventDefault();
+        const isShiftPressed = keysDownRef.current["shift"];
         if (world.possessedAgent) {
-          world.possessNextAgent();
+          isShiftPressed ? world.possessPrevAgent() : world.possessNextAgent();
           onSelectAgent(world.possessedAgent);
         } else {
-          world.selectNextAgent();
+          isShiftPressed ? world.selectPrevAgent() : world.selectNextAgent();
           onSelectAgent(world.selectedAgent!);
         }
       }
