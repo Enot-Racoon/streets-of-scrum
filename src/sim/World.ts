@@ -186,11 +186,19 @@ export class World {
     }
   }
 
+  p;
+
   public selectNextAgent() {
+    console.log("selectNextAgent", {
+      this: this,
+      selectedAgent: this.selectedAgent,
+    });
     if (!this.selectedAgent) return;
     const idx = this.agents.findIndex((a) => a.id === this.selectedAgent.id);
     if (idx !== -1) {
       this.selectedAgent = this.agents[(idx + 1) % this.agents.length];
+    } else {
+      this.selectedAgent = this.agents[0] ?? null;
     }
   }
 
