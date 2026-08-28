@@ -115,8 +115,9 @@ export class Agent {
     }
   }
 
-  public addTrait(traitName: TraitType) {
+  public addTrait(traitName: TraitType): this {
     this.statusEffects.addTrait(traitName);
+    return this;
   }
 
   public removeTrait(traitName: TraitType) {

@@ -165,12 +165,14 @@ export class World {
     return Pathfinding.hasLineOfSight(x1, y1, x2, y2, this.grid, true);
   }
 
-  public addAgent(agent: Agent) {
-    agent.setWorld(this);
-    this.agents.push(agent);
-    if (!this.selectedAgent) {
-      this.selectedAgent = agent;
-    }
+  public addAgent(...agents: Agent[]) {
+    agents.forEach((agent) => {
+      agent.setWorld(this);
+      this.agents.push(agent);
+      if (!this.selectedAgent) {
+        this.selectedAgent = agent;
+      }
+    });
   }
 
   public removeAgent({ id }: Pick<Agent, "id">) {

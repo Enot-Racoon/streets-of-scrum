@@ -2,6 +2,7 @@ import type { World } from "./World";
 import { Agent } from "./Agent";
 import type { JobType } from "./types";
 import type { TraitType } from "./traits";
+import rand from "../utils/rand";
 
 export interface ArchetypeDef {
   name: string;
@@ -421,9 +422,15 @@ export function buildSandboxScenario(world: World) {
   world.setTile(21, 2, "Barrel");
   world.setTile(21, 17, "Barrel");
 
-  const godGorilla = spawnArchetype("Gorilla", 5.5, 7.5, "God Gorilla");
-  godGorilla.addTrait("God");
-  world.addAgent(godGorilla);
+  world.addAgent(
+    spawnArchetype("Gorilla", 5.5, 7.5, "God Gorilla Bob").addTrait("God"),
+    spawnArchetype(
+      "Gorilla",
+      Math.floor(rand(8, 16)) + 0.5,
+      Math.floor(rand(8, 18)) + 0.5,
+      "God Gorilla Jack",
+    ).addTrait("God"),
+  );
   // world.addAgent(spawnArchetype("Gorilla", 12, 14));
   // world.addAgent(spawnArchetype("Gorilla", 4, 14));
 }
