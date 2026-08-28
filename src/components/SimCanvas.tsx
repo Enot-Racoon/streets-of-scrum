@@ -107,7 +107,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         }
 
         if (keysDownRef.current["space"]) {
-          p.die();
+          p.combat.dash(mousePosRef.current.worldX, mousePosRef.current.worldY);
         }
 
         if (keysDownRef.current["w"] || keysDownRef.current["arrowup"])

@@ -6,6 +6,7 @@ import type { ItemDef } from "../types";
 
 export class Combat {
   public agent: Agent;
+  public dashCooldownTimer: number = 0;
   public attackCooldownTimer: number = 0;
   public isSwinging: boolean = false;
   public swiningHand: "left" | "right" = "right";
@@ -13,6 +14,19 @@ export class Combat {
 
   constructor(agent: Agent) {
     this.agent = agent;
+  }
+
+  public canDash(): boolean {
+    return this.dashCooldownTimer <= 0 && !this.agent.isDead;
+  }
+
+  public dash(targetX?: number, targetY?: number): boolean {
+    if (!this.canDash()) return false;
+
+    // TODO: implement dash
+    this.agent.die();
+
+    return true;
   }
 
   public canAttack(): boolean {
