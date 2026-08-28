@@ -256,7 +256,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const smooth = 0.2;
       cameraRef.current.zoom = Math.max(
         16,
-        Math.min(64, cameraRef.current.zoom + zoomDelta * smooth),
+        Math.min(128, cameraRef.current.zoom + zoomDelta * smooth),
       );
       zoomStore(cameraRef.current.zoom.toString());
     };
