@@ -263,7 +263,7 @@ export class Agent {
       }
 
       if (this.isPlayerControlled) {
-        this.unpossess();
+        this.world.unpossessCurrent();
       }
 
       if (!killer || killer.id === this.id) {

@@ -78,7 +78,7 @@ export class BrainUpdate {
     recentNoise &&
       this.agent.world.addLog({
         timestamp: Date.now(),
-        message: `recentNoise: ${recentNoise}`,
+        message: `recentNoise: ${JSON.stringify(recentNoise, null, 2)}`,
         type: "system",
         agentId: this.agent.id,
         agentName: this.agent.name,

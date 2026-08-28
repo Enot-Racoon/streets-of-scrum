@@ -235,7 +235,7 @@ export class World {
   }
 
   public possessAgent(agent: Agent) {
-    if (!agent || agent === this.possessedAgent) return;
+    if (!agent || agent.isDead || agent === this.possessedAgent) return;
 
     if (this.possessedAgent) {
       this.possessedAgent.unpossess();
