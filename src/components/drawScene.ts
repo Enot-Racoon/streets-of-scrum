@@ -251,7 +251,7 @@ function drawLivingAgents(
     let lhAngle = agent.facingAngle - 0.5;
     let rhAngle = agent.facingAngle + 0.5;
     let handDist = radius * 0.9;
-    const swinigDist = 0.6;
+    const swinigDist = 0.5;
 
     let lhDist = handDist;
     let rhDist = handDist;
@@ -299,21 +299,22 @@ function drawLivingAgents(
       ctx.moveTo(rhX, rhY);
       ctx.lineTo(gunTipX, gunTipY);
       ctx.stroke();
-    } else if (agent.combat.isSwinging) {
-      console.log("Melee swing arc");
-      // Melee swing arc
-      ctx.strokeStyle = "#f87171";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(
-        ax,
-        ay,
-        radius * 1.6,
-        agent.facingAngle - 0.7,
-        agent.facingAngle + 0.7,
-      );
-      ctx.stroke();
     }
+    // else if (agent.combat.isSwinging) {
+    //   console.log("Melee swing arc");
+    //   // Melee swing arc
+    //   ctx.strokeStyle = "#f87171";
+    //   ctx.lineWidth = 3;
+    //   ctx.beginPath();
+    //   ctx.arc(
+    //     ax,
+    //     ay,
+    //     radius * 1.6,
+    //     agent.facingAngle - 0.7,
+    //     agent.facingAngle + 0.7,
+    //   );
+    //   ctx.stroke();
+    // }
 
     // Icon Avatar
     ctx.font = `${radius * 1.0}px sans-serif`;
