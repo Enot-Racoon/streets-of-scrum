@@ -100,12 +100,14 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         let moveY = 0;
 
         if (keysDownRef.current["mouse-1"]) {
-          if (world.possessedAgent && !world.possessedAgent.isDead) {
-            world.possessedAgent.combat.attack(
-              mousePosRef.current.worldX,
-              mousePosRef.current.worldY,
-            );
-          }
+          p.combat.attack(
+            mousePosRef.current.worldX,
+            mousePosRef.current.worldY,
+          );
+        }
+
+        if (keysDownRef.current["space"]) {
+          p.die();
         }
 
         if (keysDownRef.current["w"] || keysDownRef.current["arrowup"])
