@@ -189,7 +189,7 @@ export class Agent {
     if (this.world) {
       this.world.addLog({
         timestamp: Date.now(),
-        message: `${this.name} took ${finalDamage.toFixed(0)} damage${attacker ? ` from ${attacker.name}` : ""}! (HP: ${this.health.toFixed(0)}/${this.maxHealth})`,
+        message: `${this.name} получает ${finalDamage.toFixed(0)} урона${attacker ? ` от ${attacker.name}` : ""}! (HP: ${this.health.toFixed(0)}/${this.maxHealth})`,
         type: "combat",
         agentId: this.id,
         agentName: this.name,

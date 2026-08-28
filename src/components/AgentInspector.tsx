@@ -137,6 +137,10 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
 
         {/* Health Bar & Vital Stats */}
         <div className="space-y-1.5 mt-3">
+          <div className="flex justify-between text-xs font-mono text-slate-300">
+            Убийств: {agent.kills}
+          </div>
+
           {agent.isDead ? (
             <div className="flex justify-between text-xs font-mono text-slate-300">
               <span className="text-rose-500">
@@ -146,42 +150,46 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               </span>
             </div>
           ) : null}
-          <div className="flex justify-between text-xs font-mono text-slate-300">
-            Убийств: {agent.kills}
-          </div>
-          <div className="flex justify-between text-xs font-mono text-slate-300">
-            <span className="flex items-center gap-1">
-              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />{" "}
-              Здоровье
-            </span>
-            <span>
-              {agent.health.toFixed(0)} / {agent.maxHealth} ({hpPercent}%)
-            </span>
-          </div>
-          <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className={`h-full transition-all duration-300 ${
-                hpPercent > 50
-                  ? "bg-emerald-500"
-                  : hpPercent > 25
-                    ? "bg-amber-500"
-                    : "bg-rose-600"
-              }`}
-              style={{ width: `${Math.max(0, hpPercent)}%` }}
-            />
-          </div>
+
+          {!agent.isDead && (
+            <>
+              <div className="flex justify-between text-xs font-mono text-slate-300">
+                <span className="flex items-center gap-1">
+                  <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />{" "}
+                  Здоровье
+                </span>
+                <span>
+                  {agent.health.toFixed(0)} / {agent.maxHealth} ({hpPercent}%)
+                </span>
+              </div>
+              <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 ${
+                    hpPercent > 50
+                      ? "bg-emerald-500"
+                      : hpPercent > 25
+                        ? "bg-amber-500"
+                        : "bg-rose-600"
+                  }`}
+                  style={{ width: `${Math.max(0, hpPercent)}%` }}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         {/* Current Brain Thought Banner */}
-        <div className="mt-3 p-2 bg-slate-900 rounded border border-slate-800/80 flex items-start gap-2">
-          <BrainIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-          <div className="text-xs">
-            <span className="text-slate-400 font-mono">Занят: </span>
-            <span className="text-sky-200 font-medium">
-              {isPossessed ? "Контролирует игрок" : agent.brain.lastThought}
-            </span>
+        {!agent.isDead && (
+          <div className="mt-3 p-2 bg-slate-900 rounded border border-slate-800/80 flex items-start gap-2">
+            <BrainIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div className="text-xs">
+              <span className="text-slate-400 font-mono">Занят: </span>
+              <span className="text-sky-200 font-medium">
+                {isPossessed ? "Контролирует игрок" : agent.brain.lastThought}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Tabs */}

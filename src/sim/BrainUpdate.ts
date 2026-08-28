@@ -75,7 +75,15 @@ export class BrainUpdate {
       this.agent.y,
       this.agent.getHearingRadius(),
     );
-    if (recentNoise) {
+    recentNoise &&
+      this.agent.world.addLog({
+        timestamp: Date.now(),
+        message: `recentNoise: ${recentNoise}`,
+        type: "system",
+        agentId: this.agent.id,
+        agentName: this.agent.name,
+      });
+    if (recentNoise /* && this.agent.id !== recentNoise.sourceAgentId */) {
       const alreadyReacted = this.agent.brain.getMemory(
         `noise_${recentNoise.id}`,
       );
