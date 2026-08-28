@@ -183,6 +183,7 @@ export class Combat {
 
         if (angleDiff <= hitArc) {
           // Hit! Knockback and damage
+          this.agent.world.addLog({ message: "Hit! Knockback and damage" });
           const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
           other.movement.vx += Math.cos(aimAngle) * kbPower;
           other.movement.vy += Math.sin(aimAngle) * kbPower;

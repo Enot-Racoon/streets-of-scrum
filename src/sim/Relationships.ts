@@ -82,7 +82,7 @@ export class Relationships {
     return rel ? rel.relType : "Neutral";
   }
 
-  public setRelType(targetId: string, relType: RelType): void {
+  public setRelType(targetId: string, relType: RelType): this {
     const rel = this.getOrCreate(targetId);
     rel.relType = relType;
     if (relType === "Hostile") {
@@ -90,6 +90,7 @@ export class Relationships {
     } else if (relType === "Friendly" || relType === "Loyal") {
       rel.hate = 0;
     }
+    return this;
   }
 
   public modifyHate(targetId: string, delta: number): void {

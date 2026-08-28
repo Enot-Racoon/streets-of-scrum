@@ -422,15 +422,20 @@ export function buildSandboxScenario(world: World) {
   world.setTile(21, 2, "Barrel");
   world.setTile(21, 17, "Barrel");
 
-  world.addAgent(
-    spawnArchetype("Gorilla", 5.5, 7.5, "God Gorilla Bob").addTrait("God"),
-    spawnArchetype(
-      "Gorilla",
-      Math.floor(rand(8, 16)) + 0.5,
-      Math.floor(rand(8, 18)) + 0.5,
-      "God Gorilla Jack",
-    ).addTrait("God"),
-  );
-  // world.addAgent(spawnArchetype("Gorilla", 12, 14));
-  // world.addAgent(spawnArchetype("Gorilla", 4, 14));
+  const g1 = spawnArchetype(
+    //
+    "Gorilla",
+    5.5,
+    7.5,
+    "God Gorilla Bob",
+  ).addTrait("God");
+  const g2 = spawnArchetype(
+    "Gorilla",
+    Math.floor(rand(8, 16)) + 0.5,
+    Math.floor(rand(8, 18)) + 0.5,
+    "God Gorilla Jack",
+  ).addTrait("God");
+  g1.relationships.setRelType(g2.id, "Hostile").modifyHate(g2.id, 90);
+  g2.relationships.setRelType(g1.id, "Hostile").modifyHate(g1.id, 90);
+  world.addAgent(g1, g2);
 }
