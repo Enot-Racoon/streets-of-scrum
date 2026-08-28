@@ -23,8 +23,11 @@ export class Combat {
   public dash(targetX?: number, targetY?: number): boolean {
     if (!this.canDash()) return false;
 
-    // TODO: implement dash
-    this.agent.die();
+    const dashSpeed = 1.5;
+    const dashDistance = 40;
+    this.agent.movement.vx += Math.cos(this.agent.facingAngle) * dashDistance;
+    this.agent.movement.vy += Math.sin(this.agent.facingAngle) * dashDistance;
+    this.dashCooldownTimer = 1 / dashSpeed;
 
     return true;
   }
@@ -204,6 +207,9 @@ export class Combat {
   }
 
   public update(dt: number) {
+    if (this.dashCooldownTimer > 0) {
+      this.dashCooldownTimer -= dt;
+    }
     if (this.attackCooldownTimer > 0) {
       this.attackCooldownTimer -= dt;
     }

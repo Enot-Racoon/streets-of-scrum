@@ -493,10 +493,21 @@ export class World {
     }
   }
 
-  public addLog(entry: Omit<LogEntry, "id">) {
+  public addLog({
+    timestamp = Date.now(),
+    message,
+    type = "system",
+    agentId,
+    agentName,
+  }: Omit<LogEntry, "id" | "timestamp" | "type"> &
+    Partial<Pick<LogEntry, "timestamp" | "type">>) {
     this.logs.unshift({
-      ...entry,
       id: `log_${logIdCounter++}`,
+      timestamp,
+      message,
+      type,
+      agentId,
+      agentName,
     });
     if (this.logs.length > 50) {
       this.logs.pop();
