@@ -215,6 +215,17 @@ export const TRAIT_REGISTRY = {
       bulletDamageMult: 0,
     },
   },
+  God: {
+    name: "God",
+    displayName: "Бог",
+    description: "Неуязвимый и непобедимый.",
+    category: "special",
+    statMods: {
+      meleeDamageMult: Number.MAX_SAFE_INTEGER,
+      bulletDamageMult: Number.MAX_SAFE_INTEGER,
+    },
+    onTakeDamage: () => 0,
+  },
 } as const satisfies Record<string, TraitDef>;
 
 export type TraitType = keyof typeof TRAIT_REGISTRY;
