@@ -138,13 +138,15 @@ export class Agent {
   }
 
   public say(text: string, isYell: boolean = false) {
+    if (this.isDead) return;
+
     const duration = isYell ? 3.5 : 2.5;
     this.speechBubble = {
       text,
       duration,
       maxDuration: duration,
       isYell,
-      color: isYell ? "#ef4444" : "#ffffff",
+      color: isYell ? "#ef7a44ff" : "#ffffff",
     };
 
     if (isYell && this.world) {
