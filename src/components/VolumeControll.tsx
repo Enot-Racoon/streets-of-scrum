@@ -10,6 +10,10 @@ export const VolumeControll = ({
   initialValue,
   onChange,
 }: VolumeControllProps) => {
+  const min = 0;
+  const max = 0.4;
+  const step = 0.01;
+
   const [volume, setVolume] = useState(initialValue);
   const [showVolume, setShowVolume] = useState(false);
   const toggleVolume = () => setShowVolume((v) => !v);
@@ -35,9 +39,9 @@ export const VolumeControll = ({
         }`}
         title="Volume SFX"
       >
-        {volume > 0.5 ? (
+        {volume > max * 0.5 ? (
           <Volume2 className="w-4 h-4" />
-        ) : volume > 0 ? (
+        ) : volume > min ? (
           <Volume1 className="w-4 h-4" />
         ) : (
           <VolumeX className="w-4 h-4" />
@@ -48,9 +52,9 @@ export const VolumeControll = ({
         className="absolute -bottom-[50%]"
         hidden={!showVolume}
         type="range"
-        min="0"
-        max="0.4"
-        step="0.01"
+        min={min}
+        max={max}
+        step={step}
         defaultValue={volume}
         onChange={handleChange}
         onMouseUp={handleMouseUp}

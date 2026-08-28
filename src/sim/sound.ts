@@ -20,9 +20,15 @@ class SoundSystem {
   public get masterVolume(): number {
     return this._masterVolume;
   }
+
   public set masterVolume(v: number) {
     this._masterVolume = Math.max(0, Math.min(v, 1));
     volumeStore(this._masterVolume);
+    this.enabled = this._masterVolume > 0;
+  }
+
+  constructor() {
+    this.enabled = this._masterVolume > 0;
   }
 
   private initCtx() {
