@@ -421,7 +421,9 @@ export function buildSandboxScenario(world: World) {
   world.setTile(21, 2, "Barrel");
   world.setTile(21, 17, "Barrel");
 
-  world.addAgent(spawnArchetype("Gorilla", 8, 4));
+  const godGorilla = spawnArchetype("Gorilla", 5.5, 7.5, "God Gorilla");
+  godGorilla.addTrait("God");
+  world.addAgent(godGorilla);
   // world.addAgent(spawnArchetype("Gorilla", 12, 14));
   // world.addAgent(spawnArchetype("Gorilla", 4, 14));
 }
