@@ -43,13 +43,13 @@ export class Agent {
   public world: World = null;
 
   // Components (SoS Architecture)
-  public brain: Brain;
-  public brainUpdate: BrainUpdate;
+  private readonly brain: Brain;
+  private readonly brainUpdate: BrainUpdate;
   public relationships: Relationships;
   public statusEffects: StatusEffects;
-  public inventory: InvDatabase;
+  private readonly inventory: InvDatabase;
   public movement: Movement;
-  public combat: Combat;
+  private readonly combat: Combat;
   public pathfindingAI: PathfindingAI;
 
   // Brain Facade
@@ -118,6 +118,7 @@ export class Agent {
     this.movement.moveInDirection(angle, dt, speedRatio);
     return this;
   }
+
   moveTowards(
     targetX: number,
     targetY: number,
@@ -171,6 +172,8 @@ export class Agent {
   removeItem(uid: string, count: number = 1): boolean {
     return this.inventory.removeItem(uid, count);
   }
+
+  // Relationships Facade
 
   // Main object definitions
   constructor(options: {
