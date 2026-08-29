@@ -7,10 +7,11 @@ import { Movement } from "./components/Movement";
 import { Combat } from "./components/Combat";
 import { PathfindingAI } from "./components/PathfindingAI";
 import { GoalWander, GoalBattle, GoalFlee, GoalIdle } from "./goals/GoalTypes";
-import { JobType, SpeechBubble } from "./types";
+import type { AgentMemory, JobType, SpeechBubble } from "./types";
 import { getTraitDef, type TraitType } from "./traits";
 import { sounds } from "./sound";
 import type { World } from "./World";
+import type { Goal } from "./goals/Goal";
 
 let agentIdCounter = 1;
 
@@ -44,6 +45,46 @@ export class Agent {
   public movement: Movement;
   public combat: Combat;
   public pathfindingAI: PathfindingAI;
+
+  // Brain Facade
+  get lastThought(): string {
+    return this.brain.lastThought;
+  }
+
+  get goalStack(): Goal[] {
+    return this.brain.goalStack;
+  }
+
+  get isSuspended(): boolean {
+    return this.brain.isSuspended;
+  }
+
+  pushGoal(goal: Goal): this {
+    this.brain.pushGoal(goal);
+    return this;
+  }
+
+  popGoal(): Goal | null {
+    return this.brain.popGoal();
+  }
+
+  getTopGoal(): Goal | null {
+    return this.brain.getTopGoal();
+  }
+
+  clearAllGoals(): this {
+    this.brain.clearAllGoals();
+    return this;
+  }
+
+  getMemory(key: string): AgentMemory | null {
+    return this.brain.getMemory(key);
+  }
+
+  setMemory(key: string, val: any, durationMs: number = 10000): this {
+    this.brain.setMemory(key, val, durationMs);
+    return this;
+  }
 
   constructor(options: {
     id?: string;

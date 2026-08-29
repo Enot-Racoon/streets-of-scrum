@@ -185,7 +185,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             <div className="text-xs">
               <span className="text-slate-400 font-mono">Занят: </span>
               <span className="text-sky-200 font-medium">
-                {isPossessed ? "Контролирует игрок" : agent.brain.lastThought}
+                {isPossessed ? "Контролирует игрок" : agent.lastThought}
               </span>
             </div>
           </div>
@@ -203,7 +203,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
           }`}
         >
           <BrainIcon className="w-3.5 h-3.5" /> Список задач (
-          {agent.brain.goalStack.length})
+          {agent.goalStack.length})
         </button>
         <button
           onClick={() => setActiveTab("relations")}
@@ -253,15 +253,15 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               </span>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => agent.brain.popGoal()}
-                  disabled={agent.brain.goalStack.length === 0}
+                  onClick={() => agent.popGoal()}
+                  disabled={agent.goalStack.length === 0}
                   className="px-2 py-0.5 text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-30 rounded text-slate-300"
                 >
                   Убрать
                 </button>
                 <button
-                  onClick={() => agent.brain.clearAllGoals()}
-                  disabled={agent.brain.goalStack.length === 0}
+                  onClick={() => agent.clearAllGoals()}
+                  disabled={agent.goalStack.length === 0}
                   className="px-2 py-0.5 text-[11px] bg-rose-950/60 hover:bg-rose-900 text-rose-300 disabled:opacity-30 rounded"
                 >
                   Очистить
@@ -269,7 +269,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               </div>
             </div>
 
-            {agent.brain.goalStack.length === 0 ? (
+            {agent.goalStack.length === 0 ? (
               <div className="p-3 bg-slate-950/50 rounded border border-dashed border-slate-800 text-center text-xs text-slate-500">
                 Цели закончились.
                 <br />
@@ -277,7 +277,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               </div>
             ) : (
               <div className="space-y-2">
-                {[...agent.brain.goalStack].reverse().map((goal, idx) => {
+                {[...agent.goalStack].reverse().map((goal, idx) => {
                   const isTop = idx === 0;
                   return (
                     <div
@@ -294,7 +294,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                             <ArrowRightCircle className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
                           ) : (
                             <span className="w-3.5 text-center text-slate-500">
-                              #{agent.brain.goalStack.length - idx}
+                              #{agent.goalStack.length - idx}
                             </span>
                           )}
                           {goal.name}
@@ -334,7 +334,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                       (a) => a.id !== agent.id && !a.isDead,
                     );
                     if (nearestEnemy) {
-                      agent.brain.pushGoal(new GoalBattle(agent, nearestEnemy));
+                      agent.pushGoal(new GoalBattle(agent, nearestEnemy));
                     }
                   }}
                   className="px-2 py-1.5 text-xs bg-rose-900/40 hover:bg-rose-800 text-rose-200 border border-rose-800/60 rounded flex items-center justify-center gap-1"
@@ -347,7 +347,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                       (a) => a.id !== agent.id && !a.isDead,
                     );
                     if (threat) {
-                      agent.brain.pushGoal(new GoalFlee(agent, threat, 6.0));
+                      agent.pushGoal(new GoalFlee(agent, threat, 6.0));
                     }
                   }}
                   className="px-2 py-1.5 text-xs bg-amber-900/40 hover:bg-amber-800 text-amber-200 border border-amber-800/60 rounded flex items-center justify-center gap-1"
@@ -355,13 +355,13 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   <ShieldAlert className="w-3.5 h-3.5" /> Напугать
                 </button>
                 <button
-                  onClick={() => agent.brain.pushGoal(new GoalWander(agent, 6))}
+                  onClick={() => agent.pushGoal(new GoalWander(agent, 6))}
                   className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
                 >
                   Бродить
                 </button>
                 <button
-                  onClick={() => agent.brain.pushGoal(new GoalIdle(agent, 4.0))}
+                  onClick={() => agent.pushGoal(new GoalIdle(agent, 4.0))}
                   className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
                 >
                   Бездельничать (4s)

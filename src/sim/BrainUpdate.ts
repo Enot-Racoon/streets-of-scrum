@@ -14,7 +14,7 @@ export class BrainUpdate {
   }
 
   public update(dt: number, world: World): void {
-    if (this.agent.isDead || this.agent.brain.isSuspended) return;
+    if (this.agent.isDead || this.agent.isSuspended) return;
 
     this.thinkTimer -= dt;
     if (this.thinkTimer <= 0) {
@@ -24,7 +24,7 @@ export class BrainUpdate {
   }
 
   private evaluateBrain(world: World): void {
-    const currentGoal = this.agent.brain.getTopGoal();
+    const currentGoal = this.agent.getTopGoal();
     const isBattling = currentGoal && currentGoal.name === "GoalBattle";
     const isFleeing = currentGoal && currentGoal.name === "GoalFlee";
 
@@ -52,7 +52,7 @@ export class BrainUpdate {
 
       if (isCoward || (isLowHealth && !this.agent.hasTrait("Aggressive"))) {
         if (!isFleeing) {
-          this.agent.brain.pushGoal(
+          this.agent.pushGoal(
             new GoalFlee(this.agent, mostThreateningAgent, 6.0),
           );
         }
@@ -61,9 +61,7 @@ export class BrainUpdate {
           !isBattling ||
           (currentGoal as GoalBattle).target.id !== mostThreateningAgent.id
         ) {
-          this.agent.brain.pushGoal(
-            new GoalBattle(this.agent, mostThreateningAgent),
-          );
+          this.agent.pushGoal(new GoalBattle(this.agent, mostThreateningAgent));
         }
       }
       return;
@@ -84,18 +82,16 @@ export class BrainUpdate {
     //     agentName: this.agent.name,
     //   });
     if (recentNoise /* && this.agent.id !== recentNoise.sourceAgentId */) {
-      const alreadyReacted = this.agent.brain.getMemory(
-        `noise_${recentNoise.id}`,
-      );
+      const alreadyReacted = this.agent.getMemory(`noise_${recentNoise.id}`);
       if (!alreadyReacted && !isBattling && !isFleeing) {
-        this.agent.brain.setMemory(`noise_${recentNoise.id}`, true, 5000);
-        this.agent.brain.pushGoal(new GoalNoiseReact(this.agent, recentNoise));
+        this.agent.setMemory(`noise_${recentNoise.id}`, true, 5000);
+        this.agent.pushGoal(new GoalNoiseReact(this.agent, recentNoise));
         return;
       }
     }
 
     // 3. Fallback: if no active goals, init idle / wander
-    if (this.agent.brain.goalStack.length === 0) {
+    if (this.agent.goalStack.length === 0) {
       this.agent.initDefaultGoal();
     }
   }

@@ -493,13 +493,11 @@ export class GoalNoiseReact extends Goal {
 
       // Push follow-up goal next frame cleanly
       setTimeout(() => {
-        if (!this.agent.isDead && !this.agent.brain.isSuspended) {
+        if (!this.agent.isDead && !this.agent.isSuspended) {
           if (shouldInvestigate) {
-            this.agent.brain.pushGoal(new GoalInvestigate(this.agent, nx, ny));
+            this.agent.pushGoal(new GoalInvestigate(this.agent, nx, ny));
           } else if (shouldFlee) {
-            this.agent.brain.pushGoal(
-              new GoalFlee(this.agent, { x: nx, y: ny }),
-            );
+            this.agent.pushGoal(new GoalFlee(this.agent, { x: nx, y: ny }));
           }
         }
       }, 0);
@@ -586,7 +584,7 @@ export class GoalTattle extends Goal {
       if (this.crimeSource && !this.crimeSource.isDead) {
         this.copTarget.relationships.setRelType(this.crimeSource.id, "Hostile");
         this.copTarget.relationships.modifyHate(this.crimeSource.id, 80);
-        this.copTarget.brain.pushGoal(
+        this.copTarget.pushGoal(
           new GoalBattle(this.copTarget, this.crimeSource),
         );
       }

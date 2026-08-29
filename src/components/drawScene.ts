@@ -347,8 +347,8 @@ function drawLivingAgents(
     ctx.strokeRect(hpBarX, hpBarY, hpWidth, hpHeight);
 
     // Goal badge / Thought above head
-    if (!agent.isPlayerControlled && agent.brain.getTopGoal()) {
-      const topGoal = agent.brain.getTopGoal()!;
+    const topGoal = agent.getTopGoal();
+    if (!agent.isPlayerControlled && topGoal) {
       let goalIcon = "💭";
       if (topGoal.name === "GoalBattle") goalIcon = "⚔️";
       if (topGoal.name === "GoalFlee") goalIcon = "💨";
