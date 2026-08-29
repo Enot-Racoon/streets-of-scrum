@@ -451,8 +451,7 @@ export class World {
     agent.color = "#22c55e";
     agent.avatarIcon = "🧟";
     agent.statusEffects.addTrait("Zombified");
-    agent.inventory.items = [];
-    agent.inventory.addItem("zombie_claws");
+    agent.clearInventory().addItem("zombie_claws");
     agent.say("МОЗЗЗГИ...", true);
     this.addLog({
       timestamp: Date.now(),
@@ -583,7 +582,7 @@ export class World {
         const item = this.droppedItems[j];
         const dist = Math.hypot(agent.x - item.x, agent.y - item.y);
         if (dist <= 0.6) {
-          agent.inventory.addItem(item.defId, item.count);
+          agent.addItem(item.defId, item.count);
           sounds.playHeal();
           agent.say(`Поднял ${ITEM_REGISTRY[item.defId]?.name || "Предмет"}`);
           this.droppedItems.splice(j, 1);

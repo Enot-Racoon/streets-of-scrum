@@ -84,8 +84,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
 
   const isPossessed = world.possessedAgent?.id === agent.id;
   const hpPercent = Math.round((agent.health / agent.maxHealth) * 100);
-  // const equippedItem = agent.inventory.getEquippedItem();
-  // const equippedWeaponDef = agent.inventory.getEquippedWeaponDef();
+  // const equippedItem = agent.getEquippedItem();
+  // const equippedWeaponDef = agent.getEquippedWeaponDef();
 
   return (
     <div className="h-full flex flex-col bg-slate-900 border-l border-slate-800 text-slate-200 overflow-hidden select-none">
@@ -235,8 +235,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Package className="w-3.5 h-3.5" /> Инвентарь (
-          {agent.inventory.items.length})
+          <Package className="w-3.5 h-3.5" /> Инвентарь ({agent.items.length})
         </button>
       </div>
 
@@ -536,10 +535,10 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
             </span>
 
             <div className="space-y-2">
-              {agent.inventory.items.map((item, idx) => {
+              {agent.items.map((item, idx) => {
                 const def = ITEM_REGISTRY[item.defId];
                 if (!def) return null;
-                const isEquipped = agent.inventory.equippedIndex === idx;
+                const isEquipped = agent.equippedIndex === idx;
 
                 return (
                   <div
@@ -570,14 +569,14 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                     <div className="flex items-center gap-1">
                       {def.type === "consumable" ? (
                         <button
-                          onClick={() => agent.inventory.useItem(item.uid)}
+                          onClick={() => agent.useItem(item.uid)}
                           className="px-2 py-1 text-[11px] bg-emerald-600 hover:bg-emerald-500 text-white rounded"
                         >
                           Применить
                         </button>
                       ) : (
                         <button
-                          onClick={() => agent.inventory.equipIndex(idx)}
+                          onClick={() => agent.equipIndex(idx)}
                           disabled={isEquipped}
                           className="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 rounded"
                         >
@@ -585,7 +584,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                         </button>
                       )}
                       <button
-                        onClick={() => agent.inventory.removeItem(item.uid, 1)}
+                        onClick={() => agent.removeItem(item.uid, 1)}
                         className="p-1 text-slate-500 hover:text-rose-400"
                         title="Drop item"
                       >
@@ -615,7 +614,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
                   ))}
                 </select>
                 <button
-                  onClick={() => agent.inventory.addItem(selectedItemToAdd, 1)}
+                  onClick={() => agent.addItem(selectedItemToAdd, 1)}
                   className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
                 >
                   <Plus className="w-3.5 h-3.5" /> Дать

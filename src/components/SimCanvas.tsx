@@ -66,7 +66,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const num = parseInt(e.key);
       if (!isNaN(num) && num >= 1 && num <= 9) {
         if (world.possessedAgent) {
-          world.possessedAgent.inventory.equipIndex(num - 1);
+          world.possessedAgent.equipIndex(num - 1);
         }
       }
     };

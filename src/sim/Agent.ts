@@ -7,7 +7,13 @@ import { Movement } from "./components/Movement";
 import { Combat } from "./components/Combat";
 import { PathfindingAI } from "./components/PathfindingAI";
 import { GoalWander, GoalBattle, GoalFlee, GoalIdle } from "./goals/GoalTypes";
-import type { AgentMemory, JobType, SpeechBubble } from "./types";
+import type {
+  AgentMemory,
+  InvItem,
+  ItemDef,
+  JobType,
+  SpeechBubble,
+} from "./types";
 import { getTraitDef, type TraitType } from "./traits";
 import { sounds } from "./sound";
 import type { World } from "./World";
@@ -125,6 +131,45 @@ export class Agent {
   stop(): this {
     this.movement.stop();
     return this;
+  }
+
+  // Inventory Facade
+  get items(): InvItem[] {
+    return this.inventory.items;
+  }
+
+  get equippedIndex(): number {
+    return this.inventory.equippedIndex;
+  }
+
+  getEquippedItem(): InvItem | null {
+    return this.inventory.getEquippedItem();
+  }
+
+  getEquippedWeapon(): ItemDef {
+    return this.inventory.getEquippedWeaponDef();
+  }
+
+  clearInventory(): this {
+    this.inventory.items = [];
+    return this;
+  }
+
+  addItem(defId: string, count: number = 1): InvItem {
+    return this.inventory.addItem(defId, count);
+  }
+
+  useItem(uid: string): boolean {
+    return this.inventory.useItem(uid);
+  }
+
+  equipIndex(index: number): this {
+    this.inventory.equipIndex(index);
+    return this;
+  }
+
+  removeItem(uid: string, count: number = 1): boolean {
+    return this.inventory.removeItem(uid, count);
   }
 
   // Main object definitions

@@ -39,7 +39,7 @@ export class Combat {
   public attack(targetX?: number, targetY?: number): boolean {
     if (!this.canAttack()) return false;
 
-    const weapon = this.agent.inventory.getEquippedWeaponDef();
+    const weapon = this.agent.getEquippedWeapon();
     const cooldown = 1.0 / (weapon.attackSpeed || 1.5);
     this.attackCooldownTimer = cooldown;
 
@@ -119,7 +119,7 @@ export class Combat {
   }
 
   private isEquipedFists() {
-    const weapon = this.agent.inventory.getEquippedWeaponDef();
+    const weapon = this.agent.getEquippedWeapon();
     return weapon.id === "fists";
   }
 

@@ -68,13 +68,13 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
 
           {/* Weapon Hotbar */}
           <div className="flex items-center gap-1.5 flex-1 justify-center">
-            {possessed.inventory.items.map((item, idx) => {
+            {possessed.items.map((item, idx) => {
               const def = ITEM_REGISTRY[item.defId];
-              const isEquipped = possessed.inventory.equippedIndex === idx;
+              const isEquipped = possessed.equippedIndex === idx;
               return (
                 <button
                   key={item.uid}
-                  onClick={() => possessed.inventory.equipIndex(idx)}
+                  onClick={() => possessed.equipIndex(idx)}
                   className={`px-2 py-1 rounded border flex items-center gap-1.5 text-xs font-mono transition ${
                     isEquipped
                       ? "bg-purple-900/50 border-purple-400 text-purple-200 shadow-md"
