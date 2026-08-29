@@ -46,7 +46,7 @@ export class Agent {
   public combat: Combat;
   public pathfindingAI: PathfindingAI;
 
-  // Brain facade
+  // Brain Facade
   get lastThought(): string {
     return this.brain.lastThought;
   }
@@ -86,7 +86,7 @@ export class Agent {
     return this;
   }
 
-  // Combat facade
+  // Combat Facade
   get isSwinging(): boolean {
     return this.combat.isSwinging;
   }
@@ -105,6 +105,26 @@ export class Agent {
 
   dash(targetX?: number, targetY?: number): boolean {
     return this.combat.dash(targetX, targetY);
+  }
+
+  // Movement Facade
+  moveInDirection(angle: number, dt: number, speedRatio: number = 1.0): this {
+    this.movement.moveInDirection(angle, dt, speedRatio);
+    return this;
+  }
+  moveTowards(
+    targetX: number,
+    targetY: number,
+    dt: number,
+    speedRatio: number = 1.0,
+  ): this {
+    this.movement.moveTowards(targetX, targetY, dt, speedRatio);
+    return this;
+  }
+
+  stop(): this {
+    this.movement.stop();
+    return this;
   }
 
   // Main object definitions

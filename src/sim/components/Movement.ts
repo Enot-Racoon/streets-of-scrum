@@ -17,7 +17,11 @@ export class Movement {
     return speed * speedMult;
   }
 
-  public moveInDirection(angle: number, dt: number, speedRatio: number = 1.0) {
+  public moveInDirection(
+    angle: number,
+    dt: number,
+    speedRatio: number = 1.0,
+  ): void {
     const spd = this.getSpeed() * speedRatio;
     this.vx = Math.cos(angle) * spd;
     this.vy = Math.sin(angle) * spd;
@@ -28,7 +32,7 @@ export class Movement {
     targetY: number,
     dt: number,
     speedRatio: number = 1.0,
-  ) {
+  ): void {
     const dx = targetX - this.agent.x;
     const dy = targetY - this.agent.y;
     const angle = Math.atan2(dy, dx);

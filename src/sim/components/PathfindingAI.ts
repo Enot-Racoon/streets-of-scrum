@@ -59,7 +59,7 @@ export class PathfindingAI {
       this.currentWaypointIndex++;
       if (this.currentWaypointIndex >= this.path.length) {
         this.hasPath = false;
-        this.agent.movement.stop();
+        this.agent.stop();
         return true; // reached destination!
       }
     }
@@ -67,7 +67,7 @@ export class PathfindingAI {
     // Move towards current waypoint
     const activeWP = this.path[this.currentWaypointIndex];
     if (activeWP) {
-      this.agent.movement.moveTowards(activeWP.x, activeWP.y, dt);
+      this.agent.moveTowards(activeWP.x, activeWP.y, dt);
 
       // Check if path is blocked by closed door and interact to open
       const tileX = Math.floor(activeWP.x);

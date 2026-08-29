@@ -118,14 +118,14 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
         if (moveX !== 0 || moveY !== 0) {
           const moveAngle = Math.atan2(moveY, moveX);
-          p.movement.moveInDirection(moveAngle, dt);
+          p.moveInDirection(moveAngle, dt);
         }
         // else {
         //   world.addLog({
         //     message: "stop",
         //     agentName: p.name,
         //   });
-        //   p.movement.stop();
+        //   p.stop();
         // }
 
         // Aim towards mouse world position

@@ -18,7 +18,7 @@ export class GoalIdle extends Goal {
   public activate(): void {
     this.status = "Active";
     this.timer = 0;
-    this.agent.movement.stop();
+    this.agent.stop();
     this.debugInfo = `Бездельничает ${this.duration.toFixed(1)}с`;
   }
 
@@ -88,7 +88,7 @@ export class GoalWander extends Goal {
       if (reached || !this.agent.pathfindingAI.hasPath) {
         this.isMoving = false;
         this.waitTimer = 1.0 + Math.random() * 2.0;
-        this.agent.movement.stop();
+        this.agent.stop();
       }
     } else {
       this.waitTimer -= dt;
@@ -102,7 +102,7 @@ export class GoalWander extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -150,7 +150,7 @@ export class GoalPatrol extends Goal {
     const reached = this.agent.pathfindingAI.update(dt);
     if (reached) {
       this.waitTimer = 1.5; // Pause at waypoint
-      this.agent.movement.stop();
+      this.agent.stop();
     }
 
     return "Active";
@@ -158,7 +158,7 @@ export class GoalPatrol extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -198,14 +198,14 @@ export class GoalMoveTo extends Goal {
     );
     if (dist <= this.tolerance) {
       this.status = "Completed";
-      this.agent.movement.stop();
+      this.agent.stop();
       return "Completed";
     }
 
     const reached = this.agent.pathfindingAI.update(dt);
     if (reached) {
       this.status = "Completed";
-      this.agent.movement.stop();
+      this.agent.stop();
       return "Completed";
     }
 
@@ -219,7 +219,7 @@ export class GoalMoveTo extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -295,13 +295,13 @@ export class GoalBattle extends Goal {
       if (isGun && dist < 2.5) {
         // Back up
         const backAngle = aimAngle + Math.PI;
-        this.agent.movement.moveInDirection(backAngle, dt, 0.6);
+        this.agent.moveInDirection(backAngle, dt, 0.6);
       } else if (dist > 1.2 && isGun) {
         // Circle strafe
         const strafeAngle = aimAngle + (Math.PI / 2) * this.strafeDir;
-        this.agent.movement.moveInDirection(strafeAngle, dt, 0.7);
+        this.agent.moveInDirection(strafeAngle, dt, 0.7);
       } else {
-        this.agent.movement.stop();
+        this.agent.stop();
       }
     }
 
@@ -315,7 +315,7 @@ export class GoalBattle extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -389,7 +389,7 @@ export class GoalFlee extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -428,7 +428,7 @@ export class GoalInvestigate extends Goal {
       if (arrived || dist <= 1.2) {
         this.reached = true;
         this.waitTimer = 2.5; // Look around for 2.5 seconds
-        this.agent.movement.stop();
+        this.agent.stop();
         this.debugInfo = "Осматривается...";
       }
     } else {
@@ -447,7 +447,7 @@ export class GoalInvestigate extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -471,7 +471,7 @@ export class GoalNoiseReact extends Goal {
       this.noise.y - this.agent.y,
       this.noise.x - this.agent.x,
     );
-    this.agent.movement.stop();
+    this.agent.stop();
     this.debugInfo = `Реагирует на ${this.noise.noiseType}`;
   }
 
@@ -600,7 +600,7 @@ export class GoalTattle extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
 
@@ -642,6 +642,6 @@ export class GoalInteract extends Goal {
 
   public terminate(): void {
     this.status = "Inactive";
-    this.agent.movement.stop();
+    this.agent.stop();
   }
 }
