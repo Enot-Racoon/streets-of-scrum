@@ -256,13 +256,13 @@ function drawLivingAgents(
     let lhDist = handDist;
     let rhDist = handDist;
 
-    if (agent.combat.isSwinging) {
-      if (agent.combat.swiningHand === "left") {
+    if (agent.isSwinging) {
+      if (agent.swiningHand === "left") {
         lhDist += handDist * swinigDist;
-        lhAngle += 0.5 * agent.combat.swingProgress;
+        lhAngle += 0.5 * agent.swingProgress;
       } else {
         rhDist += handDist * swinigDist;
-        rhAngle += -0.5 * agent.combat.swingProgress;
+        rhAngle += -0.5 * agent.swingProgress;
       }
     }
 
@@ -300,7 +300,7 @@ function drawLivingAgents(
       ctx.lineTo(gunTipX, gunTipY);
       ctx.stroke();
     }
-    // else if (agent.combat.isSwinging) {
+    // else if (agent.isSwinging) {
     //   console.log("Melee swing arc");
     //   // Melee swing arc
     //   ctx.strokeStyle = "#f87171";

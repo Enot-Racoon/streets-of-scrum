@@ -100,14 +100,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         let moveY = 0;
 
         if (keysDownRef.current["mouse-1"]) {
-          p.combat.attack(
-            mousePosRef.current.worldX,
-            mousePosRef.current.worldY,
-          );
+          p.attack(mousePosRef.current.worldX, mousePosRef.current.worldY);
         }
 
         if (keysDownRef.current["space"]) {
-          p.combat.dash(mousePosRef.current.worldX, mousePosRef.current.worldY);
+          p.dash(mousePosRef.current.worldX, mousePosRef.current.worldY);
         }
 
         if (keysDownRef.current["w"] || keysDownRef.current["arrowup"])
@@ -196,7 +193,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     if (e.button === 0) {
       // Left click: if possessed, attack in aim direction; else select agent or inspect tile
       if (world.possessedAgent && !world.possessedAgent.isDead) {
-        world.possessedAgent.combat.attack(
+        world.possessedAgent.attack(
           mousePosRef.current.worldX,
           mousePosRef.current.worldY,
         );

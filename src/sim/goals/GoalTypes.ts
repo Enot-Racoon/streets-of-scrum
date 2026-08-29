@@ -307,7 +307,7 @@ export class GoalBattle extends Goal {
 
     // Attack if in range and has line of sight
     if (hasLOS && dist <= (currentWeapon.range || 1.5) + 0.3) {
-      this.agent.combat.attack(this.target.x, this.target.y);
+      this.agent.attack(this.target.x, this.target.y);
     }
 
     return "Active";
