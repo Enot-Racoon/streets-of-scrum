@@ -1,17 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { World } from "./sim/World";
 import { Agent } from "./sim/Agent";
-import {
-  buildDistrictMap,
-  buildGangWarScenario,
-  buildZombieOutbreakScenario,
-  buildBarCasinoScenario,
-} from "./sim/presets";
 import { SimCanvas } from "./components/SimCanvas";
 import { SandboxToolbar } from "./components/SandboxToolbar";
 import { AgentInspector } from "./components/AgentInspector";
@@ -43,9 +32,7 @@ export default function App() {
 
   // Keep state sync timer for UI inspect updates
   useEffect(() => {
-    const interval = setInterval(() => {
-      forceRefresh();
-    }, 150);
+    const interval = setInterval(forceRefresh, 150);
     return () => clearInterval(interval);
   }, [forceRefresh]);
 
@@ -108,7 +95,6 @@ export default function App() {
             agent={
               selectedAgent || world.selectedAgent || world.agents[0] || null
             }
-            world={world}
             onPossess={handlePossessAgent}
             onUnpossess={handleUnpossess}
           />

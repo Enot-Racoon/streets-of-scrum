@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import type { World } from "../sim/World";
 import type { Agent } from "../sim/Agent";
-import type { Camera, MousePos } from "../sim/types";
+import type { MousePos } from "../sim/types";
 import drawScene from "./drawScene";
 import storeValue from "../utils/storeValue";
+import Camera from "../sim/components/Camera";
+import Keyboard from "../sim/components/Keyboard";
 
 interface SimCanvasProps {
   world: World;
@@ -19,73 +21,36 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
   onPossessAgent,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cameraRef = useRef<Camera>({
-    x: 12,
-    y: 10,
-    zoom: parseInt(zoomStore()) || 34,
-  });
+  const cameraRef = useRef<Camera>(
+    new Camera({ x: 12, y: 10, zoom: parseInt(zoomStore()) ?? 34 }),
+  );
   const mousePosRef = useRef<MousePos>({ x: 0, y: 0, worldX: 0, worldY: 0 });
   const keysDownRef = useRef<Record<string, boolean>>({});
 
   // Setup input handlers
   useEffect(() => {
+    const preventDefaults = (e: KeyboardEvent) => {
+      ["tab"].some((k) =>
+        [e.key.toLowerCase(), e.code.toLowerCase()].includes(k),
+      ) && e.preventDefault();
+    };
     const handleKeyDown = (e: KeyboardEvent) => {
-      keysDownRef.current[e.key.toLowerCase()] = true;
-      keysDownRef.current[e.code.toLowerCase()] = true;
-
-      // Unpossess hotkey (Escape)
-      if (e.key === "Escape") {
-        e.preventDefault();
-        if (world.possessedAgent) {
-          world.unpossessCurrent();
-        }
-      }
-
-      if (e.key === "Tab") {
-        e.preventDefault();
-        const isShiftPressed = keysDownRef.current["shift"];
-        if (world.possessedAgent) {
-          isShiftPressed ? world.possessPrevAgent() : world.possessNextAgent();
-          onSelectAgent(world.possessedAgent);
-        } else {
-          isShiftPressed ? world.selectPrevAgent() : world.selectNextAgent();
-          onSelectAgent(world.selectedAgent!);
-        }
-      }
-
-      // Interact hotkey (E / F)
-      if (e.key.toLowerCase() === "e" || e.key.toLowerCase() === "f") {
-        if (world.possessedAgent) {
-          world.possessedAgent.interact();
-        } else if (world.possessedAgent !== world.selectedAgent) {
-          onPossessAgent(world.selectedAgent);
-        }
-      }
-
-      // Hotbar slots (1..9)
-      const num = parseInt(e.key);
-      if (!isNaN(num) && num >= 1 && num <= 9) {
-        if (world.possessedAgent) {
-          world.possessedAgent.equipIndex(num - 1);
-        }
-      }
+      preventDefaults(e);
+      Keyboard.handleKeyDown(e);
     };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keysDownRef.current[e.key.toLowerCase()] = false;
-      keysDownRef.current[e.code.toLowerCase()] = false;
-    };
-
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("keyup", Keyboard.handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("keyup", Keyboard.handleKeyUp);
     };
   }, [world]);
 
   // Main Render & Simulation Animation Loop
   useEffect(() => {
+    const camera = cameraRef.current;
+    const mouse = mousePosRef.current;
+
     let animationFrameId: number;
     let lastTime = performance.now();
 
@@ -93,57 +58,97 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
 
-      // 1. Process player possession inputs
-      if (world.possessedAgent && !world.possessedAgent.isDead) {
-        const p = world.possessedAgent;
-        let moveX = 0;
-        let moveY = 0;
+      const possessedAgent = !world.possessedAgent?.isDead
+        ? world.possessedAgent
+        : null;
 
-        if (keysDownRef.current["mouse-1"]) {
-          p.attack(mousePosRef.current.worldX, mousePosRef.current.worldY);
+      // Next / previous agent hotkeys
+      if (Keyboard.wasPressed("tab")) {
+        const isShiftPressed = Keyboard.isDown("shift");
+        if (possessedAgent) {
+          isShiftPressed ? world.possessPrevAgent() : world.possessNextAgent();
+          onSelectAgent(possessedAgent);
+        } else {
+          isShiftPressed ? world.selectPrevAgent() : world.selectNextAgent();
+          if (world.selectedAgent) {
+            onSelectAgent(world.selectedAgent);
+            if (camera)
+              camera.moveTo(world.selectedAgent.x, world.selectedAgent.y, 0.3);
+          }
         }
-
-        if (keysDownRef.current["space"]) {
-          p.dash(mousePosRef.current.worldX, mousePosRef.current.worldY);
-        }
-
-        if (keysDownRef.current["w"] || keysDownRef.current["arrowup"])
-          moveY -= 1;
-        if (keysDownRef.current["s"] || keysDownRef.current["arrowdown"])
-          moveY += 1;
-        if (keysDownRef.current["a"] || keysDownRef.current["arrowleft"])
-          moveX -= 1;
-        if (keysDownRef.current["d"] || keysDownRef.current["arrowright"])
-          moveX += 1;
-
-        if (moveX !== 0 || moveY !== 0) {
-          const moveAngle = Math.atan2(moveY, moveX);
-          p.moveInDirection(moveAngle, dt);
-        }
-        // else {
-        //   world.addLog({
-        //     message: "stop",
-        //     agentName: p.name,
-        //   });
-        //   p.stop();
-        // }
-
-        // Aim towards mouse world position
-        p.facingAngle = Math.atan2(
-          mousePosRef.current.worldY - p.y,
-          mousePosRef.current.worldX - p.x,
-        );
-
-        // Center camera smoothly on possessed agent via ref without trigger component re-render
-        const smooth = 0.06;
-        cameraRef.current.x += (p.x - cameraRef.current.x) * smooth;
-        cameraRef.current.y += (p.y - cameraRef.current.y) * smooth;
       }
 
-      // 2. Update World simulation
-      world.update(dt);
+      if (Keyboard.wasPressed("escape") && possessedAgent)
+        world.unpossessCurrent();
 
-      // 3. Draw to Canvas
+      if (Keyboard.wasPressed("e")) {
+        // Possess / unpossess hotkey (E)
+        if (possessedAgent) {
+          world.unpossessCurrent();
+        } else {
+          onPossessAgent(world.selectedAgent);
+        }
+      }
+
+      // Movement keys
+      const upKey = Keyboard.isDown("w", "arrowup");
+      const downKey = Keyboard.isDown("s", "arrowdown");
+      const leftKey = Keyboard.isDown("a", "arrowleft");
+      const rightKey = Keyboard.isDown("d", "arrowright");
+
+      // Move possessed agent or camera
+      let moveX = 0;
+      let moveY = 0;
+      if (upKey) moveY -= 1;
+      if (downKey) moveY += 1;
+      if (leftKey) moveX -= 1;
+      if (rightKey) moveX += 1;
+      if (moveX !== 0 || moveY !== 0) {
+        if (possessedAgent) {
+          possessedAgent.moveInDirection(Math.atan2(moveY, moveX), dt);
+        } else {
+          const cs = 0.2;
+          camera.moveBy(moveX * cs, moveY * cs);
+        }
+      } else if (possessedAgent) {
+        possessedAgent.stop();
+      }
+
+      // Process player possession inputs
+      if (possessedAgent) {
+        // Hotbar slots (1..9)
+        [...Array(9).keys()].forEach((idx) => {
+          if (Keyboard.wasPressed(`${idx + 1}`)) possessedAgent.equipIndex(idx);
+        });
+
+        if (mouse) {
+          if (Keyboard.isDown("control"))
+            possessedAgent.dash(mouse.worldX, mouse.worldY);
+          if (Keyboard.isDown("mouse1", "space"))
+            possessedAgent.attack(mouse.worldX, mouse.worldY);
+        }
+
+        // Aim towards mouse world position
+        possessedAgent.facingAngle = Math.atan2(
+          mousePosRef.current.worldY - possessedAgent.y,
+          mousePosRef.current.worldX - possessedAgent.x,
+        );
+
+        if (camera) camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
+      }
+
+      // Zoom hotkeys
+      if (camera) {
+        if (Keyboard.isDown("-")) camera.zoomBy(-1);
+        if (Keyboard.isDown("=", "+")) camera.zoomBy(+1);
+      }
+
+      // Update World simulation
+      world.update(dt);
+      camera.update(dt);
+      Keyboard.update();
+
+      // Draw to Canvas
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext("2d");
@@ -162,14 +167,16 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
   // Canvas Mouse interaction
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const camera = cameraRef.current;
+    if (!canvas || !camera) return;
+
     const rect = canvas.getBoundingClientRect();
     const clientX = e.clientX - rect.left;
     const clientY = e.clientY - rect.top;
 
-    const zoom = cameraRef.current.zoom;
-    const offsetX = canvas.width / 2 - cameraRef.current.x * zoom;
-    const offsetY = canvas.height / 2 - cameraRef.current.y * zoom;
+    const zoom = camera.zoom;
+    const offsetX = canvas.width / 2 - camera.x * zoom;
+    const offsetY = canvas.height / 2 - camera.y * zoom;
 
     const worldX = (clientX - offsetX) / zoom;
     const worldY = (clientY - offsetY) / zoom;
@@ -178,17 +185,16 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
     // Pan camera when right mouse button held
     if (e.buttons === 2) {
-      cameraRef.current.x -= e.movementX / zoom;
-      cameraRef.current.y -= e.movementY / zoom;
+      camera.moveBy(-e.movementX / zoom, -e.movementY / zoom);
     }
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    keysDownRef.current[`mouse-${e.button + 1}`] = false;
+    keysDownRef.current[`mouse${e.button + 1}`] = false;
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    keysDownRef.current[`mouse-${e.button + 1}`] = true;
+    keysDownRef.current[`mouse${e.button + 1}`] = true;
 
     if (e.button === 0) {
       // Left click: if possessed, attack in aim direction; else select agent or inspect tile
@@ -236,7 +242,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     }
   };
 
-  // Adjust canvas resolution to parent
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -250,18 +256,15 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Handle mouse wheel zoom
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const camera = cameraRef.current;
+    if (!canvas || !camera) return;
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      const zoomDelta = e.deltaY > 0 ? -2 : 2;
-      const smooth = 0.2;
-      cameraRef.current.zoom = Math.max(
-        16,
-        Math.min(128, cameraRef.current.zoom + zoomDelta * smooth),
-      );
+      camera.zoomBy(Math.sign(e.deltaY) * 0.3);
       zoomStore(cameraRef.current.zoom.toString());
     };
 

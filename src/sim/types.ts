@@ -219,12 +219,6 @@ export interface AgentMemory {
   expiresAt: number;
 }
 
-export interface Camera {
-  x: number;
-  y: number;
-  zoom: number;
-}
-
 export interface MousePos {
   x: number;
   y: number;
