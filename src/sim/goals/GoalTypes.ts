@@ -517,10 +517,10 @@ export class GoalNoiseReact extends Goal {
  * GoalTattle: Runs to report crime to nearby Cops or Security Bots
  */
 export class GoalTattle extends Goal {
-  private crimeSource: any;
-  private copTarget: any = null;
+  private crimeSource: Agent;
+  private copTarget: Agent | null = null;
 
-  constructor(agent: Agent, crimeSource: any) {
+  constructor(agent: Agent, crimeSource: Agent) {
     super("GoalTattle", agent, 8);
     this.crimeSource = crimeSource;
   }
@@ -582,11 +582,9 @@ export class GoalTattle extends Goal {
       // Inform the cop!
       this.copTarget.say("Руки вверх, преступник!", true);
       if (this.crimeSource && !this.crimeSource.isDead) {
-        this.copTarget.relationships.setRelType(this.crimeSource.id, "Hostile");
-        this.copTarget.relationships.modifyHate(this.crimeSource.id, 80);
-        this.copTarget.pushGoal(
-          new GoalBattle(this.copTarget, this.crimeSource),
-        );
+        this.copTarget
+          .setRelationship(this.crimeSource.id, "Hostile", 80)
+          .pushGoal(new GoalBattle(this.copTarget, this.crimeSource));
       }
       this.agent.say("Спасибо, Офицер!");
       this.status = "Completed";

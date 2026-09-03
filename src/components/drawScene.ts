@@ -1,5 +1,5 @@
 import { ITEM_REGISTRY } from "../sim/Items";
-import { Camera } from "../sim/types";
+import type Camera from "../sim/components/Camera";
 import { World } from "../sim/World";
 
 function drawTiles(ctx: CanvasRenderingContext2D, world: World, zoom: number) {

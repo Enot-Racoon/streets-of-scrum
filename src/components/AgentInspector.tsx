@@ -180,12 +180,7 @@ const TabsButtons = ({
       }`}
     >
       <Users className="w-3.5 h-3.5" /> Отношения (
-      {
-        agent.relationships
-          .getAll()
-          .filter((r) => agent.world.getAgentById(r.targetAgentId)).length
-      }
-      )
+      {agent.getAllRelationships(true)?.length})
     </button>
 
     <button
@@ -341,16 +336,14 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
 );
 
 const RelationsTab = ({ agent }: { agent: Agent }) => {
-  const relationships = agent.relationships
-    .getAll()
-    .filter((r) => agent.world.getAgentById(r.targetAgentId));
+  const relationships = agent.getAllRelationships(true);
   return (
     <div className="space-y-2">
       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
         Отношения
       </span>
 
-      {agent.relationships.map.size === 0 ? (
+      {relationships.length === 0 ? (
         <div className="p-3 bg-slate-950/50 rounded border border-dashed border-slate-800 text-center text-xs text-slate-500">
           Отношения не отслеживаются.
         </div>
@@ -408,17 +401,13 @@ const RelationsTab = ({ agent }: { agent: Agent }) => {
                 {/* Quick override buttons */}
                 <div className="mt-2 flex gap-1 pt-1.5 border-t border-slate-800/60">
                   <button
-                    onClick={() =>
-                      agent.relationships.setRelType(target.id, "Hostile")
-                    }
+                    onClick={() => agent.setRelationship(target.id, "Hostile")}
                     className="flex-1 py-0.5 text-[10px] bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded"
                   >
                     Сделать врагом
                   </button>
                   <button
-                    onClick={() =>
-                      agent.relationships.setRelType(target.id, "Friendly")
-                    }
+                    onClick={() => agent.setRelationship(target.id, "Friendly")}
                     className="flex-1 py-0.5 text-[10px] bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 rounded"
                   >
                     Сделать другом

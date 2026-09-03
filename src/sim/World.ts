@@ -69,7 +69,7 @@ export class World {
     y: number,
     type: TileType,
     options?: Partial<Tile>,
-  ) {
+  ): this {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) return;
 
     let walkable = true;
@@ -113,6 +113,8 @@ export class World {
       isOpen: options?.isOpen,
       ...options,
     };
+
+    return this;
   }
 
   public getTile(x: number, y: number): Tile | null {
@@ -478,13 +480,11 @@ export class World {
         if (seesVictim) {
           // Witness logic
           if (other.job === "Cop" || other.hasTrait("Cop")) {
-            other.relationships.modifyHate(attacker.id, 70);
-            other.relationships.setRelType(attacker.id, "Hostile");
+            other.setRelationship(attacker.id, "Hostile", 70);
             other.say("Именем закона! Стой!", true);
-          } else if (other.relationships.getRelType(victim.id) === "Friendly") {
+          } else if (other.getRelationship(victim.id) === "Friendly") {
             // Defend ally
-            other.relationships.modifyHate(attacker.id, 60);
-            other.relationships.setRelType(attacker.id, "Hostile");
+            other.setRelationship(attacker.id, "Hostile", 60);
             other.say(`${victim.name} Отстань от меня!`, true);
           }
         }

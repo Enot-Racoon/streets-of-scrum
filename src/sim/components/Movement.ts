@@ -5,6 +5,8 @@ export class Movement {
   public agent: Agent;
   public vx: number = 0;
   public vy: number = 0;
+  public ivx: number = 0;
+  public ivy: number = 0;
   public baseSpeed: number = 3.2;
 
   constructor(agent: Agent) {
@@ -38,6 +40,11 @@ export class Movement {
     const angle = Math.atan2(dy, dx);
     this.agent.facingAngle = angle;
     this.moveInDirection(angle, dt, speedRatio);
+  }
+
+  public applyImpulse(ix: number, iy: number) {
+    this.ivx += ix;
+    this.ivy += iy;
   }
 
   public stop() {

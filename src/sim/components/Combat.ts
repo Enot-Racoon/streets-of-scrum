@@ -25,11 +25,20 @@ export class Combat {
 
     const dashSpeed = 1.5;
     const dashDistance = 40;
-    this.agent.movement.vx += Math.cos(this.agent.facingAngle) * dashDistance;
-    this.agent.movement.vy += Math.sin(this.agent.facingAngle) * dashDistance;
+    let aimAngle = this.agent.facingAngle;
+    if (targetX !== undefined && targetY !== undefined) {
+      aimAngle = Math.atan2(targetY - this.agent.y, targetX - this.agent.x);
+      this.agent.facingAngle = aimAngle;
+    }
+    this.agent.movement.ivx += Math.cos(aimAngle) * dashDistance;
+    this.agent.movement.ivy += Math.sin(aimAngle) * dashDistance;
     this.dashCooldownTimer = 1 / dashSpeed;
 
     return true;
+  }
+
+  public applyImpulse(ix: number, iy: number): void {
+    // this.ix
   }
 
   public canAttack(): boolean {

@@ -64,8 +64,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
     for (const a1 of world.agents) {
       for (const a2 of world.agents) {
         if (a1.id !== a2.id) {
-          a1.relationships.setRelType(a2.id, "Hostile");
-          a1.relationships.modifyHate(a2.id, 90);
+          a1.setRelationship(a2.id, "Hostile", 90);
         }
       }
       a1.say("АТТАКУЙ ВСЕХ!", true);

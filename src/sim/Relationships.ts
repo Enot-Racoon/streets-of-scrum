@@ -10,29 +10,38 @@ export class Relationships {
     this.agent = agent;
   }
 
-  public getOrCreate(targetAgent: any): RelationshipState {
+  public getRel(targetId: string): RelationshipState | null {
+    return this.map.get(targetId) ?? null;
+  }
+
+  private createRel(targetAgent: Agent | string) {
     const targetId =
       typeof targetAgent === "string" ? targetAgent : targetAgent.id;
-    let rel = this.map.get(targetId);
-    if (!rel) {
-      const initialType: RelType = this.determineInitialRel(targetAgent);
-      rel = {
-        targetAgentId: targetId,
-        relType: initialType,
-        initialRelType: initialType,
-        hate: initialType === "Hostile" ? 80 : 0,
-        strikes: 0,
-        hasLOS: false,
-        distance: 999,
-        annoyedCountdown: 0,
-      };
-      this.map.set(targetId, rel);
-    }
+
+    const initialType: RelType = this.determineInitialRel(targetAgent);
+    const rel = {
+      targetAgentId: targetId,
+      relType: initialType,
+      initialRelType: initialType,
+      hate: initialType === "Hostile" ? 80 : 0,
+      strikes: 0,
+      hasLOS: false,
+      distance: 999,
+      annoyedCountdown: 0,
+    };
+    this.map.set(targetId, rel);
     return rel;
   }
 
-  private determineInitialRel(target: Agent): RelType {
-    if (!target) return "Neutral";
+  public getOrCreate(targetAgent: Agent | string): RelationshipState {
+    const targetId =
+      typeof targetAgent === "string" ? targetAgent : targetAgent.id;
+
+    return this.getRel(targetId) ?? this.createRel(targetAgent);
+  }
+
+  private determineInitialRel(target: Agent | string): RelType {
+    if (!target || typeof target === "string") return "Neutral";
 
     // Faction based initial relationships
     const myJob = this.agent.job;
@@ -173,7 +182,13 @@ export class Relationships {
     }
   }
 
-  public getAll(): RelationshipState[] {
+  public getAll(liveOnly?: boolean): RelationshipState[] {
+    if (liveOnly) {
+      return Array.from(this.map.values()).filter((rel) => {
+        const target = this.agent.world.getAgentById(rel.targetAgentId);
+        return target && !target.isDead;
+      });
+    }
     return Array.from(this.map.values());
   }
 }

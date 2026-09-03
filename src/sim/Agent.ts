@@ -12,6 +12,8 @@ import type {
   InvItem,
   ItemDef,
   JobType,
+  RelationshipState,
+  RelType,
   SpeechBubble,
 } from "./types";
 import { getTraitDef, type TraitType } from "./traits";
@@ -45,7 +47,7 @@ export class Agent {
   // Components (SoS Architecture)
   private readonly brain: Brain;
   private readonly brainUpdate: BrainUpdate;
-  public relationships: Relationships;
+  private readonly relationships: Relationships;
   public statusEffects: StatusEffects;
   private readonly inventory: InvDatabase;
   public movement: Movement;
@@ -174,6 +176,25 @@ export class Agent {
   }
 
   // Relationships Facade
+  public setRelationship(targetId: string, type: RelType, hate?: number): this {
+    this.relationships.setRelType(targetId, type);
+    if (hate !== undefined) this.relationships.modifyHate(targetId, hate);
+    return this;
+  }
+
+  public getRelationship(targetId: string) {
+    return this.relationships.getRelType(targetId);
+  }
+
+  public getAllRelationships(liveOnly?: boolean): RelationshipState[] {
+    return this.relationships.getAll(liveOnly);
+  }
+
+  public getOrCreateRelationship(
+    targetAgent: Agent | string,
+  ): RelationshipState {
+    return this.relationships.getOrCreate(targetAgent);
+  }
 
   // Main object definitions
   constructor(options: {

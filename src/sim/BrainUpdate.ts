@@ -35,7 +35,7 @@ export class BrainUpdate {
     for (const other of world.agents) {
       if (other.id === this.agent.id || other.isDead) continue;
 
-      const rel = this.agent.relationships.getOrCreate(other);
+      const rel = this.agent.getOrCreateRelationship(other);
       if (rel.hasLOS && rel.relType === "Hostile") {
         if (rel.distance < closestHostileDist) {
           closestHostileDist = rel.distance;

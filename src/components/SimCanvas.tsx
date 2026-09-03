@@ -107,8 +107,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         if (possessedAgent) {
           possessedAgent.moveInDirection(Math.atan2(moveY, moveX), dt);
         } else {
-          const cs = 0.2;
-          camera.moveBy(moveX * cs, moveY * cs);
+          const cameraSpeed = 0.2;
+          camera.moveBy(moveX * cameraSpeed, moveY * cameraSpeed);
         }
       } else if (possessedAgent) {
         possessedAgent.stop();

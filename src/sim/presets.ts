@@ -414,13 +414,13 @@ export function buildSandboxScenario(world: World) {
   for (let x = 4; x <= 12; x++) {
     world.setTile(x, 6, "Barrel");
   }
-  world.setTile(4, 7, "Barrel");
-  world.setTile(4, 8, "Barrel");
-
-  world.setTile(2, 2, "Barrel");
-  world.setTile(3, 2, "Barrel");
-  world.setTile(21, 2, "Barrel");
-  world.setTile(21, 17, "Barrel");
+  world
+    .setTile(4, 7, "Barrel")
+    .setTile(4, 8, "Barrel")
+    .setTile(2, 2, "Barrel")
+    .setTile(3, 2, "Barrel")
+    .setTile(21, 2, "Barrel")
+    .setTile(21, 17, "Barrel");
 
   const g1 = spawnArchetype(
     //
@@ -429,13 +429,16 @@ export function buildSandboxScenario(world: World) {
     7.5,
     "God Gorilla Bob",
   ).addTrait("God");
+
   const g2 = spawnArchetype(
     "Gorilla",
     Math.floor(rand(8, 16)) + 0.5,
     Math.floor(rand(8, 18)) + 0.5,
     "God Gorilla Jack",
   ).addTrait("God");
-  g1.relationships.setRelType(g2.id, "Hostile").modifyHate(g2.id, 90);
-  g2.relationships.setRelType(g1.id, "Hostile").modifyHate(g1.id, 90);
-  world.addAgent(g1, g2);
+
+  world.addAgent(
+    g1.setRelationship(g2.id, "Hostile", 90),
+    g2.setRelationship(g1.id, "Hostile", 90),
+  );
 }
