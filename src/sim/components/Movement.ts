@@ -15,7 +15,7 @@ export class Movement {
 
   public getSpeed(): number {
     let speed = this.baseSpeed;
-    const speedMult = this.agent.statusEffects.getStatMod("speedMult") ?? 1.0;
+    const speedMult = this.agent.getStatusModificator("speedMult") ?? 1.0;
     return speed * speedMult;
   }
 

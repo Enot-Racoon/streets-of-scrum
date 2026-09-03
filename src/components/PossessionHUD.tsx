@@ -56,9 +56,9 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
                 <span>•</span>
                 <span>
                   Скорость: x
-                  {(
-                    possessed.statusEffects.getStatMod("speedMult") || 1.0
-                  ).toFixed(1)}
+                  {(possessed.getStatusModificator("speedMult") || 1.0).toFixed(
+                    1,
+                  )}
                 </span>
               </div>
             </div>

@@ -192,7 +192,7 @@ const TabsButtons = ({
       }`}
     >
       <Sparkles className="w-3.5 h-3.5" /> Эффекты(
-      {agent.statusEffects.traitNames.size})
+      {agent.traitNames.length})
     </button>
 
     <button
@@ -438,7 +438,7 @@ const TraitsTab = ({ agent }: { agent: Agent }) => {
       </span>
 
       <div className="space-y-2">
-        {agent.statusEffects.getTraits().map((trait) => (
+        {agent.getTraits().map((trait) => (
           <div
             key={trait.name}
             className="p-2.5 bg-slate-950/40 rounded border border-slate-800 text-xs relative group"

@@ -94,8 +94,7 @@ export class Combat {
     const spread = weapon.spread || 0.05;
 
     let finalDamage =
-      baseDamage *
-      (this.agent.statusEffects.getStatMod("bulletDamageMult") || 1.0);
+      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") || 1.0);
 
     for (let i = 0; i < bulletCount; i++) {
       const angleOffset = (Math.random() - 0.5) * spread * 2;
@@ -162,11 +161,10 @@ export class Combat {
     const range = weapon.range || 1.2;
     const baseDamage = weapon.damage || 10;
     let finalDamage =
-      baseDamage *
-      (this.agent.statusEffects.getStatMod("meleeDamageMult") || 1.0);
+      baseDamage * (this.agent.getStatusModificator("meleeDamageMult") || 1.0);
 
     // Apply trait hooks on deal damage
-    for (const traitName of this.agent.statusEffects.traitNames) {
+    for (const traitName of this.agent.traitNames) {
       const def = getTraitDef(traitName);
       if (def && def.onDealDamage) {
         finalDamage = def.onDealDamage(this.agent, finalDamage, null);

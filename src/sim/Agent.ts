@@ -15,6 +15,7 @@ import type {
   RelationshipState,
   RelType,
   SpeechBubble,
+  TraitDef,
 } from "./types";
 import { getTraitDef, type TraitType } from "./traits";
 import { sounds } from "./sound";
@@ -44,11 +45,11 @@ export class Agent {
   public speechBubble: SpeechBubble | null = null;
   public world: World = null;
 
-  // Components (SoS Architecture)
+  // Components
   private readonly brain: Brain;
   private readonly brainUpdate: BrainUpdate;
   private readonly relationships: Relationships;
-  public statusEffects: StatusEffects;
+  private readonly statusEffects: StatusEffects;
   private readonly inventory: InvDatabase;
   public movement: Movement;
   private readonly combat: Combat;
@@ -267,17 +268,32 @@ export class Agent {
     }
   }
 
+  public get traitNames(): TraitType[] {
+    return Array.from(this.statusEffects.traitNames);
+  }
+
+  public getTraits(): TraitDef[] {
+    return this.statusEffects.getTraits();
+  }
+
   public addTrait(traitName: TraitType): this {
     this.statusEffects.addTrait(traitName);
     return this;
   }
 
-  public removeTrait(traitName: TraitType) {
+  public removeTrait(traitName: TraitType): this {
     this.statusEffects.removeTrait(traitName);
+    return this;
   }
 
   public hasTrait(traitName: TraitType): boolean {
     return this.statusEffects.hasTrait(traitName);
+  }
+
+  public getStatusModificator(
+    modKey: keyof NonNullable<TraitDef["statMods"]>,
+  ): number {
+    return this.statusEffects.getStatMod(modKey);
   }
 
   public getVisionRange(): number {

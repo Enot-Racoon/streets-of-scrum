@@ -452,7 +452,7 @@ export class World {
     agent.name = `Zombie (${agent.name})`;
     agent.color = "#22c55e";
     agent.avatarIcon = "🧟";
-    agent.statusEffects.addTrait("Zombified");
+    agent.addTrait("Zombified");
     agent.clearInventory().addItem("zombie_claws");
     agent.say("МОЗЗЗГИ...", true);
     this.addLog({
