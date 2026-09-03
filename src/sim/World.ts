@@ -412,10 +412,12 @@ export class World {
         const falloff = 1 - dist / radius;
         const dealt = damage * falloff;
         // Knockback
-        const kbAngle = Math.atan2(agent.y - y, agent.x - x);
-        agent.movement.vx += Math.cos(kbAngle) * 8.0 * falloff;
-        agent.movement.vy += Math.sin(kbAngle) * 8.0 * falloff;
+        const kbPower = 8.0 * falloff;
+        agent.takeKnockback(agent.y - y, agent.x - x, kbPower);
         agent.takeDamage(dealt, sourceAgent);
+        // const kbAngle = Math.atan2(agent.y - y, agent.x - x);
+        // agent.movement.vx += Math.cos(kbAngle) * 8.0 * falloff;
+        // agent.movement.vy += Math.sin(kbAngle) * 8.0 * falloff;
       }
     }
 

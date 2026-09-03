@@ -415,6 +415,12 @@ export class Agent {
     }
   }
 
+  public takeKnockback(ix: number, iy: number, power: number = 5) {
+    const angle = Math.atan2(iy, ix);
+    this.movement.vx += Math.cos(angle) * power;
+    this.movement.vy += Math.sin(angle) * power;
+  }
+
   public die(killer?: Agent) {
     if (this.isDead) return;
 

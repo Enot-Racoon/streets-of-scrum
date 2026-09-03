@@ -30,8 +30,8 @@ export class Combat {
       aimAngle = Math.atan2(targetY - this.agent.y, targetX - this.agent.x);
       this.agent.facingAngle = aimAngle;
     }
-    this.agent.movement.ivx += Math.cos(aimAngle) * dashDistance;
-    this.agent.movement.ivy += Math.sin(aimAngle) * dashDistance;
+    this.agent.movement.vx += Math.cos(aimAngle) * dashDistance;
+    this.agent.movement.vy += Math.sin(aimAngle) * dashDistance;
     this.dashCooldownTimer = 1 / dashSpeed;
 
     return true;
@@ -190,10 +190,15 @@ export class Combat {
 
         if (angleDiff <= hitArc) {
           // Hit! Knockback and damage
-          this.agent.world.addLog({ message: "Hit! Knockback and damage" });
-          const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
-          other.movement.vx += Math.cos(aimAngle) * kbPower;
-          other.movement.vy += Math.sin(aimAngle) * kbPower;
+          other.takeKnockback(
+            Math.cos(aimAngle),
+            Math.sin(aimAngle),
+            this.agent.hasTrait("Strength") ? 6.0 : 3.0,
+          );
+          // const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
+          // other.movement.vx += Math.cos(aimAngle) * kbPower;
+          // other.movement.vy += Math.sin(aimAngle) * kbPower;
+          // this.agent.world.addLog({ message: "Hit! Knockback and damage" });
 
           other.takeDamage(finalDamage, this.agent);
 
