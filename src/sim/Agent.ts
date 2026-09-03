@@ -21,6 +21,7 @@ import { getTraitDef, type TraitType } from "./traits";
 import { sounds } from "./sound";
 import type { World } from "./World";
 import type { Goal } from "./goals/Goal";
+import type { Point } from "./pathfinding";
 
 let agentIdCounter = 1;
 
@@ -53,7 +54,7 @@ export class Agent {
   private readonly inventory: InvDatabase;
   public movement: Movement;
   private readonly combat: Combat;
-  public pathfindingAI: PathfindingAI;
+  private readonly pathfindingAI: PathfindingAI;
 
   // Brain Facade
   get lastThought(): string {
@@ -195,6 +196,27 @@ export class Agent {
     targetAgent: Agent | string,
   ): RelationshipState {
     return this.relationships.getOrCreate(targetAgent);
+  }
+
+  // Pathfinding Facade
+  public get hasPath(): boolean {
+    return this.pathfindingAI.hasPath;
+  }
+
+  public get waypoints(): Point[] {
+    return this.pathfindingAI.path;
+  }
+
+  public get currentWaypointIndex(): number {
+    return this.pathfindingAI.currentWaypointIndex;
+  }
+
+  public updatePathfindingAI(dt: number): boolean {
+    return this.pathfindingAI.update(dt);
+  }
+
+  public setDestination(targetX: number, targetY: number): void {
+    this.pathfindingAI.setDestination(targetX, targetY);
   }
 
   // Main object definitions

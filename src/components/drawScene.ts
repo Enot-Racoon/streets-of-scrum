@@ -219,7 +219,7 @@ function drawLivingAgents(
     if (
       // isSelected &&
       !agent.isPlayerControlled &&
-      agent.pathfindingAI.hasPath
+      agent.hasPath
     ) {
       ctx.strokeStyle = "rgba(251, 191, 36, 0.6)";
       ctx.lineWidth = 2;
@@ -227,11 +227,11 @@ function drawLivingAgents(
       ctx.beginPath();
       ctx.moveTo(ax, ay);
       for (
-        let i = agent.pathfindingAI.currentWaypointIndex;
-        i < agent.pathfindingAI.path.length;
+        let i = agent.currentWaypointIndex;
+        i < agent.waypoints.length;
         i++
       ) {
-        const wp = agent.pathfindingAI.path[i];
+        const wp = agent.waypoints[i];
         ctx.lineTo(wp.x * zoom, wp.y * zoom);
       }
       ctx.stroke();

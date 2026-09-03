@@ -69,7 +69,7 @@ export class GoalWander extends Goal {
       const ty = Math.floor(targetY);
 
       if (world.isWalkable(tx, ty)) {
-        this.agent.pathfindingAI.setDestination(targetX, targetY);
+        this.agent.setDestination(targetX, targetY);
         this.isMoving = true;
         this.debugInfo = `Блуждает до (${tx}, ${ty})`;
         return;
@@ -84,8 +84,8 @@ export class GoalWander extends Goal {
     if (this.status !== "Active") return this.status;
 
     if (this.isMoving) {
-      const reached = this.agent.pathfindingAI.update(dt);
-      if (reached || !this.agent.pathfindingAI.hasPath) {
+      const reached = this.agent.updatePathfindingAI(dt);
+      if (reached || !this.agent) {
         this.isMoving = false;
         this.waitTimer = 1.0 + Math.random() * 2.0;
         this.agent.stop();
@@ -131,7 +131,7 @@ export class GoalPatrol extends Goal {
       return;
     }
     const wp = this.waypoints[this.currentIdx];
-    this.agent.pathfindingAI.setDestination(wp.x, wp.y);
+    this.agent.setDestination(wp.x, wp.y);
     this.debugInfo = `Патрулирует до тчк #${this.currentIdx + 1} (${wp.x.toFixed(0)}, ${wp.y.toFixed(0)})`;
   }
 
@@ -147,7 +147,7 @@ export class GoalPatrol extends Goal {
       return "Active";
     }
 
-    const reached = this.agent.pathfindingAI.update(dt);
+    const reached = this.agent.updatePathfindingAI(dt);
     if (reached) {
       this.waitTimer = 1.5; // Pause at waypoint
       this.agent.stop();
@@ -185,7 +185,7 @@ export class GoalMoveTo extends Goal {
 
   public activate(): void {
     this.status = "Active";
-    this.agent.pathfindingAI.setDestination(this.targetX, this.targetY);
+    this.agent.setDestination(this.targetX, this.targetY);
     this.debugInfo = `Идёт к (${this.targetX.toFixed(1)}, ${this.targetY.toFixed(1)})`;
   }
 
@@ -202,14 +202,14 @@ export class GoalMoveTo extends Goal {
       return "Completed";
     }
 
-    const reached = this.agent.pathfindingAI.update(dt);
+    const reached = this.agent.updatePathfindingAI(dt);
     if (reached) {
       this.status = "Completed";
       this.agent.stop();
       return "Completed";
     }
 
-    if (!this.agent.pathfindingAI.hasPath && dist > this.tolerance) {
+    if (!this.agent.hasPath && dist > this.tolerance) {
       this.status = "Failed";
       return "Failed";
     }
@@ -280,10 +280,10 @@ export class GoalBattle extends Goal {
       // Pursue
       this.repathTimer -= dt;
       if (this.repathTimer <= 0) {
-        this.agent.pathfindingAI.setDestination(this.target.x, this.target.y);
+        this.agent.setDestination(this.target.x, this.target.y);
         this.repathTimer = 0.4;
       }
-      this.agent.pathfindingAI.update(dt);
+      this.agent.updatePathfindingAI(dt);
     } else {
       // In combat range: strafe or back up slightly if too close with a gun
       this.strafeTimer -= dt;
@@ -361,7 +361,7 @@ export class GoalFlee extends Goal {
         const ty = Math.floor(targetY);
 
         if (world.isWalkable(tx, ty)) {
-          this.agent.pathfindingAI.setDestination(targetX, targetY);
+          this.agent.setDestination(targetX, targetY);
           return;
         }
       }
@@ -383,7 +383,7 @@ export class GoalFlee extends Goal {
       this.repathTimer = 1.0;
     }
 
-    this.agent.pathfindingAI.update(dt);
+    this.agent.updatePathfindingAI(dt);
     return "Active";
   }
 
@@ -411,7 +411,7 @@ export class GoalInvestigate extends Goal {
   public activate(): void {
     this.status = "Active";
     this.reached = false;
-    this.agent.pathfindingAI.setDestination(this.targetX, this.targetY);
+    this.agent.setDestination(this.targetX, this.targetY);
     this.debugInfo = `Исследует (${this.targetX.toFixed(0)}, ${this.targetY.toFixed(0)})`;
     this.agent.say("Что за звук?");
   }
@@ -420,7 +420,7 @@ export class GoalInvestigate extends Goal {
     if (this.status !== "Active") return this.status;
 
     if (!this.reached) {
-      const arrived = this.agent.pathfindingAI.update(dt);
+      const arrived = this.agent.updatePathfindingAI(dt);
       const dist = Math.hypot(
         this.agent.x - this.targetX,
         this.agent.y - this.targetY,
@@ -529,10 +529,7 @@ export class GoalTattle extends Goal {
     this.status = "Active";
     this.findNearestCop();
     if (this.copTarget) {
-      this.agent.pathfindingAI.setDestination(
-        this.copTarget.x,
-        this.copTarget.y,
-      );
+      this.agent.setDestination(this.copTarget.x, this.copTarget.y);
       this.agent.say("Полиция! Помогите! Тут преступник!", true);
       this.debugInfo = `Жалуется ${this.copTarget.name}`;
     } else {
@@ -591,8 +588,8 @@ export class GoalTattle extends Goal {
       return "Completed";
     }
 
-    this.agent.pathfindingAI.setDestination(this.copTarget.x, this.copTarget.y);
-    this.agent.pathfindingAI.update(dt);
+    this.agent.setDestination(this.copTarget.x, this.copTarget.y);
+    this.agent.updatePathfindingAI(dt);
     return "Active";
   }
 
@@ -617,7 +614,7 @@ export class GoalInteract extends Goal {
 
   public activate(): void {
     this.status = "Active";
-    this.agent.pathfindingAI.setDestination(this.tileX + 0.5, this.tileY + 0.5);
+    this.agent.setDestination(this.tileX + 0.5, this.tileY + 0.5);
     this.debugInfo = `Взаимодействие с объектом в (${this.tileX}, ${this.tileY})`;
   }
 
@@ -634,7 +631,7 @@ export class GoalInteract extends Goal {
       return "Completed";
     }
 
-    this.agent.pathfindingAI.update(dt);
+    this.agent.updatePathfindingAI(dt);
     return "Active";
   }
 
