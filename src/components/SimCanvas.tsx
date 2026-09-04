@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import type { World } from "../sim/World";
 import type { Agent } from "../sim/Agent";
-import type { MousePos } from "../sim/types";
+import type { Mouse } from "../sim/types";
 import drawScene from "./drawScene";
 import storeValue from "../utils/storeValue";
 import Camera from "../sim/components/Camera";
@@ -21,11 +21,20 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
   onPossessAgent,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cameraRef = useRef<Camera>(
-    new Camera({ x: 12, y: 10, zoom: parseInt(zoomStore()) ?? 34 }),
-  );
-  const mousePosRef = useRef<MousePos>({ x: 0, y: 0, worldX: 0, worldY: 0 });
-  const keysDownRef = useRef<Record<string, boolean>>({});
+
+  const cameraRef = useRef<Camera>(null);
+  if (!cameraRef.current)
+    cameraRef.current = new Camera({
+      x: 12,
+      y: 10,
+      zoom: parseInt(zoomStore()) ?? 34,
+    });
+  const camera = cameraRef.current!;
+
+  const mouseRef = useRef<Mouse>(null);
+  if (!mouseRef.current)
+    mouseRef.current = { x: 0, y: 0, worldX: 0, worldY: 0, buttons: {} };
+  const mouse = mouseRef.current!;
 
   // Setup input handlers
   useEffect(() => {
@@ -46,11 +55,120 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     };
   }, [world]);
 
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (canvas && canvas.parentElement) {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle Mouse interaction
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX - rect.left;
+      const clientY = e.clientY - rect.top;
+
+      const zoom = camera.zoom;
+      const offsetX = canvas.width / 2 - camera.x * zoom;
+      const offsetY = canvas.height / 2 - camera.y * zoom;
+
+      const worldX = (clientX - offsetX) / zoom;
+      const worldY = (clientY - offsetY) / zoom;
+
+      mouse.x = clientX;
+      mouse.y = clientY;
+      mouse.worldX = worldX;
+      mouse.worldY = worldY;
+
+      // Pan camera when right mouse button held
+      if (e.buttons === 2) {
+        camera.moveBy(-e.movementX / zoom, -e.movementY / zoom);
+      }
+    };
+
+    const handleMouseUp = (e: MouseEvent) => {
+      mouse.buttons[e.button + 1] = false;
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      mouse.buttons[e.button + 1] = true;
+
+      const possessedAgent = !world.possessedAgent?.isDead
+        ? world.possessedAgent
+        : null;
+
+      // Left click
+      if (mouse.buttons[1]) {
+        // if possessed, attack in aim direction; else select agent or inspect tile
+        if (possessedAgent) {
+          possessedAgent.attack(mouse.worldX, mouse.worldY);
+        } else {
+          // Select agent under cursor
+          const clickedAgent = world.agents.find((a) => {
+            const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
+            return dist <= (a.radius || 0.4) + 0.2;
+          });
+
+          if (clickedAgent) onSelectAgent(clickedAgent);
+        }
+      }
+
+      if (e.buttons === 2 && possessedAgent) world.possessedAgent.interact();
+    };
+
+    const handleDoubleClick = (e: MouseEvent) => {
+      // Double click to possess agent
+      const clickedAgent = world.agents.find((a) => {
+        const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
+        return dist <= (a.radius || 0.4) + 0.2;
+      });
+
+      if (clickedAgent && !clickedAgent.isDead) {
+        onPossessAgent(clickedAgent);
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      camera.zoomBy(Math.sign(e.deltaY) * 0.3);
+      zoomStore(camera.zoom.toString());
+    };
+
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseup", handleMouseUp);
+    canvas.addEventListener("mousedown", handleMouseDown);
+    canvas.addEventListener("dblclick", handleDoubleClick);
+    canvas.addEventListener("contextmenu", handleContextMenu);
+    canvas.addEventListener("wheel", handleWheel);
+
+    return () => {
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseup", handleMouseUp);
+      canvas.removeEventListener("mousedown", handleMouseDown);
+      canvas.removeEventListener("dblclick", handleDoubleClick);
+      canvas.removeEventListener("contextmenu", handleContextMenu);
+      canvas.removeEventListener("wheel", handleWheel);
+    };
+  });
+
   // Main Render & Simulation Animation Loop
   useEffect(() => {
-    const camera = cameraRef.current;
-    const mouse = mousePosRef.current;
-
     let animationFrameId: number;
     let lastTime = performance.now();
 
@@ -130,8 +248,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
         // Aim towards mouse world position
         possessedAgent.facingAngle = Math.atan2(
-          mousePosRef.current.worldY - possessedAgent.y,
-          mousePosRef.current.worldX - possessedAgent.x,
+          mouse.worldY - possessedAgent.y,
+          mouse.worldX - possessedAgent.x,
         );
 
         if (camera) camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
@@ -152,9 +270,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext("2d");
-        if (ctx) {
-          drawScene(ctx, world, cameraRef.current, canvas.width, canvas.height);
-        }
+        if (ctx) drawScene(ctx, world, camera, canvas.width, canvas.height);
       }
 
       animationFrameId = requestAnimationFrame(renderLoop);
@@ -164,124 +280,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     return () => cancelAnimationFrame(animationFrameId);
   }, [world]);
 
-  // Canvas Mouse interaction
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    const camera = cameraRef.current;
-    if (!canvas || !camera) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.clientX - rect.left;
-    const clientY = e.clientY - rect.top;
-
-    const zoom = camera.zoom;
-    const offsetX = canvas.width / 2 - camera.x * zoom;
-    const offsetY = canvas.height / 2 - camera.y * zoom;
-
-    const worldX = (clientX - offsetX) / zoom;
-    const worldY = (clientY - offsetY) / zoom;
-
-    mousePosRef.current = { x: clientX, y: clientY, worldX, worldY };
-
-    // Pan camera when right mouse button held
-    if (e.buttons === 2) {
-      camera.moveBy(-e.movementX / zoom, -e.movementY / zoom);
-    }
-  };
-
-  const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    keysDownRef.current[`mouse${e.button + 1}`] = false;
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    keysDownRef.current[`mouse${e.button + 1}`] = true;
-
-    if (e.button === 0) {
-      // Left click: if possessed, attack in aim direction; else select agent or inspect tile
-      if (world.possessedAgent && !world.possessedAgent.isDead) {
-        world.possessedAgent.attack(
-          mousePosRef.current.worldX,
-          mousePosRef.current.worldY,
-        );
-      } else {
-        // Select agent under cursor
-        const clickedAgent = world.agents.find((a) => {
-          const dist = Math.hypot(
-            a.x - mousePosRef.current.worldX,
-            a.y - mousePosRef.current.worldY,
-          );
-          return dist <= (a.radius || 0.4) + 0.2;
-        });
-
-        if (clickedAgent) {
-          onSelectAgent(clickedAgent);
-        }
-      }
-    }
-    if (
-      e.buttons === 2 &&
-      world.possessedAgent &&
-      !world.possessedAgent.isDead
-    ) {
-      world.possessedAgent.interact();
-    }
-  };
-
-  const handleDoubleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    // Double click to possess agent
-    const clickedAgent = world.agents.find((a) => {
-      const dist = Math.hypot(
-        a.x - mousePosRef.current.worldX,
-        a.y - mousePosRef.current.worldY,
-      );
-      return dist <= (a.radius || 0.4) + 0.2;
-    });
-
-    if (clickedAgent && !clickedAgent.isDead) {
-      onPossessAgent(clickedAgent);
-    }
-  };
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      const canvas = canvasRef.current;
-      if (canvas && canvas.parentElement) {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Handle mouse wheel zoom
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const camera = cameraRef.current;
-    if (!canvas || !camera) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      camera.zoomBy(Math.sign(e.deltaY) * 0.3);
-      zoomStore(camera.zoom.toString());
-    };
-
-    canvasRef.current.addEventListener("wheel", handleWheel);
-    return () => canvasRef.current?.removeEventListener("wheel", handleWheel);
-  }, []);
-
   return (
     <div className="relative w-full h-full bg-slate-950 overflow-hidden select-none">
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-crosshair block"
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseDown={handleMouseDown}
-        onDoubleClick={handleDoubleClick}
-        onContextMenu={(e) => e.preventDefault()}
       />
     </div>
   );

@@ -219,9 +219,10 @@ export interface AgentMemory {
   expiresAt: number;
 }
 
-export interface MousePos {
+export interface Mouse {
   x: number;
   y: number;
   worldX: number;
   worldY: number;
+  buttons: Record<number, boolean>;
 }

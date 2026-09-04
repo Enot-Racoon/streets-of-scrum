@@ -15,12 +15,11 @@ const scenarioStore = storeValue<ScenarioName>("scenario");
 const initScenario = scenarioStore() ?? "district";
 
 export default function App() {
-  const worldRef = useRef<World | null>(null);
+  const forceRefresh = useForceUpdate();
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
 
-  const forceRefresh = useForceUpdate();
-
+  const worldRef = useRef<World | null>(null);
   // Initialize World on mount
   if (!worldRef.current) {
     const w = new World(24, 20);
