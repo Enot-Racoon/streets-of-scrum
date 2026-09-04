@@ -219,10 +219,12 @@ export interface AgentMemory {
   expiresAt: number;
 }
 
+export type MouseButtons = "left" | "right" | "wheel" | "back" | "forward";
+
 export interface Mouse {
   x: number;
   y: number;
   worldX: number;
   worldY: number;
-  buttons: Record<number, boolean>;
+  buttons: Record<MouseButtons, boolean>;
 }

@@ -33,7 +33,13 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
   const mouseRef = useRef<Mouse>(null);
   if (!mouseRef.current)
-    mouseRef.current = { x: 0, y: 0, worldX: 0, worldY: 0, buttons: {} };
+    mouseRef.current = {
+      x: 0,
+      y: 0,
+      worldX: 0,
+      worldY: 0,
+      buttons: {} as never,
+    };
   const mouse = mouseRef.current!;
 
   // Setup input handlers
@@ -100,46 +106,39 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       }
     };
 
+    const buttons = ["left", "right", "wheel", "back", "forward"] as const;
+
     const handleMouseUp = (e: MouseEvent) => {
-      mouse.buttons[e.button + 1] = false;
+      mouse.buttons[buttons[e.button]] = false;
     };
 
     const handleMouseDown = (e: MouseEvent) => {
-      mouse.buttons[e.button + 1] = true;
+      mouse.buttons[buttons[e.button]] = true;
 
       const possessedAgent = !world.possessedAgent?.isDead
         ? world.possessedAgent
         : null;
 
       // Left click
-      if (mouse.buttons[1]) {
-        // if possessed, attack in aim direction; else select agent or inspect tile
-        if (possessedAgent) {
-          possessedAgent.attack(mouse.worldX, mouse.worldY);
-        } else {
-          // Select agent under cursor
-          const clickedAgent = world.agents.find((a) => {
-            const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
-            return dist <= (a.radius || 0.4) + 0.2;
-          });
+      if (mouse.buttons.left) {
+        // Select agent under cursor
+        const clickedAgent = world.agents.find((a) => {
+          const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
+          return dist <= (a.radius || 0.4) + 0.2;
+        });
 
-          if (clickedAgent) onSelectAgent(clickedAgent);
-        }
+        if (clickedAgent) onSelectAgent(clickedAgent);
       }
 
       if (e.buttons === 2 && possessedAgent) world.possessedAgent.interact();
     };
 
     const handleDoubleClick = (e: MouseEvent) => {
-      // Double click to possess agent
       const clickedAgent = world.agents.find((a) => {
         const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
         return dist <= (a.radius || 0.4) + 0.2;
       });
-
-      if (clickedAgent && !clickedAgent.isDead) {
-        onPossessAgent(clickedAgent);
-      }
+      if (clickedAgent && !clickedAgent.isDead) onPossessAgent(clickedAgent);
     };
 
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
@@ -242,7 +241,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         if (mouse) {
           if (Keyboard.isDown("control"))
             possessedAgent.dash(mouse.worldX, mouse.worldY);
-          if (Keyboard.isDown("mouse1", "space"))
+          if (Keyboard.isDown("space") || mouse.buttons.left)
             possessedAgent.attack(mouse.worldX, mouse.worldY);
         }
 
