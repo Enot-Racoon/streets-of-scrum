@@ -295,11 +295,11 @@ export class GoalBattle extends Goal {
       if (isGun && dist < 2.5) {
         // Back up
         const backAngle = aimAngle + Math.PI;
-        this.agent.moveInDirection(backAngle, dt, 0.6);
+        this.agent.moveInDirection(backAngle, 0.6);
       } else if (dist > 1.2 && isGun) {
         // Circle strafe
         const strafeAngle = aimAngle + (Math.PI / 2) * this.strafeDir;
-        this.agent.moveInDirection(strafeAngle, dt, 0.7);
+        this.agent.moveInDirection(strafeAngle, 0.7);
       } else {
         this.agent.stop();
       }

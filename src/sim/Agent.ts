@@ -118,18 +118,17 @@ export class Agent {
   }
 
   // Movement Facade
-  moveInDirection(angle: number, dt: number, speedRatio: number = 1.0): this {
-    this.movement.moveInDirection(angle, dt, speedRatio);
+  moveInDirection(angle: number, speedRatio: number = 1.0): this {
+    this.movement.moveInDirection(angle, speedRatio);
     return this;
   }
 
   moveTowards(
     targetX: number,
     targetY: number,
-    dt: number,
     speedRatio: number = 1.0,
   ): this {
-    this.movement.moveTowards(targetX, targetY, dt, speedRatio);
+    this.movement.moveTowards(targetX, targetY, speedRatio);
     return this;
   }
 
