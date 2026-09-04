@@ -21,18 +21,21 @@ export class Combat {
     return this.dashCooldownTimer <= 0 && !this.agent.isDead;
   }
 
-  public dash(targetX?: number, targetY?: number): boolean {
+  public dash(
+    targetX?: number,
+    targetY?: number,
+    power: number = 1.0,
+  ): boolean {
     if (!this.canDash()) return false;
 
     const dashSpeed = 1.5;
-    const dashDistance = 40;
+    const dashPower = 10 * power;
     let aimAngle = this.agent.facingAngle;
     if (targetX !== undefined && targetY !== undefined) {
       aimAngle = Math.atan2(targetY - this.agent.y, targetX - this.agent.x);
       this.agent.facingAngle = aimAngle;
     }
-    this.agent.movement.vx += Math.cos(aimAngle) * dashDistance;
-    this.agent.movement.vy += Math.sin(aimAngle) * dashDistance;
+    this.agent.applyImpulse(aimAngle, dashPower);
     this.dashCooldownTimer = 1 / dashSpeed;
 
     return true;

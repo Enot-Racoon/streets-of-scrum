@@ -239,8 +239,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         });
 
         if (mouse) {
-          if (Keyboard.isDown("control"))
-            possessedAgent.dash(mouse.worldX, mouse.worldY);
+          if (Keyboard.isDown("control")) possessedAgent.dash();
           if (Keyboard.isDown("space") || mouse.buttons.left)
             possessedAgent.attack(mouse.worldX, mouse.worldY);
         }
