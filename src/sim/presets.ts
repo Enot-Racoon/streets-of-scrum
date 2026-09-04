@@ -282,26 +282,36 @@ export function buildDistrictMap(world: World) {
 
   // Spawn District Agents
   // Cops in precinct
-  world.addAgent(spawnArchetype("Cop", 4, 4, "Офицер Девис"));
-  world.addAgent(spawnArchetype("Cop", 5, 5, "Офицер Миллер"));
+  world.addAgent(
+    spawnArchetype("Cop", 4.5, 4.5, "Офицер Девис"),
+    spawnArchetype("Cop", 5.5, 5.5, "Офицер Миллер"),
+  );
 
   // Scientists in lab
-  world.addAgent(spawnArchetype("Scientist", 19, 4, "Доктор Арис"));
-  world.addAgent(spawnArchetype("Scientist", 20, 4, "Доктор Чен"));
+  world.addAgent(
+    spawnArchetype("Scientist", 19.5, 4.5, "Доктор Арис"),
+    spawnArchetype("Scientist", 20.5, 4.5, "Доктор Чен"),
+  );
 
   // Crepe Gangsters in southwest turf
-  world.addAgent(spawnArchetype("Gangster_Crepe", 4, 14, "Красный Змей"));
-  world.addAgent(spawnArchetype("Gangster_Crepe", 3, 16, "Красный Бык"));
+  world.addAgent(
+    spawnArchetype("Gangster_Crepe", 4.5, 14.5, "Красный Змей"),
+    spawnArchetype("Gangster_Crepe", 3.5, 16.5, "Красный Бык"),
+  );
 
   // Blahd Gangsters in southeast turf
-  world.addAgent(spawnArchetype("Gangster_Blahd", 19, 14, "Синяя Гадюка"));
-  world.addAgent(spawnArchetype("Gangster_Blahd", 20, 16, "Синий туз"));
+  world.addAgent(
+    spawnArchetype("Gangster_Blahd", 19.5, 14.5, "Синяя Гадюка"),
+    spawnArchetype("Gangster_Blahd", 20.5, 16.5, "Синий туз"),
+  );
 
   // Plaza Wanderers
-  world.addAgent(spawnArchetype("Citizen", 10, 5, "Фрэнк (горожанин)"));
-  world.addAgent(spawnArchetype("Citizen", 13, 14, "Сара (горожанка)"));
-  world.addAgent(spawnArchetype("Thief", 11, 15, "Слай Купер (вор)"));
-  world.addAgent(spawnArchetype("Bouncer", 15, 9, "Бруно (вышибала)"));
+  world.addAgent(
+    spawnArchetype("Citizen", 10.5, 5.5, "Фрэнк (горожанин)"),
+    spawnArchetype("Citizen", 13.5, 14.5, "Сара (горожанка)"),
+    spawnArchetype("Thief", 11.5, 15.5, "Слай Купер (вор)"),
+    spawnArchetype("Bouncer", 15.5, 9.5, "Бруно (вышибала)"),
+  );
 }
 
 export function buildGangWarScenario(world: World) {
@@ -325,20 +335,26 @@ export function buildGangWarScenario(world: World) {
   world.setTile(18, 4, "Crate");
 
   // Spawn Crepes
-  world.addAgent(spawnArchetype("Gangster_Crepe", 4, 5, "Красный Крепыш"));
-  world.addAgent(spawnArchetype("Gangster_Crepe", 5, 8, "Красный Стрелок"));
-  world.addAgent(spawnArchetype("Gangster_Crepe", 4, 12, "Красный Бугай"));
-  world.addAgent(spawnArchetype("Gangster_Crepe", 3, 15, "Красный Лидер"));
+  world.addAgent(
+    spawnArchetype("Gangster_Crepe", 4.5, 5.5, "Красный Крепыш"),
+    spawnArchetype("Gangster_Crepe", 5.5, 8.5, "Красный Стрелок"),
+    spawnArchetype("Gangster_Crepe", 4.5, 12.5, "Красный Бугай"),
+    spawnArchetype("Gangster_Crepe", 3.5, 15.5, "Красный Лидер"),
+  );
 
   // Spawn Blahds
-  world.addAgent(spawnArchetype("Gangster_Blahd", 19, 5, "Синий Крепыш"));
-  world.addAgent(spawnArchetype("Gangster_Blahd", 18, 8, "Синий Стрелок"));
-  world.addAgent(spawnArchetype("Gangster_Blahd", 19, 12, "Синий Бугай"));
-  world.addAgent(spawnArchetype("Gangster_Blahd", 20, 15, "Синий Лидер"));
+  world.addAgent(
+    spawnArchetype("Gangster_Blahd", 19.5, 5.5, "Синий Крепыш"),
+    spawnArchetype("Gangster_Blahd", 18.5, 8.5, "Синий Стрелок"),
+    spawnArchetype("Gangster_Blahd", 19.5, 12.5, "Синий Бугай"),
+    spawnArchetype("Gangster_Blahd", 20.5, 15.5, "Синий Лидер"),
+  );
 
   // Police squad ready to intervene
-  world.addAgent(spawnArchetype("Supercop", 11, 2, "SWAT Commander"));
-  world.addAgent(spawnArchetype("Cop", 13, 2, "SWAT Rookie"));
+  world.addAgent(
+    spawnArchetype("Supercop", 11.5, 2.5, "SWAT Commander"),
+    spawnArchetype("Cop", 13.5, 2.5, "SWAT Rookie"),
+  );
 }
 
 export function buildZombieOutbreakScenario(world: World) {
@@ -361,17 +377,21 @@ export function buildZombieOutbreakScenario(world: World) {
   world.setTile(11, 6, "Barrel");
 
   // Inside cage: Alpha Zombie & Gorilla
-  world.addAgent(spawnArchetype("Zombie", 11, 9, "Нулевой Пациент"));
-  world.addAgent(spawnArchetype("Zombie", 12, 10, "Пациент №2"));
-  world.addAgent(spawnArchetype("Gorilla", 11, 10, "Гора (Эксперимент #4)"));
+  world.addAgent(
+    spawnArchetype("Zombie", 11.5, 9.5, "Нулевой Пациент"),
+    spawnArchetype("Zombie", 12.5, 10.5, "Пациент №2"),
+    spawnArchetype("Gorilla", 11.5, 10.5, "Гора (Эксперимент #4)"),
+  );
 
   // Scientists & Guards outside
-  world.addAgent(spawnArchetype("Scientist", 6, 9, "Главный Исследователь"));
-  world.addAgent(spawnArchetype("Scientist", 17, 9, "Вирусолог"));
-  world.addAgent(spawnArchetype("Soldier", 5, 4, "Карантинный Офицер"));
-  world.addAgent(spawnArchetype("Soldier", 18, 4, "Отряд Опасных Материалов"));
-  world.addAgent(spawnArchetype("Cop", 12, 16, "Городская Полиция"));
-  world.addAgent(spawnArchetype("Citizen", 4, 16, "Потерянный Гражданин"));
+  world.addAgent(
+    spawnArchetype("Scientist", 6.5, 9.5, "Главный Исследователь"),
+    spawnArchetype("Scientist", 17.5, 9.5, "Вирусолог"),
+    spawnArchetype("Soldier", 5.5, 4.5, "Карантинный Офицер"),
+    spawnArchetype("Soldier", 18.5, 4.5, "Отряд Опасных Материалов"),
+    spawnArchetype("Cop", 12.5, 16.5, "Городская Полиция"),
+    spawnArchetype("Citizen", 4.5, 16.5, "Потерянный Гражданин"),
+  );
 }
 
 export function buildBarCasinoScenario(world: World) {
@@ -391,21 +411,22 @@ export function buildBarCasinoScenario(world: World) {
   world.setTile(21, 17, "Barrel");
 
   // Agents
-  world.addAgent(spawnArchetype("Bartender", 8, 4, "Мак (Бармен)"));
-  world.addAgent(spawnArchetype("Bouncer", 12, 14, "Гризли (Вышибала)"));
-  world.addAgent(spawnArchetype("Bouncer", 4, 14, "Танк (Вышибала)"));
+  world.addAgent(
+    spawnArchetype("Bartender", 8.5, 4.5, "Мак (Бармен)"),
+    spawnArchetype("Bouncer", 12.5, 14.5, "Гризли (Вышибала)"),
+    spawnArchetype("Bouncer", 4.5, 14.5, "Танк (Вышибала)"),
+  );
 
-  const drunk1 = spawnArchetype("Citizen", 8, 9, "Пьяный Пит");
-  drunk1.addTrait("Drunk");
-  world.addAgent(drunk1);
+  world.addAgent(
+    spawnArchetype("Citizen", 8.5, 9.5, "Пьяный Пит").addTrait("Drunk"),
+    spawnArchetype("Citizen", 10.5, 10.5, "Пьяный Вальтер").addTrait("Drunk"),
+  );
 
-  const drunk2 = spawnArchetype("Citizen", 10, 10, "Пьяный Вальтер");
-  drunk2.addTrait("Drunk");
-  world.addAgent(drunk2);
-
-  world.addAgent(spawnArchetype("Assassin", 19, 14, "Загадочный Незнакомец"));
-  world.addAgent(spawnArchetype("Thief", 3, 4, "Карманный Воришка"));
-  world.addAgent(spawnArchetype("Cop", 12, 2, "Патрульный Полицейский"));
+  world.addAgent(
+    spawnArchetype("Assassin", 19.5, 14.5, "Загадочный Незнакомец"),
+    spawnArchetype("Thief", 3.5, 4.5, "Карманный Воришка"),
+    spawnArchetype("Cop", 12.5, 2.5, "Патрульный Полицейский"),
+  );
 }
 
 export function buildSandboxScenario(world: World) {
