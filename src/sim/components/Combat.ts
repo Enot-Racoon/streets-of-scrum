@@ -3,6 +3,7 @@ import { getTraitDef } from "../traits";
 import type { Agent } from "../Agent";
 import type { World } from "../World";
 import type { ItemDef } from "../types";
+import rand from "@/src/utils/rand";
 
 export class Combat {
   public agent: Agent;
@@ -191,7 +192,7 @@ export class Combat {
         if (angleDiff <= hitArc) {
           // Hit! Knockback and damage
           const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
-          other.applyImpulse(aimAngle, kbPower);
+          other.applyImpulse(aimAngle, kbPower * rand(0.75, 1.25));
           other.takeDamage(finalDamage, this.agent);
           world.spawnParticles({
             x: other.x,
