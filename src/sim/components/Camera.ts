@@ -45,9 +45,19 @@ export default class Camera {
   private bounds?: CameraBounds;
 
   constructor(options: CameraOptions = {}) {
+    this.bounds = {
+      maxZoom: 128,
+      minZoom: 16,
+      ...options.bounds,
+    };
+
     const x = options.x ?? 0;
     const y = options.y ?? 0;
-    const zoom = options.zoom ?? 1;
+    const zoom = clamp(
+      options.zoom || 1,
+      this.bounds?.minZoom,
+      this.bounds?.maxZoom,
+    );
 
     this.state = {
       x,
@@ -60,12 +70,6 @@ export default class Camera {
 
       moveTime: 0,
       zoomTime: 0,
-    };
-
-    this.bounds = {
-      maxZoom: 128,
-      minZoom: 16,
-      ...options.bounds,
     };
   }
 
