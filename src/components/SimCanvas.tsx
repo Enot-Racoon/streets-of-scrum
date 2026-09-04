@@ -265,7 +265,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       camera.zoomBy(Math.sign(e.deltaY) * 0.3);
-      zoomStore(cameraRef.current.zoom.toString());
+      zoomStore(camera.zoom.toString());
     };
 
     canvasRef.current.addEventListener("wheel", handleWheel);

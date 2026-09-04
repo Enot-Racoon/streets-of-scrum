@@ -37,9 +37,9 @@ export class Movement {
     this.moveInDirection(angle, speedRatio);
   }
 
-  public applyImpulse(ix: number, iy: number) {
-    this.ivx += ix;
-    this.ivy += iy;
+  public applyImpulse(angle: number, power: number) {
+    this.ivx += Math.cos(angle) * power;
+    this.ivy += Math.sin(angle) * power;
   }
 
   public stop() {
@@ -48,11 +48,13 @@ export class Movement {
   }
 
   public update(dt: number, world: World) {
-    if (this.vx === 0 && this.vy === 0) return;
+    const svx = this.vx + this.ivx;
+    const svy = this.vy + this.ivy;
+    if (svx === 0 && svy === 0) return;
 
     const radius = this.agent.radius || 0.35;
-    let nextX = this.agent.x + this.vx * dt;
-    let nextY = this.agent.y + this.vy * dt;
+    let nextX = this.agent.x + svx * dt;
+    let nextY = this.agent.y + svy * dt;
 
     // Slide on X axis
     if (
@@ -83,9 +85,14 @@ export class Movement {
     }
 
     // Friction
-    this.vx *= 0.8;
-    this.vy *= 0.8;
+    const friction = 0.8;
+    this.vx *= friction;
+    this.vy *= friction;
+    this.ivx *= friction;
+    this.ivy *= friction;
     if (Math.abs(this.vx) < 0.01) this.vx = 0;
     if (Math.abs(this.vy) < 0.01) this.vy = 0;
+    if (Math.abs(this.ivx) < 0.01) this.ivx = 0;
+    if (Math.abs(this.ivy) < 0.01) this.ivy = 0;
   }
 }

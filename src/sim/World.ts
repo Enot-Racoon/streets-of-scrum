@@ -386,6 +386,8 @@ export class World {
     damage: number,
     sourceAgent?: Agent,
   ) {
+    damage *= 3;
+    radius *= 2;
     sounds.playExplosion();
     this.emitNoise({
       x,
@@ -412,12 +414,10 @@ export class World {
         const falloff = 1 - dist / radius;
         const dealt = damage * falloff;
         // Knockback
-        const kbPower = 8.0 * falloff;
-        agent.takeKnockback(agent.y - y, agent.x - x, kbPower);
+        const kbPower = 32.0 * falloff;
+        const kbAngle = Math.atan2(agent.y - y, agent.x - x);
+        agent.applyImpulse(kbAngle, kbPower);
         agent.takeDamage(dealt, sourceAgent);
-        // const kbAngle = Math.atan2(agent.y - y, agent.x - x);
-        // agent.movement.vx += Math.cos(kbAngle) * 8.0 * falloff;
-        // agent.movement.vy += Math.sin(kbAngle) * 8.0 * falloff;
       }
     }
 
@@ -436,6 +436,7 @@ export class World {
             tile &&
             (tile.type === "Barrel" ||
               tile.type === "Crate" ||
+              tile.type === "Wall" ||
               tile.type === "Door" ||
               tile.type === "Glass")
           ) {

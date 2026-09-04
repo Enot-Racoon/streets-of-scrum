@@ -190,18 +190,9 @@ export class Combat {
 
         if (angleDiff <= hitArc) {
           // Hit! Knockback and damage
-          other.takeKnockback(
-            Math.cos(aimAngle),
-            Math.sin(aimAngle),
-            this.agent.hasTrait("Strength") ? 6.0 : 3.0,
-          );
-          // const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
-          // other.movement.vx += Math.cos(aimAngle) * kbPower;
-          // other.movement.vy += Math.sin(aimAngle) * kbPower;
-          // this.agent.world.addLog({ message: "Hit! Knockback and damage" });
-
+          const kbPower = this.agent.hasTrait("Strength") ? 6.0 : 3.0;
+          other.applyImpulse(aimAngle, kbPower);
           other.takeDamage(finalDamage, this.agent);
-
           world.spawnParticles({
             x: other.x,
             y: other.y,

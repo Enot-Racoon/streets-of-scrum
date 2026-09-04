@@ -132,6 +132,11 @@ export class Agent {
     return this;
   }
 
+  public applyImpulse(angle: number, power: number): this {
+    this.movement.applyImpulse(angle, power);
+    return this;
+  }
+
   stop(): this {
     this.movement.stop();
     return this;
@@ -414,12 +419,6 @@ export class Agent {
     }
   }
 
-  public takeKnockback(ix: number, iy: number, power: number = 5) {
-    const angle = Math.atan2(iy, ix);
-    this.movement.vx += Math.cos(angle) * power;
-    this.movement.vy += Math.sin(angle) * power;
-  }
-
   public die(killer?: Agent) {
     if (this.isDead) return;
 
@@ -584,7 +583,12 @@ export class Agent {
   }
 
   public update(dt: number, world: World) {
-    if (this.isDead) return;
+    if (this.isDead) {
+      if (this.movement.ivx + this.movement.ivy !== 0) {
+        this.movement.update(dt, world);
+      }
+      return;
+    }
 
     // Tick speech bubble
     if (this.speechBubble) {
