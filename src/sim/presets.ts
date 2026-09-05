@@ -452,7 +452,7 @@ export function buildSandboxScenario(world: World) {
   const g2 = spawnArchetype(
     "Gorilla",
     Math.floor(rand(8, 16)) + 0.5,
-    Math.floor(rand(8, 18)) + 0.5,
+    Math.floor(rand(8, 16)) + 0.5,
     "God Gorilla Jack",
   ).addTrait("God");
 
