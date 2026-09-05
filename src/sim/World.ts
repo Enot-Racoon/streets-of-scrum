@@ -510,8 +510,11 @@ export class World {
     type = "system",
     agentId,
     agentName,
-  }: Omit<LogEntry, "id" | "timestamp" | "type"> &
+  }: Omit<LogEntry, "id" | "timestamp" | "type" | "x" | "y"> &
     Partial<Pick<LogEntry, "timestamp" | "type">>) {
+    let agent;
+    if (agentId) agent = this.getAgentById(agentId);
+
     this.logs.unshift({
       id: `log_${logIdCounter++}`,
       timestamp,
@@ -519,6 +522,8 @@ export class World {
       type,
       agentId,
       agentName,
+      x: agent?.x,
+      y: agent?.y,
     });
     if (this.logs.length > this.logMaxLength) {
       this.logs.pop();

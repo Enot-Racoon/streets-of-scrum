@@ -217,6 +217,8 @@ export interface LogEntry {
   timestamp: number;
   message: string;
   type: "combat" | "ai" | "possession" | "system" | "crime" | "speech";
+  x?: number;
+  y?: number;
   agentId?: string;
   agentName?: string;
 }

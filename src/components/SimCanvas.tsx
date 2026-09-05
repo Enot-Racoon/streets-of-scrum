@@ -4,11 +4,12 @@ import type { Agent } from "../sim/Agent";
 import type { Mouse } from "../sim/types";
 import drawScene from "./drawScene";
 import storeValue from "../utils/storeValue";
-import Camera from "../sim/components/Camera";
+import type Camera from "../sim/components/Camera";
 import Keyboard from "../sim/components/Keyboard";
 
 interface SimCanvasProps {
   world: World;
+  camera: Camera;
   onSelectAgent: (agent: Agent) => void;
   onPossessAgent: (agent: Agent) => void;
 }
@@ -17,19 +18,11 @@ const zoomStore = storeValue("camera-zoom", String, Number);
 
 export const SimCanvas: React.FC<SimCanvasProps> = ({
   world,
+  camera,
   onSelectAgent,
   onPossessAgent,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const cameraRef = useRef<Camera>(null);
-  if (!cameraRef.current)
-    cameraRef.current = new Camera({
-      x: 12,
-      y: 10,
-      zoom: zoomStore() ?? 34,
-    });
-  const camera = cameraRef.current!;
 
   const mouseRef = useRef<Mouse>(null);
   if (!mouseRef.current)

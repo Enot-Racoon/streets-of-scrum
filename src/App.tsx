@@ -9,10 +9,13 @@ import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
 import storeValue from "./utils/storeValue";
 import { type ScenarioName, buildScenario } from "./sim/presets";
+import Camera from "./sim/components/Camera";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
 
 const initScenario = scenarioStore() ?? "district";
+
+const zoomStore = storeValue("camera-zoom", String, Number);
 
 export default function App() {
   const forceRefresh = useForceUpdate();
@@ -26,8 +29,16 @@ export default function App() {
     buildScenario(initScenario, w);
     worldRef.current = w;
   }
-
   const world = worldRef.current!;
+
+  const cameraRef = useRef<Camera>(null);
+  if (!cameraRef.current)
+    cameraRef.current = new Camera({
+      x: 12,
+      y: 10,
+      zoom: zoomStore() ?? 34,
+    });
+  const camera = cameraRef.current!;
 
   // Keep state sync timer for UI inspect updates
   useEffect(() => {
@@ -54,6 +65,10 @@ export default function App() {
     forceRefresh();
   };
 
+  const handleLocateEvent = (x: number, y: number) => {
+    camera.moveTo(x, y, 0.3);
+  };
+
   const handleUnpossess = () => {
     world.unpossessCurrent();
     forceRefresh();
@@ -76,6 +91,7 @@ export default function App() {
         <div className="flex-1 relative h-full">
           <SimCanvas
             world={world}
+            camera={camera}
             onSelectAgent={handleSelectAgent}
             onPossessAgent={handlePossessAgent}
           />
@@ -85,6 +101,7 @@ export default function App() {
             world={world}
             onUnpossess={handleUnpossess}
             onSelectAgent={handleSelectAgent}
+            onLocateEvent={handleLocateEvent}
           />
         </div>
 

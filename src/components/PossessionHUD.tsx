@@ -16,11 +16,13 @@ interface PossessionHUDProps {
   world: World;
   onUnpossess: () => void;
   onSelectAgent: (agent: Agent) => void;
+  onLocateEvent: (x: number, y: number) => void;
 }
 
 export const PossessionHUD: React.FC<PossessionHUDProps> = ({
   world,
   onUnpossess,
+  onLocateEvent,
   onSelectAgent,
 }) => {
   const [logsExpanded, setLogsExpanded] = useState<boolean>(false);
@@ -161,7 +163,7 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
               return (
                 <div
                   key={log.id}
-                  className={`flex items-start gap-1.5 ${typeColor}`}
+                  className={`flex items-start gap-1.5 pointer-events-auto ${typeColor}`}
                 >
                   <span className="text-slate-600 shrink-0">
                     [
@@ -172,6 +174,14 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
                       second: "2-digit",
                     })}
                     ]
+                  </span>
+                  <span
+                    className="cursor-pointer"
+                    onClick={() =>
+                      log.x && log.y && onLocateEvent(log.x, log.y)
+                    }
+                  >
+                    📍
                   </span>
                   <span>{log.message}</span>
                 </div>
