@@ -242,8 +242,8 @@ export class Agent {
     this.job = options.job;
     this.x = options.x;
     this.y = options.y;
-    this.health = options.health || 100;
-    this.maxHealth = options.maxHealth || 100;
+    this.health = options.health ?? 100;
+    this.maxHealth = options.maxHealth ?? 100;
     this.color = options.color || "#60a5fa";
     this.avatarIcon = options.avatarIcon || "👤";
 
@@ -480,7 +480,10 @@ export class Agent {
       }, 3_000);
     }
 
-    this.brain.clearAllGoals();
+    // Only clear goals if agent is truly dead (zombie transform sets isDead=false)
+    if (this.isDead) {
+      this.brain.clearAllGoals();
+    }
   }
 
   public resurrect() {
@@ -498,7 +501,10 @@ export class Agent {
     this.say("Я снова жив!", true);
 
     if (this.world) {
-      this.world.addAgent(this);
+      // Only add if not already present (die() removes via setTimeout after 3s)
+      if (!this.world.agents.includes(this)) {
+        this.world.addAgent(this);
+      }
       this.world.addLog({
         timestamp: Date.now(),
         message: `💀 ${this.name} ожил! `,
@@ -585,7 +591,7 @@ export class Agent {
 
   public update(dt: number, world: World) {
     if (this.isDead) {
-      if (this.movement.ivx + this.movement.ivy !== 0) {
+      if (this.movement.ivx !== 0 || this.movement.ivy !== 0) {
         this.movement.update(dt, world);
       }
       return;

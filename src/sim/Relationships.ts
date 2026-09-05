@@ -111,7 +111,7 @@ export class Relationships {
       modDelta *= 2.0;
     }
     if (this.agent.hasTrait("Aggressive") && delta > 0) {
-      modDelta *= 1.5;
+      modDelta *= 1.8;
     }
 
     rel.hate = Math.max(0, Math.min(100, rel.hate + modDelta));

@@ -41,10 +41,6 @@ export class Combat {
     return true;
   }
 
-  public applyImpulse(ix: number, iy: number): void {
-    // this.ix
-  }
-
   public canAttack(): boolean {
     return this.attackCooldownTimer <= 0 && !this.agent.isDead;
   }

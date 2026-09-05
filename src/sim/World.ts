@@ -185,10 +185,11 @@ export class World {
       if (this.possessedAgent?.id === id) {
         this.possessedAgent = null;
       }
+      this.agents.splice(idx, 1);
+      // Reassign selectedAgent after splice so agents[0] is already the updated list
       if (this.selectedAgent?.id === id) {
         this.selectedAgent = this.agents[0] || null;
       }
-      this.agents.splice(idx, 1);
     }
     return this;
   }

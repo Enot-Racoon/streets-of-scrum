@@ -1,7 +1,6 @@
 import { Goal } from "./Goal";
 import type { GoalStatus, NoiseEvent } from "../types";
 import type { Agent } from "../Agent";
-import type { Point } from "../pathfinding";
 
 /**
  * GoalIdle: Agent stands still, occasionally looks around, waits for timer

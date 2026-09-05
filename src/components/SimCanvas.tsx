@@ -164,7 +164,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       canvas.removeEventListener("contextmenu", handleContextMenu);
       canvas.removeEventListener("wheel", handleWheel);
     };
-  });
+  }, [world]);
 
   // Main Render & Simulation Animation Loop
   useEffect(() => {

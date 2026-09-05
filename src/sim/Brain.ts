@@ -22,9 +22,11 @@ export class Brain {
       }
     }
 
-    // Limit max stack depth to 8
+    // Limit max stack depth to 8.
+    // Drop the goal just below the top so the currently active goal is preserved.
     if (this.goalStack.length >= 8) {
-      const dropped = this.goalStack.shift();
+      // const dropped = this.goalStack.shift();
+      const dropped = this.goalStack.splice(this.goalStack.length - 2, 1)[0];
       if (dropped) dropped.terminate();
     }
 
