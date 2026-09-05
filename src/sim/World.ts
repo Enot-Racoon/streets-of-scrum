@@ -34,6 +34,7 @@ export class World {
   public noiseEvents: NoiseEvent[] = [];
   public droppedItems: DroppedItem[] = [];
   public logs: LogEntry[] = [];
+  public logMaxLength = 1000;
   public simSpeed: number = 1.0;
   public isPaused: boolean = false;
   public possessedAgent: Agent | null = null;
@@ -519,7 +520,7 @@ export class World {
       agentId,
       agentName,
     });
-    if (this.logs.length > 50) {
+    if (this.logs.length > this.logMaxLength) {
       this.logs.pop();
     }
   }

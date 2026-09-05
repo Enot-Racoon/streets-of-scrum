@@ -469,15 +469,8 @@ export class Agent {
 
       const agent = this;
       const world = this.world;
-      setTimeout(() => {
-        world.removeAgent(agent).addLog({
-          timestamp: Date.now(),
-          message: `${agent.name} покинул нас...`,
-          type: "combat",
-          agentId: this.id,
-          agentName: this.name,
-        });
-      }, 3_000);
+
+      setTimeout(() => world.removeAgent(agent), 3_000);
     }
 
     // Only clear goals if agent is truly dead (zombie transform sets isDead=false)

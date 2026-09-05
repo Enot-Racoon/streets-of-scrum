@@ -146,7 +146,7 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
           {world.logs.length === 0 ? (
             <p className="text-slate-500 italic">No events logged yet...</p>
           ) : (
-            world.logs.slice(0, logsExpanded ? 20 : 3).map((log) => {
+            world.logs.slice(0, logsExpanded ? 100 : 10).map((log) => {
               const typeColor =
                 log.type === "combat"
                   ? "text-rose-400"
