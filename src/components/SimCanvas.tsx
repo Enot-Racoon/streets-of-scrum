@@ -251,7 +251,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
         // Aim towards mouse world position
         if (mouse.dx !== 0 || mouse.dy !== 0) {
-          console.log(mouse.dx, mouse.dy);
           possessedAgent.facingAngle = Math.atan2(
             mouse.worldY - possessedAgent.y,
             mouse.worldX - possessedAgent.x,
