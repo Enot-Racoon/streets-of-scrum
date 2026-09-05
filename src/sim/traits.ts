@@ -96,7 +96,7 @@ export const TRAIT_REGISTRY = {
       "Ближний бой наносит электрический разряд, который оглушает и наносит дополнительный урон от удара током.",
     category: "positive",
     onDealDamage: (agent, damage, victim) => {
-      if (victim && victim.takeDamage) {
+      if (victim) {
         victim.say("БЗЗЗТ! Электрический шок!", true);
       }
       return damage + 8;

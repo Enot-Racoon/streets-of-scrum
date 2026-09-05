@@ -70,7 +70,9 @@ export class World {
     type: TileType,
     options?: Partial<Tile>,
   ): this {
-    if (x < 0 || x >= this.width || y < 0 || y >= this.height) return;
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+      return this;
+    }
 
     let walkable = true;
     let transparent = true;
@@ -177,7 +179,7 @@ export class World {
     });
   }
 
-  public removeAgent({ id }: Pick<Agent, "id">) {
+  public removeAgent({ id }: Pick<Agent, "id">): this {
     const idx = this.agents.findIndex((a) => a.id === id);
     if (idx !== -1) {
       if (this.possessedAgent?.id === id) {
@@ -188,6 +190,7 @@ export class World {
       }
       this.agents.splice(idx, 1);
     }
+    return this;
   }
 
   public getAgentByStep(step: number): Agent | null {
@@ -238,7 +241,7 @@ export class World {
     return this.agents.find((a) => a.id === id) || null;
   }
 
-  public possessAgent(agent: Agent) {
+  public possessAgent(agent: Agent | null) {
     if (!agent || agent.isDead || agent === this.possessedAgent) return;
 
     if (this.possessedAgent) {

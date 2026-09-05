@@ -13,7 +13,7 @@ interface SimCanvasProps {
   onPossessAgent: (agent: Agent) => void;
 }
 
-const zoomStore = storeValue("camera-zoom");
+const zoomStore = storeValue("camera-zoom", String, Number);
 
 export const SimCanvas: React.FC<SimCanvasProps> = ({
   world,
@@ -27,7 +27,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     cameraRef.current = new Camera({
       x: 12,
       y: 10,
-      zoom: parseInt(zoomStore()) ?? 34,
+      zoom: zoomStore() ?? 34,
     });
   const camera = cameraRef.current!;
 
@@ -130,7 +130,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         if (clickedAgent) onSelectAgent(clickedAgent);
       }
 
-      if (e.buttons === 2 && possessedAgent) world.possessedAgent.interact();
+      if (mouse.buttons.right && possessedAgent) possessedAgent.interact();
     };
 
     const handleDoubleClick = (e: MouseEvent) => {
@@ -146,7 +146,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       camera.zoomBy(e.deltaY * 0.2);
-      zoomStore(camera.zoom.toString());
+      zoomStore(camera.zoom);
     };
 
     canvas.addEventListener("mousemove", handleMouseMove);
@@ -202,7 +202,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         // Possess / unpossess hotkey (E)
         if (possessedAgent) {
           world.unpossessCurrent();
-        } else {
+        } else if (world.selectedAgent) {
           onPossessAgent(world.selectedAgent);
         }
       }

@@ -196,7 +196,7 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
             }
             className="bg-transparent text-xs text-slate-200 font-medium px-1.5 py-0.5 outline-none"
           >
-            {Object.keys(ARCHETYPES).map((key) => (
+            {(Object.keys(ARCHETYPES) as ArchetypeName[]).map((key) => (
               <option
                 key={key}
                 value={key}

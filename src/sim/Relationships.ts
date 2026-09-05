@@ -185,6 +185,7 @@ export class Relationships {
   public getAll(liveOnly?: boolean): RelationshipState[] {
     if (liveOnly) {
       return Array.from(this.map.values()).filter((rel) => {
+        if (!this.agent.world) return false;
         const target = this.agent.world.getAgentById(rel.targetAgentId);
         return target && !target.isDead;
       });

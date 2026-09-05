@@ -253,6 +253,8 @@ export class GoalBattle extends Goal {
       return "Completed";
     }
 
+    if (!this.agent.world) return "Failed";
+
     const dist = Math.hypot(
       this.agent.x - this.target.x,
       this.agent.y - this.target.y,
@@ -541,7 +543,7 @@ export class GoalTattle extends Goal {
     const world = this.agent.world;
     if (!world) return;
 
-    let closestCop: Agent = null;
+    let closestCop: Agent | null = null;
     let minDist = Infinity;
 
     for (const other of world.agents) {

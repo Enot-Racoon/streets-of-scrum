@@ -66,7 +66,7 @@ export class PathfindingAI {
 
     // Move towards current waypoint
     const activeWP = this.path[this.currentWaypointIndex];
-    if (activeWP) {
+    if (activeWP && this.agent.world) {
       this.agent.moveTowards(activeWP.x, activeWP.y);
 
       // Check if path is blocked by closed door and interact to open

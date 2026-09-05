@@ -44,7 +44,7 @@ export class Agent {
   public color: string = "#60a5fa";
   public avatarIcon: string = "👤";
   public speechBubble: SpeechBubble | null = null;
-  public world: World = null;
+  public world: World | null = null;
 
   // Components
   private readonly brain: Brain;
@@ -366,7 +366,7 @@ export class Agent {
     }
   }
 
-  public takeDamage(amount: number, attacker?: Agent) {
+  public takeDamage(amount: number, attacker?: Agent | null) {
     if (this.isDead) return;
 
     let finalDamage = amount;
@@ -419,10 +419,10 @@ export class Agent {
     }
   }
 
-  public die(killer?: Agent) {
+  public die(killer?: Agent | null) {
     if (this.isDead) return;
 
-    this.killedBy = killer;
+    this.killedBy = killer ?? null;
     this.isDead = true;
     this.deadTime = Date.now();
     this.health = 0;
@@ -467,11 +467,12 @@ export class Agent {
         killer.kills++;
       }
 
+      const agent = this;
+      const world = this.world;
       setTimeout(() => {
-        this.world.removeAgent(this);
-        this.world.addLog({
+        world.removeAgent(agent).addLog({
           timestamp: Date.now(),
-          message: `${this.name} покинул нас...`,
+          message: `${agent.name} покинул нас...`,
           type: "combat",
           agentId: this.id,
           agentName: this.name,

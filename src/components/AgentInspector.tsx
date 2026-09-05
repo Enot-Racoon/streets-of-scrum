@@ -43,60 +43,65 @@ const InspectorHeader = ({
   onPossess,
   onUnpossess,
 }: AgentInspectorProps) => {
-  const isPossessed = agent.world.possessedAgent?.id === agent.id;
-  const hpPercent = Math.round((agent.health / agent.maxHealth) * 100);
+  const isPossessed = agent?.world?.possessedAgent?.id === agent?.id;
+  const hpPercent = agent
+    ? Math.round((agent.health / agent.maxHealth) * 100)
+    : 0;
   return (
     <div className="p-4 bg-slate-950/80 border-b border-slate-800">
-      <div className="flex flex-col gap-2 mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{agent.avatarIcon}</span>
-          <div>
-            <h2 className="font-bold text-base text-slate-100 flex items-center gap-1.5">
-              {agent.name}
-              {isPossessed && (
-                <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-1.5 py-0.5 rounded font-mono font-normal">
-                  ОДЕРЖИМ
-                </span>
-              )}
-            </h2>
-            <p className="text-xs text-slate-400 font-mono">
-              Роль: <span className="text-sky-400">{JobNames[agent.job]}</span>{" "}
-              | ID: #{agent.id.slice(-6)}
-            </p>
+      {!!agent && (
+        <div className="flex flex-col gap-2 mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">{agent.avatarIcon}</span>
+            <div>
+              <h2 className="font-bold text-base text-slate-100 flex items-center gap-1.5">
+                {agent.name}
+                {isPossessed && (
+                  <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-1.5 py-0.5 rounded font-mono font-normal">
+                    ОДЕРЖИМ
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-slate-400 font-mono">
+                Роль:{" "}
+                <span className="text-sky-400">{JobNames[agent.job]}</span> |
+                ID: #{agent.id.slice(-6)}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-xs text-slate-400 font-mono">
+            Позиция: {agent.x.toFixed(2)} x {agent.y.toFixed(2)}
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            {isPossessed ? (
+              <button
+                onClick={onUnpossess}
+                className="px-2.5 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white rounded transition flex items-center gap-1 shadow-sm whitespace-nowrap"
+              >
+                <Zap className="w-3.5 h-3.5" /> Отпустить (Esc)
+              </button>
+            ) : (
+              <button
+                onClick={() => onPossess(agent)}
+                disabled={agent.isDead}
+                className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white rounded transition flex items-center gap-1 shadow-sm"
+              >
+                <Zap className="w-3.5 h-3.5" /> Завладеть телом
+              </button>
+            )}
           </div>
         </div>
-
-        <div className="text-xs text-slate-400 font-mono">
-          Позиция: {agent.x.toFixed(2)} x {agent.y.toFixed(2)}
-        </div>
-
-        <div className="flex items-center gap-1.5">
-          {isPossessed ? (
-            <button
-              onClick={onUnpossess}
-              className="px-2.5 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white rounded transition flex items-center gap-1 shadow-sm whitespace-nowrap"
-            >
-              <Zap className="w-3.5 h-3.5" /> Отпустить (Esc)
-            </button>
-          ) : (
-            <button
-              onClick={() => onPossess(agent)}
-              disabled={agent.isDead}
-              className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white rounded transition flex items-center gap-1 shadow-sm"
-            >
-              <Zap className="w-3.5 h-3.5" /> Завладеть телом
-            </button>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Health Bar & Vital Stats */}
       <div className="space-y-1.5 mt-3">
         <div className="flex justify-between text-xs font-mono text-slate-300">
-          Убийств: {agent.kills}
+          Убийств: {agent?.kills ?? 0}
         </div>
 
-        {agent.isDead ? (
+        {agent?.isDead ? (
           <div className="flex justify-between text-xs font-mono text-slate-300">
             <span className="text-rose-500">
               {agent.killedBy
@@ -106,7 +111,7 @@ const InspectorHeader = ({
           </div>
         ) : null}
 
-        {!agent.isDead && (
+        {!!agent && !agent.isDead && (
           <>
             <div className="flex justify-between text-xs font-mono text-slate-300">
               <span className="flex items-center gap-1">
@@ -134,7 +139,7 @@ const InspectorHeader = ({
       </div>
 
       {/* Current Brain Thought Banner */}
-      {!agent.isDead && (
+      {!!agent && !agent?.isDead && (
         <div className="mt-3 p-2 bg-slate-900 rounded border border-slate-800/80 flex items-start gap-2">
           <BrainIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
           <div className="text-xs">
@@ -294,6 +299,7 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
       <div className="grid grid-cols-2 gap-1.5">
         <button
           onClick={() => {
+            if (!agent.world) return;
             const nearestEnemy = agent.world.agents.find(
               (a) => a.id !== agent.id && !a.isDead,
             );
@@ -307,6 +313,7 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
         </button>
         <button
           onClick={() => {
+            if (!agent.world) return;
             const threat = agent.world.agents.find(
               (a) => a.id !== agent.id && !a.isDead,
             );
@@ -350,7 +357,7 @@ const RelationsTab = ({ agent }: { agent: Agent }) => {
       ) : (
         <div className="space-y-2">
           {relationships.map((rel) => {
-            const target = agent.world.getAgentById(rel.targetAgentId);
+            const target = agent?.world?.getAgentById(rel.targetAgentId);
             if (!target) return null;
 
             const relColor =
@@ -474,9 +481,9 @@ const TraitsTab = ({ agent }: { agent: Agent }) => {
             onChange={(e) => setSelectedTraitToAdd(e.target.value as TraitType)}
             className="flex-1 bg-slate-950 border border-slate-700 text-xs rounded px-2 py-1.5 text-slate-200"
           >
-            {Object.keys(TRAIT_REGISTRY).map((tName) => (
-              <option key={tName} value={tName}>
-                {TRAIT_REGISTRY[tName].displayName}
+            {(Object.keys(TRAIT_REGISTRY) as TraitType[]).map((key) => (
+              <option key={key} value={key}>
+                {TRAIT_REGISTRY[key].displayName}
               </option>
             ))}
           </select>
@@ -610,7 +617,7 @@ const InspectorFooer = ({ agent }: { agent: Agent }) => {
         onClick={() => agent.say("Эй всем привет", true)}
         className="py-1.5 bg-sky-950/60 hover:bg-sky-900 text-sky-300 border border-sky-800/60 rounded font-medium text-center"
       >
-        Make Shout
+        Возглас
       </button>
       <button
         onClick={() => agent.die()}

@@ -106,8 +106,16 @@ export interface TraitDef {
   onAdd?: (agent: Agent) => void;
   onRemove?: (agent: Agent) => void;
   onTick?: (agent: Agent, dt: number) => void;
-  onTakeDamage?: (agent: Agent, damage: number, attacker: Agent) => number;
-  onDealDamage?: (agent: Agent, damage: number, victim: Agent) => number;
+  onTakeDamage?: (
+    agent: Agent,
+    damage: number,
+    attacker?: Agent | null,
+  ) => number;
+  onDealDamage?: (
+    agent: Agent,
+    damage: number,
+    victim?: Agent | null,
+  ) => number;
   onHearNoise?: (agent: Agent, noise: NoiseEvent) => boolean;
 }
 

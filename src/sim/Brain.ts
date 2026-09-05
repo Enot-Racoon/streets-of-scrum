@@ -35,7 +35,7 @@ export class Brain {
     }
   }
 
-  public popGoal(): Goal | undefined {
+  public popGoal(): Goal | null {
     const popped = this.goalStack.pop();
     if (popped) {
       popped.terminate();
@@ -47,7 +47,7 @@ export class Brain {
         top.activate();
       }
     }
-    return popped;
+    return popped ?? null;
   }
 
   public getTopGoal(): Goal | null {

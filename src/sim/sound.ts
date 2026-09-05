@@ -2,15 +2,9 @@
  * Web Audio API synthesizer for Streets of Scrum-style sound effects.
  */
 
-const volumeStore = (val?: number): number | null => {
-  const KEY = "sound_volume";
-  if (val !== undefined) {
-    localStorage.setItem(KEY, val.toString());
-    return val;
-  }
-  const saved = localStorage.getItem(KEY);
-  return saved ? parseFloat(saved) : null;
-};
+import storeValue from "../utils/storeValue";
+
+const volumeStore = storeValue("sound_volume", String, Number);
 
 class SoundSystem {
   private ctx: AudioContext | null = null;
