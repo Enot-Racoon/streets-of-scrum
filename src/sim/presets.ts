@@ -185,14 +185,10 @@ export const Scenarios = {
   zombie: "Лаборатория зомби",
   bar: "Бар",
   sandbox: "Песочница",
+  city: "Большой город",
 } as const satisfies Record<string, string>;
 
-export type ScenarioName =
-  | "district"
-  | "gangwar"
-  | "zombie"
-  | "bar"
-  | "sandbox";
+export type ScenarioName = keyof typeof Scenarios;
 
 export const buildScenario = (scenario: ScenarioName, world: World) => {
   world.agents = [];
@@ -213,6 +209,8 @@ export const buildScenario = (scenario: ScenarioName, world: World) => {
     buildBarCasinoScenario(world);
   } else if (scenario === "sandbox") {
     buildSandboxScenario(world);
+  } else if (scenario === "city") {
+    buildLargeCityScenario(world);
   }
 };
 
@@ -395,7 +393,7 @@ export function buildZombieOutbreakScenario(world: World) {
 }
 
 export function buildBarCasinoScenario(world: World) {
-  world.initEmptyGrid();
+  world.initEmptyGrid(24, 20);
 
   // Bar Counter (L-shape)
   for (let x = 4; x <= 12; x++) {
@@ -430,7 +428,7 @@ export function buildBarCasinoScenario(world: World) {
 }
 
 export function buildSandboxScenario(world: World) {
-  world.initEmptyGrid();
+  world.initEmptyGrid(20, 18);
 
   for (let x = 4; x <= 12; x++) {
     world.setTile(x, 6, "Barrel");
@@ -440,8 +438,8 @@ export function buildSandboxScenario(world: World) {
     .setTile(4, 8, "Barrel")
     .setTile(2, 2, "Barrel")
     .setTile(3, 2, "Barrel")
-    .setTile(21, 2, "Barrel")
-    .setTile(21, 17, "Barrel");
+    .setTile(17, 2, "Barrel")
+    .setTile(17, 15, "Barrel");
 
   const g1 = spawnArchetype(
     //
@@ -462,4 +460,436 @@ export function buildSandboxScenario(world: World) {
     g1.setRelationship(g2.id, "Hostile", 90),
     g2.setRelationship(g1.id, "Hostile", 90),
   );
+}
+
+export function buildLargeCityScenario(world: World) {
+  const WIDTH = 200;
+  const HEIGHT = 150;
+
+  world.initEmptyGrid(WIDTH, HEIGHT);
+
+  // ============================================================
+  // CITY LAYOUT
+  //
+  //  ┌───────────────┬────────────────────┬───────────────┐
+  //  │ POLICE        │     DOWNTOWN       │  LABORATORY   │
+  //  │ HQ            │     + PARK         │               │
+  //  ├───────────────┼────────────────────┼───────────────┤
+  //  │ CREPE         │     CENTRAL        │  BLAHD        │
+  //  │ TERRITORY     │     DISTRICT       │  TERRITORY    │
+  //  ├───────────────┼────────────────────┼───────────────┤
+  //  │ INDUSTRIAL    │   RESIDENTIAL      │  NIGHT CLUB   │
+  //  │ ZONE          │   DISTRICT         │  + CASINO     │
+  //  ├───────────────┴────────────────────┴───────────────┤
+  //  │                     SOUTH SIDE                     │
+  //  └────────────────────────────────────────────────────┘
+  //
+  // ============================================================
+
+  // ------------------------------------------------------------
+  // Helpers
+  // ------------------------------------------------------------
+
+  const wallRect = (x1: number, y1: number, x2: number, y2: number) => {
+    for (let x = x1; x <= x2; x++) {
+      world.setTile(x, y1, "Wall");
+      world.setTile(x, y2, "Wall");
+    }
+
+    for (let y = y1; y <= y2; y++) {
+      world.setTile(x1, y, "Wall");
+      world.setTile(x2, y, "Wall");
+    }
+  };
+
+  const road = (x1: number, y1: number, x2: number, y2: number) => {
+    // Empty tiles are already walkable.
+    // This helper exists mainly to make the map readable.
+    for (let x = x1; x <= x2; x++) {
+      for (let y = y1; y <= y2; y++) {
+        // Intentionally empty.
+      }
+    }
+  };
+
+  const scatter = (
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    count: number,
+    tile: "Crate" | "Barrel" | "ATM",
+  ) => {
+    for (let i = 0; i < count; i++) {
+      const x = Math.floor(rand(x1, x2));
+      const y = Math.floor(rand(y1, y2));
+      world.setTile(x, y, tile);
+    }
+  };
+
+  // ------------------------------------------------------------
+  // Main city roads
+  // ------------------------------------------------------------
+
+  // Main horizontal boulevard
+  road(0, 72, WIDTH - 1, 78);
+
+  // Main vertical boulevard
+  road(96, 0, 104, HEIGHT - 1);
+
+  // Secondary roads
+  road(45, 0, 50, HEIGHT - 1);
+  road(150, 0, 155, HEIGHT - 1);
+
+  road(0, 35, WIDTH - 1, 40);
+  road(0, 110, WIDTH - 1, 115);
+
+  // ------------------------------------------------------------
+  // POLICE HQ
+  // ------------------------------------------------------------
+
+  wallRect(8, 8, 40, 30);
+
+  // Entrances
+  world.setTile(24, 30, "Door", { isOpen: true });
+  world.setTile(40, 19, "Door", { isOpen: true });
+
+  // Cells / rooms
+  wallRect(10, 10, 20, 18);
+  wallRect(28, 10, 38, 18);
+
+  world.setTile(15, 18, "Door", { isOpen: true });
+  world.setTile(33, 18, "Door", { isOpen: true });
+
+  scatter(11, 20, 38, 27, 5, "Crate");
+  scatter(11, 20, 38, 27, 3, "Barrel");
+
+  world.setTile(13, 12, "ATM");
+
+  // Police
+  world.addAgent(
+    spawnArchetype("Supercop", 15.5, 23.5, "Командир Харрис"),
+    spawnArchetype("Supercop", 30.5, 23.5, "Офицер Браун"),
+    spawnArchetype("Cop", 20.5, 25.5, "Офицер Джонсон"),
+    spawnArchetype("Cop", 25.5, 22.5, "Офицер Уилсон"),
+    spawnArchetype("Cop", 34.5, 25.5, "Офицер Мартин"),
+  );
+
+  // ------------------------------------------------------------
+  // DOWNTOWN
+  // ------------------------------------------------------------
+
+  wallRect(58, 8, 92, 30);
+
+  world.setTile(75, 30, "Door", { isOpen: true });
+  world.setTile(92, 19, "Door", { isOpen: true });
+
+  // Shops / offices
+  wallRect(61, 11, 70, 20);
+  wallRect(76, 11, 89, 20);
+
+  world.setTile(66, 20, "Door", { isOpen: true });
+  world.setTile(82, 20, "Door", { isOpen: true });
+
+  world.setTile(64, 14, "ATM");
+  world.setTile(86, 14, "ATM");
+
+  scatter(61, 22, 90, 28, 6, "Crate");
+
+  // Civilians
+  world.addAgent(
+    spawnArchetype("Citizen", 65.5, 25.5, "Майкл"),
+    spawnArchetype("Citizen", 70.5, 23.5, "Эмили"),
+    spawnArchetype("Citizen", 78.5, 25.5, "Джеймс"),
+    spawnArchetype("Citizen", 84.5, 23.5, "Оливия"),
+    spawnArchetype("Citizen", 88.5, 27.5, "Джек"),
+    spawnArchetype("Citizen", 61.5, 27.5, "София"),
+  );
+
+  // ------------------------------------------------------------
+  // CENTRAL PARK
+  // ------------------------------------------------------------
+
+  // Park perimeter
+  wallRect(60, 48, 92, 68);
+
+  // Four "park obstacles"
+  world.setTile(67, 53, "Barrel");
+  world.setTile(85, 53, "Barrel");
+  world.setTile(67, 63, "Barrel");
+  world.setTile(85, 63, "Barrel");
+
+  // Lots of civilians
+  world.addAgent(
+    spawnArchetype("Citizen", 65.5, 52.5, "Том"),
+    spawnArchetype("Citizen", 72.5, 55.5, "Линда"),
+    spawnArchetype("Citizen", 80.5, 51.5, "Дэвид"),
+    spawnArchetype("Citizen", 87.5, 56.5, "Нэнси"),
+    spawnArchetype("Citizen", 68.5, 62.5, "Роберт"),
+    spawnArchetype("Citizen", 77.5, 64.5, "Энн"),
+    spawnArchetype("Citizen", 86.5, 63.5, "Стив"),
+    spawnArchetype("Thief", 76.5, 59.5, "Теневой Вор"),
+  );
+
+  // ------------------------------------------------------------
+  // LABORATORY
+  // ------------------------------------------------------------
+
+  wallRect(115, 8, 145, 32);
+
+  world.setTile(130, 32, "Door", { isOpen: false });
+  world.setTile(115, 20, "Door", { isOpen: false });
+
+  // Containment rooms
+  wallRect(118, 11, 128, 22);
+  wallRect(132, 11, 142, 22);
+
+  world.setTile(123, 22, "Door", { isOpen: false });
+  world.setTile(137, 22, "Door", { isOpen: false });
+
+  world.setTile(120, 14, "Glass");
+  world.setTile(121, 14, "Glass");
+  world.setTile(139, 14, "Glass");
+  world.setTile(140, 14, "Glass");
+
+  scatter(118, 25, 142, 30, 5, "Crate");
+  scatter(118, 25, 142, 30, 4, "Barrel");
+
+  world.addAgent(
+    spawnArchetype("Scientist", 123.5, 27.5, "Доктор Уайт"),
+    spawnArchetype("Scientist", 137.5, 27.5, "Доктор Ли"),
+    spawnArchetype("Scientist", 130.5, 25.5, "Доктор Морган"),
+    spawnArchetype("Soldier", 119.5, 27.5, "Охрана лаборатории"),
+    spawnArchetype("Soldier", 141.5, 27.5, "Карантинный солдат"),
+  );
+
+  // Secret zombie experiment
+  world.addAgent(spawnArchetype("Zombie", 123.5, 16.5, "Образец Z-01"));
+
+  // ------------------------------------------------------------
+  // CREPE TERRITORY
+  // ------------------------------------------------------------
+
+  wallRect(8, 48, 40, 68);
+
+  world.setTile(24, 48, "Door", { isOpen: true });
+  world.setTile(40, 58, "Door", { isOpen: true });
+
+  // Gang hideout
+  wallRect(12, 52, 25, 64);
+  world.setTile(18, 64, "Door", { isOpen: true });
+
+  scatter(10, 50, 38, 66, 7, "Crate");
+  scatter(10, 50, 38, 66, 6, "Barrel");
+
+  world.addAgent(
+    spawnArchetype("Gangster_Crepe", 15.5, 55.5, "Красный Король"),
+    spawnArchetype("Gangster_Crepe", 20.5, 56.5, "Красный Бык"),
+    spawnArchetype("Gangster_Crepe", 14.5, 61.5, "Красный Пёс"),
+    spawnArchetype("Gangster_Crepe", 23.5, 60.5, "Красный Стрелок"),
+    spawnArchetype("Gangster_Crepe", 30.5, 55.5, "Красный Клык"),
+    spawnArchetype("Gangster_Crepe", 34.5, 61.5, "Красный Призрак"),
+  );
+
+  // ------------------------------------------------------------
+  // BLAHD TERRITORY
+  // ------------------------------------------------------------
+
+  wallRect(160, 48, 192, 68);
+
+  world.setTile(160, 58, "Door", { isOpen: true });
+  world.setTile(176, 48, "Door", { isOpen: true });
+
+  wallRect(174, 52, 188, 64);
+  world.setTile(181, 64, "Door", { isOpen: true });
+
+  scatter(162, 50, 190, 66, 7, "Crate");
+  scatter(162, 50, 190, 66, 6, "Barrel");
+
+  world.addAgent(
+    spawnArchetype("Gangster_Blahd", 178.5, 55.5, "Синий Король"),
+    spawnArchetype("Gangster_Blahd", 183.5, 56.5, "Синий Бык"),
+    spawnArchetype("Gangster_Blahd", 176.5, 61.5, "Синий Пёс"),
+    spawnArchetype("Gangster_Blahd", 186.5, 60.5, "Синий Стрелок"),
+    spawnArchetype("Gangster_Blahd", 166.5, 55.5, "Синий Клык"),
+    spawnArchetype("Gangster_Blahd", 170.5, 61.5, "Синий Призрак"),
+  );
+
+  // ------------------------------------------------------------
+  // INDUSTRIAL ZONE
+  // ------------------------------------------------------------
+
+  wallRect(8, 85, 55, 105);
+
+  world.setTile(31, 85, "Door", { isOpen: true });
+  world.setTile(55, 95, "Door", { isOpen: true });
+
+  scatter(12, 88, 51, 102, 18, "Crate");
+  scatter(12, 88, 51, 102, 14, "Barrel");
+
+  world.addAgent(
+    spawnArchetype("Bouncer", 20.5, 94.5, "Охранник склада"),
+    spawnArchetype("Bouncer", 42.5, 96.5, "Рабочий Танк"),
+    spawnArchetype("Thief", 35.5, 92.5, "Карманник"),
+  );
+
+  // ------------------------------------------------------------
+  // RESIDENTIAL DISTRICT
+  // ------------------------------------------------------------
+
+  wallRect(60, 85, 142, 105);
+
+  // Apartment blocks
+  wallRect(65, 88, 80, 102);
+  wallRect(88, 88, 103, 102);
+  wallRect(112, 88, 127, 102);
+
+  world.setTile(72, 102, "Door", { isOpen: true });
+  world.setTile(95, 102, "Door", { isOpen: true });
+  world.setTile(119, 102, "Door", { isOpen: true });
+
+  world.addAgent(
+    spawnArchetype("Citizen", 68.5, 94.5, "Анна"),
+    spawnArchetype("Citizen", 74.5, 96.5, "Питер"),
+    spawnArchetype("Citizen", 91.5, 94.5, "Мэри"),
+    spawnArchetype("Citizen", 98.5, 97.5, "Джордж"),
+    spawnArchetype("Citizen", 115.5, 94.5, "Кейт"),
+    spawnArchetype("Citizen", 122.5, 97.5, "Генри"),
+    spawnArchetype("Citizen", 132.5, 92.5, "Джулия"),
+    spawnArchetype("Citizen", 137.5, 98.5, "Чарли"),
+  );
+
+  // ------------------------------------------------------------
+  // NIGHT CLUB / CASINO
+  // ------------------------------------------------------------
+
+  wallRect(158, 85, 192, 110);
+
+  world.setTile(175, 85, "Door", { isOpen: true });
+  world.setTile(158, 97, "Door", { isOpen: true });
+
+  // Bar counter
+  for (let x = 164; x <= 183; x++) {
+    world.setTile(x, 91, "Crate");
+  }
+
+  world.setTile(166, 95, "ATM");
+  world.setTile(180, 95, "ATM");
+
+  scatter(162, 99, 188, 108, 5, "Barrel");
+
+  world.addAgent(
+    spawnArchetype("Bartender", 173.5, 89.5, "Винсент"),
+    spawnArchetype("Bouncer", 162.5, 101.5, "Большой Джо"),
+    spawnArchetype("Bouncer", 187.5, 101.5, "Молот"),
+    spawnArchetype("Assassin", 184.5, 94.5, "Таинственный Клиент"),
+    spawnArchetype("Thief", 168.5, 97.5, "Карманный Фокусник"),
+    spawnArchetype("Citizen", 177.5, 98.5, "Пьяный Билл").addTrait("Drunk"),
+    spawnArchetype("Citizen", 181.5, 104.5, "Пьяная Сара").addTrait("Drunk"),
+  );
+
+  // ------------------------------------------------------------
+  // SOUTH SIDE
+  // ------------------------------------------------------------
+
+  wallRect(70, 120, 135, 142);
+
+  world.setTile(102, 120, "Door", { isOpen: true });
+  world.setTile(70, 132, "Door", { isOpen: true });
+  world.setTile(135, 132, "Door", { isOpen: true });
+
+  scatter(75, 123, 130, 140, 10, "Crate");
+  scatter(75, 123, 130, 140, 8, "Barrel");
+
+  // Mixed population
+  world.addAgent(
+    spawnArchetype("Citizen", 82.5, 128.5, "Сэм"),
+    spawnArchetype("Citizen", 91.5, 136.5, "Луиза"),
+    spawnArchetype("Citizen", 113.5, 127.5, "Фрэнк"),
+    spawnArchetype("Citizen", 125.5, 136.5, "Молли"),
+    spawnArchetype("Cop", 103.5, 130.5, "Патрульный"),
+    spawnArchetype("Thief", 116.5, 135.5, "Ночной Вор"),
+  );
+
+  // ------------------------------------------------------------
+  // RANDOM CITY POPULATION
+  // ------------------------------------------------------------
+
+  // Additional citizens wandering around the city.
+  for (let i = 0; i < 35; i++) {
+    let x: number;
+    let y: number;
+
+    do {
+      x = Math.floor(rand(5, WIDTH - 5)) + 0.5;
+      y = Math.floor(rand(5, HEIGHT - 5)) + 0.5;
+    } while (
+      // Keep random civilians mostly on roads/open areas.
+      (x > 8 && x < 40 && y > 8 && y < 30) ||
+      (x > 115 && x < 145 && y > 8 && y < 32) ||
+      (x > 8 && x < 40 && y > 48 && y < 68) ||
+      (x > 160 && x < 192 && y > 48 && y < 68)
+    );
+
+    world.addAgent(spawnArchetype("Citizen", x, y, `Горожанин #${i + 1}`));
+  }
+
+  // ------------------------------------------------------------
+  // EXTRA TROUBLEMAKERS
+  // ------------------------------------------------------------
+
+  world.addAgent(
+    spawnArchetype("Assassin", 105.5, 75.5, "Наёмник"),
+    spawnArchetype("Thief", 53.5, 76.5, "Профессиональный Вор"),
+    spawnArchetype("Bouncer", 146.5, 76.5, "Уличный Вышибала"),
+  );
+
+  // ------------------------------------------------------------
+  // GANG RELATIONSHIPS
+  // ------------------------------------------------------------
+
+  const crepes = world.agents.filter((agent) => agent.job === "Gangster_Crepe");
+
+  const blahds = world.agents.filter((agent) => agent.job === "Gangster_Blahd");
+
+  for (const crepe of crepes) {
+    for (const blahd of blahds) {
+      crepe.setRelationship(blahd.id, "Hostile", 100);
+      blahd.setRelationship(crepe.id, "Hostile", 100);
+    }
+  }
+
+  // ------------------------------------------------------------
+  // INITIAL POLICE / GANG RELATIONS
+  // ------------------------------------------------------------
+
+  const cops = world.agents.filter(
+    (agent) =>
+      agent.job === "Cop" ||
+      agent.job === "Supercop" ||
+      agent.job === "Soldier",
+  );
+
+  for (const cop of cops) {
+    for (const gangster of [...crepes, ...blahds]) {
+      cop.setRelationship(gangster.id, "Hostile", 80);
+    }
+  }
+
+  // ------------------------------------------------------------
+  // CITY EVENT TRIGGERS
+  // ------------------------------------------------------------
+
+  // The city deliberately starts relatively calm.
+  //
+  // But:
+  //
+  //   - gangs hate each other
+  //   - police hate gangs
+  //   - thiefs are around civilians
+  //   - assassin is hidden in downtown
+  //   - zombie is locked inside the laboratory
+  //
+  // This means the player can simply watch and wait for
+  // the simulation to create its own chain reaction.
 }

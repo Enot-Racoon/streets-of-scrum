@@ -224,7 +224,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         if (possessedAgent) {
           possessedAgent.moveInDirection(Math.atan2(moveY, moveX));
         } else {
-          const cameraSpeed = 0.2;
+          const cameraSpeed = Math.max(0.2, 1 - 0.005 * camera.zoom);
           camera.moveBy(moveX * cameraSpeed, moveY * cameraSpeed);
         }
       } else if (possessedAgent) {

@@ -46,7 +46,11 @@ export class World {
     this.initEmptyGrid();
   }
 
-  public initEmptyGrid() {
+  public initEmptyGrid(width?: number, height?: number) {
+    if (width) {
+      this.width = width;
+      this.height = height ?? width;
+    }
     this.grid = [];
     for (let x = 0; x < this.width; x++) {
       this.grid[x] = [];
