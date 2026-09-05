@@ -113,8 +113,8 @@ export class Agent {
     return this.combat.attack(targetX, targetY);
   }
 
-  dash(targetX?: number, targetY?: number): boolean {
-    return this.combat.dash(targetX, targetY);
+  dash(targetX?: number, targetY?: number, power?: number): boolean {
+    return this.combat.dash(targetX, targetY, power);
   }
 
   // Movement Facade

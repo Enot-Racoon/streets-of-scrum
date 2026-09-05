@@ -99,25 +99,27 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       mouse.dx = clientX - mouse.x;
       mouse.dy = clientY - mouse.y;
+
       mouse.x = clientX;
       mouse.y = clientY;
       mouse.worldX = worldX;
       mouse.worldY = worldY;
-
-      // Pan camera when right mouse button held
-      if (e.buttons === 2) {
-        camera.moveBy(-e.movementX / zoom, -e.movementY / zoom);
-      }
     };
 
-    const buttons = ["left", "right", "wheel", "back", "forward"] as const;
+    const buttons = ["left", "wheel", "right", "back", "forward"] as const;
 
     const handleMouseUp = (e: MouseEvent) => {
+      if (mouse.buttons.forward || mouse.buttons.back) {
+        e.preventDefault();
+      }
       mouse.buttons[buttons[e.button]] = false;
     };
 
     const handleMouseDown = (e: MouseEvent) => {
       mouse.buttons[buttons[e.button]] = true;
+      if (mouse.buttons.forward || mouse.buttons.back) {
+        e.preventDefault();
+      }
 
       const possessedAgent = !world.possessedAgent?.isDead
         ? world.possessedAgent
@@ -199,15 +201,31 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         }
       }
 
+      // Unpossess
       if (Keyboard.wasPressed("escape") && possessedAgent)
         world.unpossessCurrent();
 
+      // Possess / unpossess
       if (Keyboard.wasPressed("e")) {
         // Possess / unpossess hotkey (E)
         if (possessedAgent) {
           world.unpossessCurrent();
         } else if (world.selectedAgent) {
           onPossessAgent(world.selectedAgent);
+        }
+      }
+
+      // Mouse movement
+      if (mouse.dx !== 0 || mouse.dy !== 0) {
+        if (possessedAgent) {
+          // Aim towards mouse world position
+          possessedAgent.facingAngle = Math.atan2(
+            mouse.worldY - possessedAgent.y,
+            mouse.worldX - possessedAgent.x,
+          );
+        } else if (mouse.buttons.right) {
+          // Pan camera when right mouse button held
+          camera.moveBy(-mouse.dx / camera.zoom, -mouse.dy / camera.zoom);
         }
       }
 
@@ -243,20 +261,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         });
 
         if (mouse) {
-          if (Keyboard.isDown("control")) possessedAgent.dash();
+          console.log(mouse.buttons);
+          if (Keyboard.isDown("control") || mouse.buttons.right)
+            possessedAgent.dash(undefined, undefined, 3.0);
 
           if (Keyboard.isDown("space") || mouse.buttons.left)
             possessedAgent.attack();
-        }
-
-        // Aim towards mouse world position
-        if (mouse.dx !== 0 || mouse.dy !== 0) {
-          possessedAgent.facingAngle = Math.atan2(
-            mouse.worldY - possessedAgent.y,
-            mouse.worldX - possessedAgent.x,
-          );
-          mouse.dx = 0;
-          mouse.dy = 0;
         }
 
         if (camera) camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
@@ -272,6 +282,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       world.update(dt);
       camera.update(dt);
       Keyboard.update();
+
+      // Reset mouse delta
+      if (mouse.dx !== 0 || mouse.dy !== 0) {
+        mouse.dx = 0;
+        mouse.dy = 0;
+      }
 
       // Draw to Canvas
       const canvas = canvasRef.current;
