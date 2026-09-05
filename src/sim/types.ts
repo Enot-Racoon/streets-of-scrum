@@ -232,6 +232,8 @@ export type MouseButtons = "left" | "right" | "wheel" | "back" | "forward";
 export interface Mouse {
   x: number;
   y: number;
+  dx: number;
+  dy: number;
   worldX: number;
   worldY: number;
   buttons: Record<MouseButtons, boolean>;

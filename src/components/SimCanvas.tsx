@@ -36,6 +36,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     mouseRef.current = {
       x: 0,
       y: 0,
+      dx: 0,
+      dy: 0,
       worldX: 0,
       worldY: 0,
       buttons: {} as never,
@@ -95,6 +97,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const worldX = (clientX - offsetX) / zoom;
       const worldY = (clientY - offsetY) / zoom;
 
+      mouse.dx = clientX - mouse.x;
+      mouse.dy = clientY - mouse.y;
       mouse.x = clientX;
       mouse.y = clientY;
       mouse.worldX = worldX;
@@ -246,10 +250,15 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         }
 
         // Aim towards mouse world position
-        possessedAgent.facingAngle = Math.atan2(
-          mouse.worldY - possessedAgent.y,
-          mouse.worldX - possessedAgent.x,
-        );
+        if (mouse.dx !== 0 || mouse.dy !== 0) {
+          console.log(mouse.dx, mouse.dy);
+          possessedAgent.facingAngle = Math.atan2(
+            mouse.worldY - possessedAgent.y,
+            mouse.worldX - possessedAgent.x,
+          );
+          mouse.dx = 0;
+          mouse.dy = 0;
+        }
 
         if (camera) camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
       }
