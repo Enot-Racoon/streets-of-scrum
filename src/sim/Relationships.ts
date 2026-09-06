@@ -120,10 +120,10 @@ export class Relationships {
     // Hate thresholds
     if (rel.hate >= 60 && rel.relType !== "Hostile") {
       rel.relType = "Hostile";
-      this.agent.say("I will destroy you!", true);
+      this.agent.say("Я уничтожу тебя!", true);
     } else if (rel.hate >= 25 && rel.relType === "Neutral") {
       rel.relType = "Annoyed";
-      this.agent.say("Hey, watch it!");
+      this.agent.say("Эй, осторожно!");
     }
   }
 
@@ -132,7 +132,7 @@ export class Relationships {
     rel.strikes++;
     this.modifyHate(targetId, 25);
     if (rel.strikes === 1) {
-      this.agent.say("Step back or there will be trouble!");
+      this.agent.say("Отвали, иначе будут неприятности!");
     } else if (rel.strikes >= 3) {
       this.setRelType(targetId, "Hostile");
     }

@@ -31,7 +31,7 @@ export class Brain {
     }
 
     this.goalStack.push(goal);
-    this.lastThought = `Switched goal to ${goal.name}`;
+    this.lastThought = `Цель изменена на${goal.name}`;
     if (!this.isSuspended) {
       goal.activate();
     }
