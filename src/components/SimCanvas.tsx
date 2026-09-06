@@ -178,9 +178,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         ? world.possessedAgent
         : null;
 
+      const isShiftPressed = Keyboard.isDown("shift");
+
       // Next / previous agent hotkeys
       if (Keyboard.wasPressed("tab")) {
-        const isShiftPressed = Keyboard.isDown("shift");
         if (possessedAgent) {
           isShiftPressed ? world.possessPrevAgent() : world.possessNextAgent();
           onSelectAgent(possessedAgent);
@@ -239,7 +240,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         if (possessedAgent) {
           possessedAgent.moveInDirection(Math.atan2(moveY, moveX));
         } else {
-          const cameraSpeed = Math.max(0.2, 1 - 0.005 * camera.zoom);
+          const mul = isShiftPressed ? 2.5 : 1;
+          const cameraSpeed = Math.max(0.2, 1 - 0.005 * camera.zoom) * mul;
           camera.moveBy(moveX * cameraSpeed, moveY * cameraSpeed);
         }
       } else if (possessedAgent) {
