@@ -81,7 +81,7 @@ export class World {
 
     let walkable = true;
     let transparent = true;
-    let health = 100;
+    let health: number | undefined = 100;
 
     if (type === "Wall") {
       walkable = false;
@@ -107,6 +107,18 @@ export class World {
       walkable = false;
       transparent = true;
       health = 200;
+    } else if (type === "Vent") {
+      walkable = true;
+      transparent = true;
+      health = 200;
+    } else if (type === "FireHazard") {
+      walkable = false;
+      transparent = true;
+      health = 200;
+    } else if (type === "Water") {
+      walkable = true;
+      transparent = true;
+      health = undefined;
     }
 
     this.grid[x][y] = {

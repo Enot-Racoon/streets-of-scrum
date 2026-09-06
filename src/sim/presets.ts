@@ -438,8 +438,17 @@ export function buildSandboxScenario(world: World) {
     .setTile(4, 8, "Barrel")
     .setTile(2, 2, "Barrel")
     .setTile(3, 2, "Barrel")
+
     .setTile(17, 2, "Barrel")
-    .setTile(17, 15, "Barrel");
+    .setTile(17, 15, "Barrel")
+
+    .setTile(15, 1, "Water")
+    .setTile(15, 2, "Water")
+    .setTile(15, 3, "Water")
+    .setTile(15, 4, "Water")
+    .setTile(16, 4, "Water")
+    .setTile(17, 4, "Water")
+    .setTile(18, 4, "Water");
 
   const g1 = spawnArchetype(
     //

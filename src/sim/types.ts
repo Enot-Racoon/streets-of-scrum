@@ -65,8 +65,8 @@ export interface Tile {
   type: TileType;
   walkable: boolean;
   transparent: boolean;
-  health?: number;
-  maxHealth?: number;
+  health?: number | undefined;
+  maxHealth?: number | undefined;
   isOpen?: boolean; // For doors
   isLocked?: boolean;
   color?: string;

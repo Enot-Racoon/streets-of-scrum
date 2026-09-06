@@ -5,7 +5,7 @@ export abstract class Goal {
   public name: GoalTypeName;
   public status: GoalStatus = "Inactive";
   public subGoals: Goal[] = [];
-  public agent: Agent; // reference to Agent
+  public agent: Agent;
   public priority: number = 0;
   public debugInfo: string = "";
 
