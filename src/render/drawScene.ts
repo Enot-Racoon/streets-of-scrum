@@ -2,6 +2,7 @@ import { ITEM_REGISTRY } from "../sim/Items";
 import type Camera from "../sim/components/Camera";
 import type { World } from "../sim/World";
 import type { Tile, TileType } from "../sim/types";
+import { s } from "motion/react-client";
 
 type DrawTileFn = (
   ctx: CanvasRenderingContext2D,
@@ -10,6 +11,8 @@ type DrawTileFn = (
   zoom: number,
   tile: Tile,
 ) => void;
+
+let c = 0;
 
 const DrawTile = {
   Floor(ctx, tx, ty, zoom, tile) {
@@ -135,6 +138,8 @@ const DrawTile = {
   },
 
   Water(ctx, tx, ty, zoom, tile) {
+    const t = Math.sin(Date.now() * 0.0008) * zoom * 0.03;
+
     ctx.fillStyle = "#0369a1";
     ctx.fillRect(tx, ty, zoom, zoom);
 
@@ -147,27 +152,27 @@ const DrawTile = {
       const y = ty + zoom * (0.35 + i * 0.3);
 
       ctx.beginPath();
-      ctx.moveTo(tx + zoom * 0.12, y);
+      ctx.moveTo(tx + zoom * 0.12, y - t);
 
       ctx.quadraticCurveTo(
         tx + zoom * 0.25,
-        y - waveHeight,
+        y - waveHeight + t,
         tx + zoom * 0.38,
-        y,
+        y - t,
       );
 
       ctx.quadraticCurveTo(
         tx + zoom * 0.5,
-        y + waveHeight,
+        y + waveHeight - t,
         tx + zoom * 0.62,
-        y,
+        y + t,
       );
 
       ctx.quadraticCurveTo(
         tx + zoom * 0.75,
-        y - waveHeight,
+        y - waveHeight + t,
         tx + zoom * 0.88,
-        y,
+        y - t,
       );
 
       ctx.stroke();
