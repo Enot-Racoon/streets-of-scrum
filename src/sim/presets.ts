@@ -459,11 +459,19 @@ export function buildSandboxScenario(world: World) {
   ).addTrait("God");
 
   const g2 = spawnArchetype(
+    //
     "Gorilla",
-    Math.floor(rand(8, 16)) + 0.5,
-    Math.floor(rand(8, 16)) + 0.5,
+    11.5,
+    11.5,
     "God Gorilla Jack",
   ).addTrait("God");
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if ([1, 2].includes(i) && [1, 2].includes(j)) continue;
+      world.setTile(10 + i, 10 + j, "Barrel");
+    }
+  }
 
   world.addAgent(
     g1.setRelationship(g2.id, "Hostile", 90),
