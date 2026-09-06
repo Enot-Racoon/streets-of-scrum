@@ -240,7 +240,7 @@ export class GoalBattle extends Goal {
     this.status = "Active";
     this.repathTimer = 0;
     this.debugInfo = `Сражается с ${this.target.name || "target"}`;
-    this.agent.say("Ты выбрал не ту драку", true);
+    this.agent.say("Ты зря начал драку", true);
   }
 
   public process(dt: number): GoalStatus {
