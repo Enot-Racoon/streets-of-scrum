@@ -102,7 +102,6 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
             <div className="text-[10px] text-slate-400 font-mono leading-tight hidden sm:block">
               <div>WASD: Двигаться</div>
               <div>Клик: Атаковать</div>
-              <div>E: Открыть дверь</div>
               <div>Esc: Отпустить</div>
             </div>
             <button
@@ -148,45 +147,47 @@ export const PossessionHUD: React.FC<PossessionHUDProps> = ({
           {world.logs.length === 0 ? (
             <p className="text-slate-500 italic">No events logged yet...</p>
           ) : (
-            world.logs.slice(0, logsExpanded ? 100 : 10).map((log) => {
-              const typeColor =
-                log.type === "combat"
-                  ? "text-rose-400"
-                  : log.type === "possession"
-                    ? "text-purple-400"
-                    : log.type === "speech"
-                      ? "text-sky-300"
-                      : log.type === "crime"
-                        ? "text-amber-400"
-                        : "text-slate-400";
+            world.logs
+              .slice(0, logsExpanded ? world.logMaxLength : 10)
+              .map((log) => {
+                const typeColor =
+                  log.type === "combat"
+                    ? "text-rose-400"
+                    : log.type === "possession"
+                      ? "text-purple-400"
+                      : log.type === "speech"
+                        ? "text-sky-300"
+                        : log.type === "crime"
+                          ? "text-amber-400"
+                          : "text-slate-400";
 
-              return (
-                <div
-                  key={log.id}
-                  className={`flex items-start gap-1.5 pointer-events-auto ${typeColor}`}
-                >
-                  <span className="text-slate-600 shrink-0">
-                    [
-                    {new Date(log.timestamp).toLocaleTimeString([], {
-                      hour12: false,
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
-                    ]
-                  </span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() =>
-                      log.x && log.y && onLocateEvent(log.x, log.y)
-                    }
+                return (
+                  <div
+                    key={log.id}
+                    className={`flex items-start gap-1.5 pointer-events-auto ${typeColor}`}
                   >
-                    📍
-                  </span>
-                  <span>{log.message}</span>
-                </div>
-              );
-            })
+                    <span className="text-slate-600 shrink-0">
+                      [
+                      {new Date(log.timestamp).toLocaleTimeString([], {
+                        hour12: false,
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}
+                      ]
+                    </span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={() =>
+                        log.x && log.y && onLocateEvent(log.x, log.y)
+                      }
+                    >
+                      📍
+                    </span>
+                    <span>{log.message}</span>
+                  </div>
+                );
+              })
           )}
         </div>
       </div>

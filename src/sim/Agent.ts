@@ -518,7 +518,7 @@ export class Agent {
       tile.walkable = tile.isOpen;
       tile.transparent = tile.isOpen;
       sounds.playDoor();
-      this.say(tile.isOpen ? "Opened door" : "Closed door");
+      // this.say(tile.isOpen ? "Opened door" : "Closed door");
     } else if (tile.type === "Crate") {
       // Open crate
       sounds.playPunch();
