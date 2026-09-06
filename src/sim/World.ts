@@ -606,6 +606,8 @@ export class World {
     for (const agent of this.agents) {
       agent.update(dt, this);
 
+      if (agent.isDead) continue;
+
       // Check pickup of dropped items
       for (let j = this.droppedItems.length - 1; j >= 0; j--) {
         const item = this.droppedItems[j];
