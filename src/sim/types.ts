@@ -79,6 +79,7 @@ export type GoalTypeName =
   | "GoalIdle"
   | "GoalWander"
   | "GoalPatrol"
+  | "GoalChooseMostPowerfullWeapon"
   | "GoalMoveTo"
   | "GoalBattle"
   | "GoalFlee"
