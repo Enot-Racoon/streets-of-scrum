@@ -114,7 +114,8 @@ export class Brain {
     }
 
     const status: GoalStatus = currentGoal.process(dt);
-    this.lastThought = `${currentGoal.name}: ${currentGoal.debugInfo || status}`;
+    this.lastThought = currentGoal.debugInfo || status;
+    // this.lastThought = `${currentGoal.name}: ${currentGoal.debugInfo || status}`;
 
     if (status === "Completed" || status === "Failed") {
       this.popGoal();
