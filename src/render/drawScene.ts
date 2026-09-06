@@ -328,11 +328,7 @@ function drawLivingAgents(
     }
 
     // Path line preview for AI debugging
-    if (
-      // isSelected &&
-      !agent.isPlayerControlled &&
-      agent.hasPath
-    ) {
+    if (isSelected && !agent.isPlayerControlled && agent.hasPath) {
       ctx.strokeStyle = "rgba(251, 191, 36, 0.6)";
       ctx.lineWidth = 2;
       ctx.setLineDash([3, 3]);
