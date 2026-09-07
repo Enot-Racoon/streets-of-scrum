@@ -24,7 +24,7 @@ import {
   Radio,
 } from "lucide-react";
 import { JobNames } from "../sim/types";
-import storeValue from "../utils/storeValue";
+import { storeValue } from "../utils/storeValue";
 
 interface AgentInspectorProps {
   agent: Agent | null;

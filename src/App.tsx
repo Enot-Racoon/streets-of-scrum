@@ -7,7 +7,7 @@ import { AgentInspector } from "./components/AgentInspector";
 import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
-import storeValue from "./utils/storeValue";
+import { storeValue } from "./utils/storeValue";
 import { type ScenarioName, buildScenario } from "./sim/presets";
 import { Camera } from "./sim/components/Camera";
 

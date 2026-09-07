@@ -19,7 +19,7 @@ import {
   Bone,
 } from "lucide-react";
 import { VolumeControll } from "./VolumeControll";
-import storeValue from "../utils/storeValue";
+import { storeValue } from "../utils/storeValue";
 
 interface SandboxToolbarProps {
   world: World;

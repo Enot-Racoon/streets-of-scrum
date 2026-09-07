@@ -1,4 +1,4 @@
-export default function storeValue<T = string>(
+export function storeValue<T = string>(
   key: string,
   encode: (value: T) => string = String,
   decode: (value: string) => T = (v) => v as T,

@@ -2,7 +2,7 @@
  * Web Audio API synthesizer for Streets of Scrum-style sound effects.
  */
 
-import storeValue from "../utils/storeValue";
+import { storeValue } from "../utils/storeValue";
 
 const volumeStore = storeValue("sound_volume", String, Number);
 
@@ -28,7 +28,7 @@ class SoundSystem {
       this.masterGain.gain.setTargetAtTime(
         this._masterVolume,
         this.ctx.currentTime,
-        0.01
+        0.01,
       );
     }
   }
@@ -56,7 +56,7 @@ class SoundSystem {
         this.masterGain = this.ctx.createGain();
         this.masterGain.gain.setValueAtTime(
           this._masterVolume,
-          this.ctx.currentTime
+          this.ctx.currentTime,
         );
 
         this.masterGain.connect(this.compressor);
@@ -80,7 +80,8 @@ class SoundSystem {
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * decay));
+      data[i] =
+        (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * decay));
     }
     return buffer;
   }
@@ -93,7 +94,9 @@ class SoundSystem {
     const curve = new Float32Array(samples);
     for (let i = 0; i < samples; i++) {
       const x = (i * 2) / samples - 1;
-      curve[i] = ((3 + amount) * x * 20 * (Math.PI / 180)) / (Math.PI + amount * Math.abs(x));
+      curve[i] =
+        ((3 + amount) * x * 20 * (Math.PI / 180)) /
+        (Math.PI + amount * Math.abs(x));
     }
     shaper.curve = curve;
     shaper.oversample = "4x";
