@@ -371,7 +371,7 @@ export class World {
     tx: number,
     ty: number,
     damage: number,
-    sourceAgent?: Agent,
+    sourceAgent?: Agent | null,
   ) {
     const tile = this.getTile(tx, ty);
     if (!tile) return;
@@ -417,7 +417,7 @@ export class World {
     y: number,
     radius: number,
     damage: number,
-    sourceAgent?: Agent,
+    sourceAgent?: Agent | null,
   ) {
     damage *= 3;
     radius *= 2;
@@ -632,8 +632,12 @@ export class World {
         const dist = Math.hypot(agent.x - p.x, agent.y - p.y);
         if (dist <= (agent.radius || 0.35) + p.radius) {
           const shooter = this.getAgentById(p.sourceAgentId);
+          const hitImpulsePower = 10; // todo: extract to item definition
           const hitImpulseAngle = this.getHitImpulseAngle(agent, p);
-          agent.takeDamage(p.damage, shooter).applyImpulse(hitImpulseAngle, 10);
+          agent
+            .takeDamage(p.damage, shooter)
+            .applyImpulse(hitImpulseAngle, hitImpulsePower);
+
           this.spawnParticles({
             x: p.x,
             y: p.y,

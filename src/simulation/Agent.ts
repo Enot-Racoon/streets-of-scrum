@@ -570,7 +570,7 @@ export class Agent {
     this.isPlayerControlled = false;
     this.brain.resume();
     sounds.playUnpossess();
-    this.say("Что только что произошло...?", false);
+    this.say("Что это было...?", false);
     if (this.world) {
       this.world.spawnParticles({
         x: this.x,
