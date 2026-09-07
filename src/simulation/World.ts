@@ -9,11 +9,12 @@ import {
 } from "./types";
 import { Pathfinding } from "./pathfinding";
 import { sounds } from "./sound";
-import { ITEM_REGISTRY } from "./Items";
+import { ITEM_REGISTRY, type ItemName } from "./Items";
+import { storeValue } from "../utils/storeValue";
 
 export interface DroppedItem {
   id: string;
-  defId: string;
+  defId: ItemName;
   count: number;
   x: number;
   y: number;
@@ -23,6 +24,8 @@ let noiseIdCounter = 1;
 let projectileIdCounter = 1;
 let logIdCounter = 1;
 let droppedItemIdCounter = 1;
+
+const simSpeedStorage = storeValue("sim-speed", String, Number);
 
 export class World {
   public width: number;
@@ -35,10 +38,19 @@ export class World {
   public droppedItems: DroppedItem[] = [];
   public logs: LogEntry[] = [];
   public logMaxLength = 200;
-  public simSpeed: number = 1.0;
+  private _simSpeed: number = simSpeedStorage() ?? 1.0;
   public isPaused: boolean = false;
   public possessedAgent: Agent | null = null;
   public selectedAgent: Agent | null = null;
+
+  get simSpeed() {
+    return this._simSpeed;
+  }
+
+  set simSpeed(value: number) {
+    this._simSpeed = value;
+    simSpeedStorage(value);
+  }
 
   constructor(width: number = 24, height: number = 20) {
     this.width = width;
@@ -343,7 +355,7 @@ export class World {
   public spawnDroppedItem(
     x: number,
     y: number,
-    defId: string,
+    defId: ItemName,
     count: number = 1,
   ) {
     this.droppedItems.push({
@@ -391,7 +403,7 @@ export class World {
             "shotgun",
             "grenade",
             "knife",
-          ];
+          ] satisfies ItemName[];
           const randomItem = drops[Math.floor(Math.random() * drops.length)];
           this.spawnDroppedItem(tx + 0.5, ty + 0.5, randomItem, 1);
         }
@@ -523,7 +535,7 @@ export class World {
     agentId,
     agentName,
   }: Omit<LogEntry, "id" | "timestamp" | "type" | "x" | "y"> &
-    Partial<Pick<LogEntry, "timestamp" | "type">>) {
+    Partial<Pick<LogEntry, "timestamp" | "type">>): this {
     let agent;
     if (agentId) agent = this.getAgentById(agentId);
 
@@ -540,6 +552,53 @@ export class World {
     if (this.logs.length > this.logMaxLength) {
       this.logs.pop();
     }
+
+    return this;
+  }
+
+  clearLogs() {
+    this.logs = [];
+    return this;
+  }
+
+  /**
+   * Calculate impulse angle on hit based on projectile velocity and hit position.
+   * @param agent - agent that was hit
+   * @param p - projectile that hit the agent
+   * @param projWeight influence of projectile direction
+   * @param hitWeight influence of hit position (normal)
+   * @returns angle in radians
+   */
+  private getHitImpulseAngle(
+    agent: Agent,
+    p: Projectile,
+    projWeight = 0.8,
+    hitWeight = 0.2,
+  ): number {
+    const projLength = Math.hypot(p.vx, p.vy);
+
+    if (projLength === 0) {
+      return Math.atan2(p.y - agent.y, p.x - agent.x);
+    }
+
+    const hitX = p.x - agent.x;
+    const hitY = p.y - agent.y;
+    const hitLength = Math.hypot(hitX, hitY);
+
+    if (hitLength === 0) {
+      return Math.atan2(p.vy, p.vx);
+    }
+
+    const projDirX = p.vx / projLength;
+    const projDirY = p.vy / projLength;
+
+    const hitNormalX = hitX / hitLength;
+    const hitNormalY = hitY / hitLength;
+
+    const impulseX = projDirX * projWeight + hitNormalX * hitWeight;
+    const impulseY = projDirY * projWeight + hitNormalY * hitWeight;
+
+    return Math.atan2(impulseY, impulseX);
   }
 
   public update(rawDt: number) {
@@ -573,7 +632,8 @@ export class World {
         const dist = Math.hypot(agent.x - p.x, agent.y - p.y);
         if (dist <= (agent.radius || 0.35) + p.radius) {
           const shooter = this.getAgentById(p.sourceAgentId);
-          agent.takeDamage(p.damage, shooter);
+          const hitImpulseAngle = this.getHitImpulseAngle(agent, p);
+          agent.takeDamage(p.damage, shooter).applyImpulse(hitImpulseAngle, 10);
           this.spawnParticles({
             x: p.x,
             y: p.y,

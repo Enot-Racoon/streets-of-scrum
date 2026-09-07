@@ -88,19 +88,20 @@ export class Combat {
       noiseType: "gunshot",
     });
 
-    const bulletCount = weapon.bulletCount || 1;
-    const baseDamage = weapon.damage || 15;
-    const bulletSpeed = weapon.bulletSpeed || 18;
-    const spread = weapon.spread || 0.05;
+    const bulletCount = weapon.bulletCount ?? 1; // todo: remove "?? 1" after implement bulletCount decrease
+    const baseDamage = weapon.damage ?? 15;
+    const bulletSpeed = weapon.bulletSpeed ?? 18;
+    const spread = weapon.spread ?? 0.05;
 
-    let finalDamage =
-      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") || 1.0);
+    const finalDamage =
+      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") ?? 1.0);
 
     for (let i = 0; i < bulletCount; i++) {
       const angleOffset = (Math.random() - 0.5) * spread * 2;
       const fireAngle = aimAngle + angleOffset;
       const vx = Math.cos(fireAngle) * bulletSpeed;
       const vy = Math.sin(fireAngle) * bulletSpeed;
+      const range = weapon.range ?? 10;
 
       world.spawnProjectile({
         x: this.agent.x + Math.cos(aimAngle) * 0.4,
@@ -109,8 +110,8 @@ export class Combat {
         vy,
         damage: finalDamage,
         sourceAgentId: this.agent.id,
-        lifetime: (weapon.range || 10) / bulletSpeed,
-        rangeLeft: weapon.range || 10,
+        lifetime: range / bulletSpeed,
+        rangeLeft: range,
         radius: 0.12,
         color: "#fbbf24",
       });

@@ -1,6 +1,6 @@
 import type { ItemDef, InvItem } from "./types";
 
-export const ITEM_REGISTRY: Record<string, ItemDef> = {
+export const ITEM_REGISTRY = {
   fists: {
     id: "fists",
     name: "Кулак",
@@ -69,7 +69,7 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
     maxAmmo: 8,
     bulletSpeed: 14,
     spread: 0.25,
-    bulletCount: 5,
+    bulletCount: 6,
     soundName: "shotgun",
     description: "Разрушительное дробовик ближнего боя.",
     icon: "💥",
@@ -152,16 +152,18 @@ export const ITEM_REGISTRY: Record<string, ItemDef> = {
       "Инфекционное поражение кожи в результате укуса и когтевого нападения.",
     icon: "🧟",
   },
-};
+} as const satisfies Record<string, ItemDef>;
+
+export type ItemName = keyof typeof ITEM_REGISTRY;
 
 let uidCounter = 1;
 
-export function createInvItem(defId: string, count: number = 1): InvItem {
+export function createInvItem(defId: ItemName, count: number = 1): InvItem {
   const def = ITEM_REGISTRY[defId] || ITEM_REGISTRY["fists"];
   return {
     uid: `item_${uidCounter++}_${defId}`,
     defId,
     count,
-    ammo: def.ammo,
+    ...("ammo" in def ? { ammo: def.ammo } : {}),
   };
 }

@@ -1,4 +1,5 @@
 import type { Agent } from "./Agent";
+import type { ItemName } from "./Items";
 import type { TraitType } from "./traits";
 
 export type RelType =
@@ -141,7 +142,7 @@ export interface ItemDef {
 
 export interface InvItem {
   uid: string;
-  defId: string;
+  defId: ItemName;
   count: number;
   ammo?: number;
 }

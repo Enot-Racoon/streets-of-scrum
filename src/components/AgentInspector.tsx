@@ -16,7 +16,7 @@ import {
 
 import type { Agent } from "../simulation/Agent";
 import { TRAIT_REGISTRY, type TraitType } from "../simulation/traits";
-import { ITEM_REGISTRY } from "../simulation/Items";
+import { ITEM_REGISTRY, type ItemName } from "../simulation/Items";
 import { GoalBattle } from "../simulation/goals/GoalBattle";
 import { GoalFlee } from "../simulation/goals/GoalFlee";
 import { GoalWander } from "../simulation/goals/GoalWander";
@@ -36,7 +36,7 @@ type TabName = "goals" | "relations" | "traits" | "inventory";
 
 const activeTabStore = storeValue<TabName>("active_tab");
 const selectedTraitToAddStore = storeValue<TraitType>("selected_trait_to_add");
-const selectedItemToAddStore = storeValue("selected_item_to_add");
+const selectedItemToAddStore = storeValue<ItemName>("selected_item_to_add");
 
 const InspectorHeader = ({
   agent,
@@ -499,10 +499,10 @@ const TraitsTab = ({ agent }: { agent: Agent }) => {
 };
 
 const InventoryTab = ({ agent }: { agent: Agent }) => {
-  const [selectedItemToAdd, _setSelectedItemToAdd] = useState<string>(
+  const [selectedItemToAdd, _setSelectedItemToAdd] = useState<ItemName>(
     selectedItemToAddStore() ?? "pistol",
   );
-  const setSelectedItemToAdd = (value: string) => {
+  const setSelectedItemToAdd = (value: ItemName) => {
     _setSelectedItemToAdd(value);
     selectedItemToAddStore(value);
   };
@@ -586,10 +586,10 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
           <div className="flex gap-2">
             <select
               value={selectedItemToAdd}
-              onChange={(e) => setSelectedItemToAdd(e.target.value)}
+              onChange={(e) => setSelectedItemToAdd(e.target.value as ItemName)}
               className="flex-1 bg-slate-950 border border-slate-700 text-xs rounded px-2 py-1.5 text-slate-200"
             >
-              {Object.keys(ITEM_REGISTRY)
+              {(Object.keys(ITEM_REGISTRY) as ItemName[])
                 .map((iId) => ITEM_REGISTRY[iId])
                 .map((item) => (
                   <option key={item.id} value={item.id}>

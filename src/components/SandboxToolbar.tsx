@@ -153,20 +153,8 @@ export const SandboxToolbar: React.FC<SandboxToolbarProps> = ({
           )}
         </button>
 
-        <button
-          onClick={() => {
-            world.update(0.08);
-            onRefresh();
-          }}
-          disabled={!world.isPaused}
-          className="px-2 py-1 text-xs bg-slate-800 hover:bg-slate-700 disabled:opacity-30 rounded text-slate-300 font-mono"
-          title="Step forward 1 tick"
-        >
-          Step (1t)
-        </button>
-
         <div className="flex items-center gap-0.5 border-l border-slate-800 pl-2">
-          {[0.5, 1.0, 2.0, 4.0].map((speed) => (
+          {[0.125, 0.25, 0.5, 1.0, 2.0, 4.0].map((speed) => (
             <button
               key={speed}
               onClick={() => {

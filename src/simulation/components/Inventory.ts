@@ -1,4 +1,4 @@
-import { ITEM_REGISTRY, createInvItem } from "../Items";
+import { ITEM_REGISTRY, type ItemName, createInvItem } from "../Items";
 import type { InvItem, ItemDef, WeaponCandidate } from "../types";
 import { sounds } from "../sound";
 import type { Agent } from "../Agent";
@@ -12,7 +12,7 @@ export class Inventory {
     this.agent = agent;
   }
 
-  public addItem(defId: string, count: number = 1): InvItem {
+  public addItem(defId: ItemName, count: number = 1): InvItem {
     const existing = this.items.find((i) => i.defId === defId);
     if (existing) {
       existing.count += count;
@@ -38,14 +38,8 @@ export class Inventory {
 
   public getWeaponCandidates(): WeaponCandidate[] {
     return this.items
-      .map((item) => ({
-        item,
-        def: ITEM_REGISTRY[item.defId],
-      }))
-      .filter(
-        (x): x is { item: InvItem; def: ItemDef } =>
-          x.def?.type === "gun" || x.def?.type === "melee",
-      );
+      .map((item) => ({ item, def: ITEM_REGISTRY[item.defId] }))
+      .filter((x) => x.def?.type === "gun" || x.def?.type === "melee");
   }
 
   public getEquippedItem(): InvItem | null {
@@ -86,7 +80,7 @@ export class Inventory {
         sounds.playHeal();
         this.agent.say(`Used ${def.name} (+${def.healAmount} HP)`);
       }
-      if (def.effectTrait) {
+      if ("effectTrait" in def) {
         this.agent.addTrait(def.effectTrait);
       }
       this.removeItem(uid, 1);

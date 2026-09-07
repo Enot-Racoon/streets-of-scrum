@@ -25,6 +25,7 @@ import { sounds } from "./sound";
 import type { World } from "./World";
 import type { Goal } from "./goals/Goal";
 import type { Point } from "./pathfinding";
+import type { ItemName } from "./Items";
 
 let agentIdCounter = 1;
 
@@ -167,8 +168,9 @@ export class Agent {
     return this;
   }
 
-  addItem(defId: string, count: number = 1): InvItem {
-    return this.inventory.addItem(defId, count);
+  addItem(defId: ItemName, count: number = 1): this {
+    this.inventory.addItem(defId, count);
+    return this;
   }
 
   useItem(uid: string): boolean {
@@ -238,7 +240,7 @@ export class Agent {
     color?: string;
     avatarIcon?: string;
     traits?: TraitType[];
-    startingItems?: string[];
+    startingItems?: ItemName[];
   }) {
     this.id = options.id || `agent_${agentIdCounter++}`;
     this.name = options.name;
@@ -269,8 +271,8 @@ export class Agent {
 
     // Add starting items
     if (options.startingItems) {
-      for (const it of options.startingItems) {
-        this.inventory.addItem(it);
+      for (const item of options.startingItems) {
+        this.inventory.addItem(item);
       }
     } else {
       this.inventory.addItem("fists");
@@ -305,13 +307,13 @@ export class Agent {
     return this.statusEffects.getTraits();
   }
 
-  public addTrait(traitName: TraitType): this {
-    this.statusEffects.addTrait(traitName);
+  public addTrait(...traitNames: TraitType[]): this {
+    traitNames.forEach((t) => this.statusEffects.addTrait(t));
     return this;
   }
 
-  public removeTrait(traitName: TraitType): this {
-    this.statusEffects.removeTrait(traitName);
+  public removeTrait(...traitNames: TraitType[]): this {
+    traitNames.forEach((t) => this.statusEffects.removeTrait(t));
     return this;
   }
 
@@ -369,8 +371,8 @@ export class Agent {
     }
   }
 
-  public takeDamage(amount: number, attacker?: Agent | null) {
-    if (this.isDead) return;
+  public takeDamage(amount: number, attacker?: Agent | null): this {
+    if (this.isDead) return this;
 
     let finalDamage = amount;
 
@@ -420,6 +422,8 @@ export class Agent {
     if (this.health <= 0) {
       this.die(attacker);
     }
+
+    return this;
   }
 
   public die(killer?: Agent | null) {

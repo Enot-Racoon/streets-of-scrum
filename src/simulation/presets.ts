@@ -456,7 +456,9 @@ export function buildSandboxScenario(world: World) {
     5.5,
     7.5,
     "God Gorilla Bob",
-  ).addTrait("God");
+  )
+    .addTrait("God")
+    .addItem("pistol");
 
   const g2 = spawnArchetype(
     //
@@ -464,7 +466,7 @@ export function buildSandboxScenario(world: World) {
     11.5,
     11.5,
     "God Gorilla Jack",
-  ).addTrait("God");
+  ).addTrait("God", "Paralyzed");
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
