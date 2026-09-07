@@ -76,7 +76,7 @@ export class GoalBattle extends Goal {
     this.agent.facingAngle = aimAngle;
 
     const currentWeapon = this.agent.getEquippedWeapon();
-    const isGun = currentWeapon.type === "gun";
+    const isGun = ["gun", "explosive"].includes(currentWeapon.type);
     const idealRange = isGun ? Math.min(6, currentWeapon.range || 6) : 1.0;
 
     // Movement logic
