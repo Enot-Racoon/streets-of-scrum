@@ -181,10 +181,6 @@ export class Agent {
     return this.inventory.removeItem(uid, count);
   }
 
-  getMostPowerfullWeaponIndex(): number {
-    return this.inventory.getMostPowerfullWeaponIndex();
-  }
-
   // Relationships Facade
   public setRelationship(targetId: string, type: RelType, hate?: number): this {
     this.relationships.setRelType(targetId, type);

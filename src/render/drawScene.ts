@@ -1,8 +1,7 @@
 import { ITEM_REGISTRY } from "../sim/Items";
-import type Camera from "../sim/components/Camera";
+import type { Camera } from "../sim/components/Camera";
 import type { World } from "../sim/World";
 import type { Tile, TileType } from "../sim/types";
-import { s } from "motion/react-client";
 
 type DrawTileFn = (
   ctx: CanvasRenderingContext2D,

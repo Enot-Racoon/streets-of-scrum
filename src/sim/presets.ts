@@ -2,7 +2,7 @@ import type { World } from "./World";
 import { Agent } from "./Agent";
 import type { JobType } from "./types";
 import type { TraitType } from "./traits";
-import rand from "../utils/rand";
+import { rand } from "../utils/rand";
 
 export interface ArchetypeDef {
   name: string;

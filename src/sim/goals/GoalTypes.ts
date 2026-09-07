@@ -162,33 +162,6 @@ export class GoalPatrol extends Goal {
 }
 
 /**
- * GoalChooseMostPowerfullWeapon: Agent looks for most powerfull weapon in his inventory and equips it.
- */
-export class GoalChooseMostPowerfullWeapon extends Goal {
-  constructor(agent: Agent) {
-    super("GoalChooseMostPowerfullWeapon", agent, 5);
-  }
-
-  public activate(): void {
-    this.status = "Active";
-    this.debugInfo = "Выбирает самое мощное оружие";
-    let mostPowerfullWeaponIndex = this.agent.getMostPowerfullWeaponIndex();
-    if (mostPowerfullWeaponIndex > -1) {
-      this.agent.equipIndex(mostPowerfullWeaponIndex);
-      this.status = "Completed";
-    }
-  }
-
-  public process(dt: number): GoalStatus {
-    return this.status;
-  }
-
-  public terminate(): void {
-    this.status = "Inactive";
-  }
-}
-
-/**
  * GoalMoveTo: Direct pathfinding to a specific target point
  */
 export class GoalMoveTo extends Goal {
@@ -257,7 +230,7 @@ export class GoalBattle extends Goal {
   private repathTimer: number = 0;
   private strafeDir: number = 1;
   private strafeTimer: number = 0;
-  private weaponCheckTimer: number = 0;
+  // private weaponCheckTimer: number = 0;
 
   constructor(agent: Agent, target: Agent) {
     super("GoalBattle", agent, 10);
@@ -293,13 +266,12 @@ export class GoalBattle extends Goal {
       this.target.y,
     );
 
-    if (this.weaponCheckTimer > 0) {
-      this.weaponCheckTimer -= dt;
-    } else {
-      this.addSubGoal(new GoalChooseMostPowerfullWeapon(this.agent));
-      this.weaponCheckTimer = 1.0;
-    }
-    this.processSubGoals(dt);
+    // if (this.weaponCheckTimer > 0) {
+    //   this.weaponCheckTimer -= dt;
+    // } else {
+    //   this.weaponCheckTimer = 1.0;
+    // }
+    // this.processSubGoals(dt);
 
     // Aim towards target
     const aimAngle = Math.atan2(
