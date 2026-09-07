@@ -1,6 +1,7 @@
 import { Goal } from "./Goal";
 import type { GoalStatus } from "../types";
 import type { Agent } from "../Agent";
+import { WeaponEvaluator } from "../WeaponEvaluator";
 
 /**
  * GoalBattle: Tactical combat AI against target agent
@@ -10,7 +11,8 @@ export class GoalBattle extends Goal {
   private repathTimer: number = 0;
   private strafeDir: number = 1;
   private strafeTimer: number = 0;
-  // private weaponCheckTimer: number = 0;
+  private weaponCheckTimer: number = 0;
+  private readonly weaponEvaluator = new WeaponEvaluator();
 
   constructor(agent: Agent, target: Agent) {
     super("GoalBattle", agent, 10);
@@ -22,6 +24,24 @@ export class GoalBattle extends Goal {
     this.repathTimer = 0;
     this.debugInfo = `Сражается с ${this.target.name || "target"}`;
     this.agent.say("Ты зря начал драку", true);
+  }
+
+  private chooseBestWeapon(distance: number): void {
+    const result = this.weaponEvaluator.findBestWeapon(
+      this.agent.items,
+      distance,
+    );
+
+    // No usable weapon.
+    // Leave the inventory as it is.
+    // Agent will use fists as fallback.
+    if (!result) {
+      return;
+    }
+
+    if (result.index !== this.agent.equippedIndex) {
+      this.agent.equipIndex(result.index);
+    }
   }
 
   public process(dt: number): GoalStatus {
@@ -46,12 +66,11 @@ export class GoalBattle extends Goal {
       this.target.y,
     );
 
-    // if (this.weaponCheckTimer > 0) {
-    //   this.weaponCheckTimer -= dt;
-    // } else {
-    //   this.weaponCheckTimer = 1.0;
-    // }
-    // this.processSubGoals(dt);
+    this.weaponCheckTimer -= dt;
+    if (this.weaponCheckTimer <= 0) {
+      this.chooseBestWeapon(dist);
+      this.weaponCheckTimer = 0.5;
+    }
 
     // Aim towards target
     const aimAngle = Math.atan2(

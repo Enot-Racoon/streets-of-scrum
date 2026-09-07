@@ -1,5 +1,5 @@
-import { ITEM_REGISTRY } from "../Items";
-import type { InvItem, ItemDef } from "../types";
+import { ITEM_REGISTRY } from "./Items";
+import type { InvItem, ItemDef } from "./types";
 
 export class WeaponEvaluator {
   /**
