@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import { World } from "../sim/World";
-import { Agent } from "../sim/Agent";
-import { ITEM_REGISTRY } from "../sim/Items";
-import {
-  Zap,
-  Heart,
-  // Shield,
-  // Radio,
-  Terminal,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { Zap, Heart, Terminal, ChevronUp, ChevronDown } from "lucide-react";
+
+import { World } from "../simulation/World";
+import { Agent } from "../simulation/Agent";
+import { ITEM_REGISTRY } from "../simulation/Items";
 
 interface PossessionHUDProps {
   world: World;

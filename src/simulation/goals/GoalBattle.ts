@@ -12,7 +12,6 @@ export class GoalBattle extends Goal {
   private strafeDir: number = 1;
   private strafeTimer: number = 0;
   private weaponCheckTimer: number = 0;
-  private readonly weaponEvaluator = new WeaponEvaluator();
 
   constructor(agent: Agent, target: Agent) {
     super("GoalBattle", agent, 10);
@@ -27,10 +26,7 @@ export class GoalBattle extends Goal {
   }
 
   private chooseBestWeapon(distance: number): void {
-    const result = this.weaponEvaluator.findBestWeapon(
-      this.agent.items,
-      distance,
-    );
+    const result = WeaponEvaluator.findBestWeapon(this.agent.items, distance);
 
     // No usable weapon.
     // Leave the inventory as it is.

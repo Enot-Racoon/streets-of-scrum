@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { World } from "../sim/World";
+import { World } from "../simulation/World";
 import {
   type ArchetypeName,
   ARCHETYPES,
   Scenarios,
   type ScenarioName,
   spawnArchetype,
-} from "../sim/presets";
-import { sounds } from "../sim/sound";
+} from "../simulation/presets";
+import { sounds } from "../simulation/sound";
 import {
   Play,
   Pause,

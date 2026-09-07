@@ -1,7 +1,7 @@
-import { ITEM_REGISTRY } from "../sim/Items";
-import type { Camera } from "../sim/components/Camera";
-import type { World } from "../sim/World";
-import type { Tile, TileType } from "../sim/types";
+import { ITEM_REGISTRY } from "./Items";
+import type { Camera } from "./Camera";
+import type { World } from "./World";
+import type { Tile, TileType } from "./types";
 
 type DrawTileFn = (
   ctx: CanvasRenderingContext2D,

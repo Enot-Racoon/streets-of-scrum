@@ -1,6 +1,6 @@
-import type { RelType, RelationshipState } from "./types";
 import type { Agent } from "./Agent";
 import type { World } from "./World";
+import type { RelType, RelationshipState } from "./types";
 
 export class Relationships {
   public agent: Agent;

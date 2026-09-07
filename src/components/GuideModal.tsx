@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  X,
-  BookOpen,
-  Brain,
-  // GitBranch,
-  Cpu,
-  Sparkles,
-  Zap,
-  // Shield,
-  Flame,
-} from "lucide-react";
+import { X, BookOpen, Brain, Cpu, Sparkles, Zap, Flame } from "lucide-react";
 
 interface GuideModalProps {
   isOpen: boolean;

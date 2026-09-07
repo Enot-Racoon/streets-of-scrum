@@ -1,4 +1,4 @@
-import { Tile } from './types';
+import type { Tile } from "./types";
 
 export interface Point {
   x: number;
@@ -24,7 +24,7 @@ export class Pathfinding {
     targetX: number,
     targetY: number,
     grid: Tile[][],
-    canOpenDoors: boolean = true
+    canOpenDoors: boolean = true,
   ): Point[] {
     const width = grid.length;
     if (width === 0) return [];
@@ -40,7 +40,7 @@ export class Pathfinding {
 
     // Target not walkable check (unless it's an interactable object/door)
     const targetTile = grid[tx][ty];
-    if (!targetTile.walkable && !(canOpenDoors && targetTile.type === 'Door')) {
+    if (!targetTile.walkable && !(canOpenDoors && targetTile.type === "Door")) {
       // Find closest walkable adjacent tile
       const neighbors = this.getNeighbors(tx, ty, width, height);
       let bestAdj: Point | null = null;
@@ -70,7 +70,7 @@ export class Pathfinding {
       g: 0,
       h: this.heuristic(sx, sy, tx, ty),
       f: this.heuristic(sx, sy, tx, ty),
-      parent: null
+      parent: null,
     };
 
     openList.push(startNode);
@@ -117,7 +117,8 @@ export class Pathfinding {
         if (closedSet[nIdx]) continue;
 
         const tile = grid[n.x][n.y];
-        const isWalkable = tile.walkable || (canOpenDoors && tile.type === 'Door');
+        const isWalkable =
+          tile.walkable || (canOpenDoors && tile.type === "Door");
         if (!isWalkable) continue;
 
         // Diagonal corner cutting check
@@ -141,7 +142,7 @@ export class Pathfinding {
             g: gScore,
             h: h,
             f: gScore + h,
-            parent: current
+            parent: current,
           };
           nodeMap.set(nIdx, neighborNode);
           openList.push(neighborNode);
@@ -156,13 +157,23 @@ export class Pathfinding {
     return []; // No path found
   }
 
-  private static heuristic(x1: number, y1: number, x2: number, y2: number): number {
+  private static heuristic(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): number {
     const dx = Math.abs(x1 - x2);
     const dy = Math.abs(y1 - y2);
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  private static getNeighbors(x: number, y: number, width: number, height: number): Point[] {
+  private static getNeighbors(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): Point[] {
     const res: Point[] = [];
     const dirs = [
       { x: 0, y: -1 },
@@ -173,7 +184,7 @@ export class Pathfinding {
       { x: 1, y: -1 },
       { x: 1, y: 1 },
       { x: -1, y: 1 },
-      { x: -1, y: -1 }
+      { x: -1, y: -1 },
     ];
 
     for (const d of dirs) {
@@ -195,7 +206,7 @@ export class Pathfinding {
     x2: number,
     y2: number,
     grid: Tile[][],
-    checkTransparency: boolean = true
+    checkTransparency: boolean = true,
   ): boolean {
     const width = grid.length;
     if (width === 0) return false;
@@ -220,7 +231,7 @@ export class Pathfinding {
       if (checkTransparency) {
         if (!tile.transparent) return false;
       } else {
-        if (!tile.walkable && tile.type !== 'Door') return false;
+        if (!tile.walkable && tile.type !== "Door") return false;
       }
     }
 

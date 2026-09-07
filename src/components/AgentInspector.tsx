@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import type { Agent } from "../sim/Agent";
-import type { World } from "../sim/World";
-import { TRAIT_REGISTRY, type TraitType } from "../sim/traits";
-import { ITEM_REGISTRY } from "../sim/Items";
-import { GoalBattle } from "../sim/goals/GoalBattle";
-import { GoalFlee } from "../sim/goals/GoalFlee";
-import { GoalWander } from "../sim/goals/GoalWander";
-import { GoalIdle } from "../sim/goals/GoalIdle";
 import {
   Heart,
-  Brain as BrainIcon,
+  Brain,
   Sparkles,
   Users,
   Crosshair,
@@ -21,8 +13,18 @@ import {
   ArrowRightCircle,
   Radio,
 } from "lucide-react";
-import { JobNames } from "../sim/types";
+
+import type { Agent } from "../simulation/Agent";
+import { TRAIT_REGISTRY, type TraitType } from "../simulation/traits";
+import { ITEM_REGISTRY } from "../simulation/Items";
+import { GoalBattle } from "../simulation/goals/GoalBattle";
+import { GoalFlee } from "../simulation/goals/GoalFlee";
+import { GoalWander } from "../simulation/goals/GoalWander";
+import { GoalIdle } from "../simulation/goals/GoalIdle";
+import { JobNames } from "../simulation/types";
 import { storeValue } from "../utils/storeValue";
+import { WeaponEvaluator } from "../simulation/WeaponEvaluator";
+import { capitalize } from "../utils/capitalize";
 
 interface AgentInspectorProps {
   agent: Agent | null;
@@ -139,7 +141,7 @@ const InspectorHeader = ({
       {/* Current Brain Thought Banner */}
       {!!agent && !agent?.isDead && (
         <div className="mt-3 p-2 bg-slate-900 rounded border border-slate-800/80 flex items-start gap-2">
-          <BrainIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+          <Brain className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
           <div className="text-xs">
             <span className="text-slate-400 font-mono">Занят: </span>
             <span className="text-sky-200 font-medium">
@@ -170,8 +172,7 @@ const TabsButtons = ({
           : "border-transparent text-slate-400 hover:text-slate-200"
       }`}
     >
-      <BrainIcon className="w-3.5 h-3.5" /> Список задач (
-      {agent.goalStack.length})
+      <Brain className="w-3.5 h-3.5" /> Список задач ({agent.goalStack.length})
     </button>
 
     <button
@@ -540,6 +541,9 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
                   <p className="text-[10px] text-slate-400">
                     {def.description}
                   </p>
+                  <span className="text-[10px] text-slate-500">
+                    DPS: {WeaponEvaluator.getWeaponDPS(def).toFixed(1)}
+                  </span>
                 </div>
               </div>
 
@@ -574,30 +578,35 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
       </div>
 
       {/* Add Item to Inventory */}
-      <div className="pt-2 border-t border-slate-800">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
-          Дать предмет
-        </span>
-        <div className="flex gap-2">
-          <select
-            value={selectedItemToAdd}
-            onChange={(e) => setSelectedItemToAdd(e.target.value)}
-            className="flex-1 bg-slate-950 border border-slate-700 text-xs rounded px-2 py-1.5 text-slate-200"
-          >
-            {Object.keys(ITEM_REGISTRY).map((iId) => (
-              <option key={iId} value={iId}>
-                {ITEM_REGISTRY[iId].icon} {ITEM_REGISTRY[iId].name}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={() => agent.addItem(selectedItemToAdd, 1)}
-            className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
-          >
-            <Plus className="w-3.5 h-3.5" /> Дать
-          </button>
+      {!agent.isDead && (
+        <div className="pt-2 border-t border-slate-800">
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
+            Дать предмет
+          </span>
+          <div className="flex gap-2">
+            <select
+              value={selectedItemToAdd}
+              onChange={(e) => setSelectedItemToAdd(e.target.value)}
+              className="flex-1 bg-slate-950 border border-slate-700 text-xs rounded px-2 py-1.5 text-slate-200"
+            >
+              {Object.keys(ITEM_REGISTRY)
+                .map((iId) => ITEM_REGISTRY[iId])
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.icon} {item.name} ({capitalize(item.type)}:{" "}
+                    {WeaponEvaluator.getWeaponDPS(item).toFixed(1)} dps)
+                  </option>
+                ))}
+            </select>
+            <button
+              onClick={() => agent.addItem(selectedItemToAdd, 1)}
+              className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
+            >
+              <Plus className="w-3.5 h-3.5" /> Дать
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

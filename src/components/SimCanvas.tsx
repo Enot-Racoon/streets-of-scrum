@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import type { World } from "../sim/World";
-import type { Agent } from "../sim/Agent";
-import type { Mouse } from "../sim/types";
-import { drawScene } from "../render/drawScene";
+import type { World } from "../simulation/World";
+import type { Agent } from "../simulation/Agent";
+import type { Mouse } from "../simulation/types";
+import type { Camera } from "../simulation/Camera";
+import { drawScene } from "../simulation/drawScene";
 import { storeValue } from "../utils/storeValue";
-import type { Camera } from "../sim/components/Camera";
-import { Keyboard } from "../sim/components/Keyboard";
+import { Keyboard } from "../simulation/Keyboard";
 
 interface SimCanvasProps {
   world: World;

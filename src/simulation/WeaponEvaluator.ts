@@ -2,12 +2,13 @@ import { ITEM_REGISTRY } from "./Items";
 import type { InvItem, ItemDef } from "./types";
 
 export class WeaponEvaluator {
+  private constructor() {}
   /**
    * Calculates theoretical damage per second.
    */
-  public getWeaponDPS(def: ItemDef): number {
+  public static getWeaponDPS(def: ItemDef): number {
     const damage = def.damage ?? 0;
-    const attackSpeed = def.attackSpeed ?? 0;
+    const attackSpeed = def.attackSpeed ?? 1;
     const bulletCount = def.bulletCount ?? 1;
 
     return damage * attackSpeed * bulletCount;
@@ -16,13 +17,13 @@ export class WeaponEvaluator {
   /**
    * Checks whether an inventory item can currently be used as a weapon.
    */
-  private isWeaponAvailable(item: InvItem, def: ItemDef): boolean {
-    if (def.type !== "gun" && def.type !== "melee") {
+  private static isWeaponAvailable(item: InvItem, def: ItemDef): boolean {
+    if (!["gun", "melee", "explosive"].includes(def.type)) {
       return false;
     }
 
-    // Melee weapons do not need ammo.
-    if (def.type === "melee") {
+    // Melee and explosive weapons do not need ammo.
+    if (def.type === "melee" || def.type === "explosive") {
       return true;
     }
 
@@ -34,7 +35,11 @@ export class WeaponEvaluator {
    * Calculates how effective a weapon is in the current situation.
    * Higher score = better weapon.
    */
-  public getWeaponScore(item: InvItem, def: ItemDef, distance: number): number {
+  public static getWeaponScore(
+    item: InvItem,
+    def: ItemDef,
+    distance: number,
+  ): number {
     if (!this.isWeaponAvailable(item, def)) {
       return -Infinity;
     }
@@ -54,7 +59,7 @@ export class WeaponEvaluator {
    * Returns null if there is no usable weapon.
    * In that case the caller should use fists.
    */
-  public findBestWeapon(
+  public static findBestWeapon(
     items: InvItem[],
     distance: number,
   ): { index: number; item: InvItem; def: ItemDef } | null {

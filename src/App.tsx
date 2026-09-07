@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { World } from "./sim/World";
-import { Agent } from "./sim/Agent";
+import { Camera } from "./simulation/Camera";
+import { World } from "./simulation/World";
+import { Agent } from "./simulation/Agent";
 import { SimCanvas } from "./components/SimCanvas";
 import { SandboxToolbar } from "./components/SandboxToolbar";
 import { AgentInspector } from "./components/AgentInspector";
@@ -8,8 +9,7 @@ import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
 import { useForceUpdate } from "./utils/useForceUpdate";
 import { storeValue } from "./utils/storeValue";
-import { type ScenarioName, buildScenario } from "./sim/presets";
-import { Camera } from "./sim/components/Camera";
+import { type ScenarioName, buildScenario } from "./simulation/presets";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
 

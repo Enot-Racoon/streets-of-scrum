@@ -1,4 +1,4 @@
-import { ItemDef, InvItem } from "./types";
+import type { ItemDef, InvItem } from "./types";
 
 export const ITEM_REGISTRY: Record<string, ItemDef> = {
   fists: {
