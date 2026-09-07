@@ -458,13 +458,22 @@ export function buildSandboxScenario(world: World) {
     "God Gorilla Bob",
   )
     .addTrait("God")
-    .addItem("pistol");
+    .addItem("pistol")
+    .addItem("grenade", 5);
 
   const g2 = spawnArchetype(
     //
     "Gorilla",
     11.5,
     11.5,
+    "God Gorilla Jack",
+  ).addTrait("God", "Paralyzed");
+
+  const g3 = spawnArchetype(
+    //
+    "Gorilla",
+    11.5,
+    12.5,
     "God Gorilla Jack",
   ).addTrait("God", "Paralyzed");
 
@@ -475,10 +484,16 @@ export function buildSandboxScenario(world: World) {
     }
   }
 
-  world.addAgent(
-    g1.setRelationship(g2.id, "Hostile", 90),
-    g2.setRelationship(g1.id, "Hostile", 90),
+  [g1, g2, g3].forEach((a, _, arr) =>
+    arr.forEach((b) => {
+      if (a.id !== b.id) {
+        a.setRelationship(b.id, "Hostile", 90);
+        b.setRelationship(a.id, "Hostile", 90);
+      }
+    }),
   );
+
+  world.addAgent(g1, g2, g3);
 }
 
 export function buildLargeCityScenario(world: World) {

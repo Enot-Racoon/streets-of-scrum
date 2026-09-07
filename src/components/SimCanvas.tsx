@@ -3,7 +3,7 @@ import type { World } from "../simulation/World";
 import type { Agent } from "../simulation/Agent";
 import type { Mouse } from "../simulation/types";
 import type { Camera } from "../simulation/Camera";
-import { drawScene } from "../simulation/drawScene";
+import { drawScene } from "../simulation/drawScene/drawScene";
 import { storeValue } from "../utils/storeValue";
 import { Keyboard } from "../simulation/Keyboard";
 

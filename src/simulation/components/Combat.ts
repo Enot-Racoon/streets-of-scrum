@@ -64,6 +64,8 @@ export class Combat {
 
     if (weapon.type === "gun") {
       this.fireGun(weapon, aimAngle, world);
+    } else if (weapon.type === "explosive") {
+      this.throwExplosive(weapon, aimAngle, world);
     } else {
       this.swingMelee(weapon, aimAngle, world);
     }
@@ -88,7 +90,7 @@ export class Combat {
       noiseType: "gunshot",
     });
 
-    const bulletCount = weapon.bulletCount ?? 1; // todo: remove "?? 1" after implement bulletCount decrease
+    const bulletCount = weapon.bulletCount ?? 1;
     const baseDamage = weapon.damage ?? 15;
     const bulletSpeed = weapon.bulletSpeed ?? 18;
     const spread = weapon.spread ?? 0.05;
@@ -127,12 +129,52 @@ export class Combat {
     });
   }
 
+  private throwExplosive(weapon: ItemDef, aimAngle: number, world: World) {
+    this.swingHand();
+    // Sound & Noise event
+    // sounds.playThrow(); // todo: play throw sound
+    // world.emitNoise({
+    //   x: this.agent.x,
+    //   y: this.agent.y,
+    //   radius: 12, // todo: calc radius from distance
+    //   volume: 0.9, // todo: calc volume from distance
+    //   sourceAgentId: this.agent.id,
+    //   noiseType: "throw",
+    // });
+
+    // const spread = Math.min(0, (weapon.bulletSpeed ?? 0.05) - agent.accuracy);
+    const spread = weapon.bulletSpeed ?? 0.05; // todo: implement agent accuracy, trait
+    const baseDamage = weapon.damage ?? 15;
+    const bulletSpeed = weapon.bulletSpeed ?? 18;
+    const finalDamage =
+      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") ?? 1.0);
+    const angleOffset = (Math.random() - 0.5) * spread * 2;
+    const fireAngle = aimAngle + angleOffset;
+    const vx = Math.cos(fireAngle) * bulletSpeed;
+    const vy = Math.sin(fireAngle) * bulletSpeed;
+    const range = weapon.range ?? 10;
+
+    world.spawnProjectile({
+      x: this.agent.x + Math.cos(aimAngle) * 0.4,
+      y: this.agent.y + Math.sin(aimAngle) * 0.4,
+      vx,
+      vy,
+      damage: finalDamage,
+      sourceAgentId: this.agent.id,
+      lifetime: range / bulletSpeed,
+      rangeLeft: range,
+      radius: 0.12,
+      color: "#009900",
+      isExplosive: true,
+    });
+  }
+
   private isEquipedFists() {
     const weapon = this.agent.getEquippedWeapon();
     return weapon.id === "fists";
   }
 
-  private startSwinging() {
+  private swingHand() {
     this.isSwinging = true;
     this.swingProgress = 0;
     if (this.isEquipedFists()) {
@@ -148,7 +190,7 @@ export class Combat {
 
   private swingMelee(weapon: ItemDef, aimAngle: number, world: World) {
     sounds.playPunch();
-    this.startSwinging();
+    this.swingHand();
 
     world.emitNoise({
       x: this.agent.x,

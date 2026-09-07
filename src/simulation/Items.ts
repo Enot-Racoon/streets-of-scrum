@@ -129,7 +129,7 @@ export const ITEM_REGISTRY = {
     name: "Осколочная граната",
     type: "explosive",
     damage: 65,
-    range: 8,
+    range: 10,
     description:
       "Взрывное метательное оружие, которое разбивает стены и толпы.",
     icon: "💣",

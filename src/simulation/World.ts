@@ -617,40 +617,44 @@ export class World {
       const tx = Math.floor(p.x);
       const ty = Math.floor(p.y);
       const tile = this.getTile(tx, ty);
+      const shooter = this.getAgentById(p.sourceAgentId);
 
+      const hitWall = false;
       if (!tile || !tile.walkable) {
         // && tile.type !== "Door")) { // todo: only opened doors
         this.damageTile(tx, ty, p.damage);
         this.projectiles.splice(i, 1);
-        continue;
       }
 
-      // Check agent hits
       let hitAgent = false;
-      for (const agent of this.agents) {
-        if (agent.id === p.sourceAgentId || agent.isDead) continue;
-        const dist = Math.hypot(agent.x - p.x, agent.y - p.y);
-        if (dist <= (agent.radius || 0.35) + p.radius) {
-          const shooter = this.getAgentById(p.sourceAgentId);
-          const hitImpulsePower = 10; // todo: extract to item definition
-          const hitImpulseAngle = this.getHitImpulseAngle(agent, p);
-          agent
-            .takeDamage(p.damage, shooter)
-            .applyImpulse(hitImpulseAngle, hitImpulsePower);
+      if (!hitWall) {
+        // Check agent hits
+        for (const agent of this.agents) {
+          if (agent.id === p.sourceAgentId || agent.isDead) continue;
+          const dist = Math.hypot(agent.x - p.x, agent.y - p.y);
+          if (dist <= (agent.radius || 0.35) + p.radius) {
+            const hitImpulsePower = 10; // todo: extract to item definition
+            const hitImpulseAngle = this.getHitImpulseAngle(agent, p);
+            agent
+              .takeDamage(p.damage, shooter)
+              .applyImpulse(hitImpulseAngle, hitImpulsePower);
 
-          this.spawnParticles({
-            x: p.x,
-            y: p.y,
-            count: 5,
-            type: "blood",
-            color: "#dc2626",
-          });
-          hitAgent = true;
-          break;
+            this.spawnParticles({
+              x: p.x,
+              y: p.y,
+              count: 5,
+              type: "blood",
+              color: "#dc2626",
+            });
+            hitAgent = true;
+            break;
+          }
         }
       }
 
-      if (hitAgent || p.lifetime <= 0) {
+      if (hitWall || hitAgent || p.lifetime <= 0) {
+        const explodeRadius = 3; // todo: extract to item definition
+        this.explode(p.x, p.y, explodeRadius, p.damage, shooter);
         this.projectiles.splice(i, 1);
       }
     }
