@@ -540,7 +540,7 @@ function drawParticles(
   }
 }
 
-export default function drawScene(
+export function drawScene(
   ctx: CanvasRenderingContext2D,
   world: World,
   camera: Camera,
