@@ -1,5 +1,5 @@
 import { ITEM_REGISTRY, createInvItem } from "../Items";
-import type { InvItem, ItemDef } from "../types";
+import type { InvItem, ItemDef, WeaponCandidate } from "../types";
 import { sounds } from "../sound";
 import type { Agent } from "../Agent";
 
@@ -36,21 +36,16 @@ export class Inventory {
     return true;
   }
 
-  public getMostPowerfullWeaponIndex(): number {
-    let mostPowerfullWeaponIndex = -1;
-    let mostPowerfullWeaponDamage = 0;
-    for (let index = 0; index < this.items.length; index++) {
-      const item = this.items[index];
-      const def = ITEM_REGISTRY[item.defId];
-      if (def && ["gun", "melee"].includes(def.type)) {
-        const damage = def.damage || 0;
-        if (damage > mostPowerfullWeaponDamage) {
-          mostPowerfullWeaponDamage = damage;
-          mostPowerfullWeaponIndex = index;
-        }
-      }
-    }
-    return mostPowerfullWeaponIndex;
+  public getWeaponCandidates(): WeaponCandidate[] {
+    return this.items
+      .map((item) => ({
+        item,
+        def: ITEM_REGISTRY[item.defId],
+      }))
+      .filter(
+        (x): x is { item: InvItem; def: ItemDef } =>
+          x.def?.type === "gun" || x.def?.type === "melee",
+      );
   }
 
   public getEquippedItem(): InvItem | null {

@@ -146,6 +146,11 @@ export interface InvItem {
   ammo?: number;
 }
 
+export interface WeaponCandidate {
+  item: InvItem;
+  def: ItemDef;
+}
+
 export interface NoiseEvent {
   id: string;
   x: number;
