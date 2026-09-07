@@ -1,3 +1,5 @@
+import { clamp } from "../../utils/clamp";
+
 interface CameraState {
   x: number;
   y: number;
@@ -27,19 +29,7 @@ interface CameraOptions {
   bounds?: CameraBounds;
 }
 
-const clamp = (value: number, min?: number, max?: number) => {
-  if (min !== undefined && value < min) {
-    return min;
-  }
-
-  if (max !== undefined && value > max) {
-    return max;
-  }
-
-  return value;
-};
-
-export default class Camera {
+export class Camera {
   private state: CameraState;
 
   private bounds?: CameraBounds;

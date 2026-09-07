@@ -9,7 +9,7 @@ import { GuideModal } from "./components/GuideModal";
 import useForceUpdate from "./utils/useForceUpdate";
 import storeValue from "./utils/storeValue";
 import { type ScenarioName, buildScenario } from "./sim/presets";
-import Camera from "./sim/components/Camera";
+import { Camera } from "./sim/components/Camera";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
 
