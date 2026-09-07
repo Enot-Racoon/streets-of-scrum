@@ -3,12 +3,10 @@ import type { Agent } from "../sim/Agent";
 import type { World } from "../sim/World";
 import { TRAIT_REGISTRY, type TraitType } from "../sim/traits";
 import { ITEM_REGISTRY } from "../sim/Items";
-import {
-  GoalBattle,
-  GoalFlee,
-  GoalWander,
-  GoalIdle,
-} from "../sim/goals/GoalTypes";
+import { GoalBattle } from "../sim/goals/GoalBattle";
+import { GoalFlee } from "../sim/goals/GoalFlee";
+import { GoalWander } from "../sim/goals/GoalWander";
+import { GoalIdle } from "../sim/goals/GoalIdle";
 import {
   Heart,
   Brain as BrainIcon,

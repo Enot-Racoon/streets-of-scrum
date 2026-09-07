@@ -1,4 +1,6 @@
-import { GoalBattle, GoalFlee, GoalNoiseReact } from "./goals/GoalTypes";
+import { GoalBattle } from "./goals/GoalBattle";
+import { GoalFlee } from "./goals/GoalFlee";
+import { GoalNoiseReact } from "./goals/GoalNoiseReact";
 import type { NoiseEvent } from "./types";
 import type { Agent } from "./Agent";
 import type { World } from "./World";

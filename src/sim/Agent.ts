@@ -6,7 +6,10 @@ import { Inventory } from "./components/Inventory";
 import { Movement } from "./components/Movement";
 import { Combat } from "./components/Combat";
 import { PathfindingAI } from "./components/PathfindingAI";
-import { GoalWander, GoalBattle, GoalFlee, GoalIdle } from "./goals/GoalTypes";
+import { GoalWander } from "./goals/GoalWander";
+import { GoalBattle } from "./goals/GoalBattle";
+import { GoalFlee } from "./goals/GoalFlee";
+import { GoalIdle } from "./goals/GoalIdle";
 import type {
   AgentMemory,
   InvItem,
