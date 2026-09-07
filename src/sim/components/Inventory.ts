@@ -3,7 +3,7 @@ import type { InvItem, ItemDef } from "../types";
 import { sounds } from "../sound";
 import type { Agent } from "../Agent";
 
-export class InvDatabase {
+export class Inventory {
   public agent: Agent;
   public items: InvItem[] = [];
   public equippedIndex: number = 0;

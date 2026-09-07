@@ -2,7 +2,7 @@ import { Brain } from "./Brain";
 import { BrainUpdate } from "./BrainUpdate";
 import { Relationships } from "./Relationships";
 import { StatusEffects } from "./components/StatusEffects";
-import { InvDatabase } from "./components/InvDatabase";
+import { Inventory } from "./components/Inventory";
 import { Movement } from "./components/Movement";
 import { Combat } from "./components/Combat";
 import { PathfindingAI } from "./components/PathfindingAI";
@@ -51,7 +51,7 @@ export class Agent {
   private readonly brainUpdate: BrainUpdate;
   private readonly relationships: Relationships;
   private readonly statusEffects: StatusEffects;
-  private readonly inventory: InvDatabase;
+  private readonly inventory: Inventory;
   public movement: Movement;
   private readonly combat: Combat;
   private readonly pathfindingAI: PathfindingAI;
@@ -256,7 +256,7 @@ export class Agent {
     this.brainUpdate = new BrainUpdate(this);
     this.relationships = new Relationships(this);
     this.statusEffects = new StatusEffects(this);
-    this.inventory = new InvDatabase(this);
+    this.inventory = new Inventory(this);
     this.movement = new Movement(this);
     this.combat = new Combat(this);
     this.pathfindingAI = new PathfindingAI(this);
