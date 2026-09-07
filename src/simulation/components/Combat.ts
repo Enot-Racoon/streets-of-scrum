@@ -3,7 +3,7 @@ import { getTraitDef } from "../traits";
 import type { Agent } from "../Agent";
 import type { World } from "../World";
 import type { ItemDef } from "../types";
-import { rand } from "@/src/utils/rand";
+import { rand } from "@/utils/rand";
 
 export class Combat {
   public agent: Agent;
