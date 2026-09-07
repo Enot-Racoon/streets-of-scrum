@@ -1,4 +1,4 @@
-export default class Keyboard {
+export class Keyboard {
   private constructor() {}
 
   private static keysDown: Record<string, boolean> = {};

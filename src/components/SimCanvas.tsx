@@ -5,7 +5,7 @@ import type { Mouse } from "../sim/types";
 import drawScene from "../render/drawScene";
 import storeValue from "../utils/storeValue";
 import type { Camera } from "../sim/components/Camera";
-import Keyboard from "../sim/components/Keyboard";
+import { Keyboard } from "../sim/components/Keyboard";
 
 interface SimCanvasProps {
   world: World;
