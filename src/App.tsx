@@ -6,7 +6,7 @@ import { SandboxToolbar } from "./components/SandboxToolbar";
 import { AgentInspector } from "./components/AgentInspector";
 import { PossessionHUD } from "./components/PossessionHUD";
 import { GuideModal } from "./components/GuideModal";
-import useForceUpdate from "./utils/useForceUpdate";
+import { useForceUpdate } from "./utils/useForceUpdate";
 import { storeValue } from "./utils/storeValue";
 import { type ScenarioName, buildScenario } from "./sim/presets";
 import { Camera } from "./sim/components/Camera";
