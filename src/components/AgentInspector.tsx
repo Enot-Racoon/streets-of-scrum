@@ -602,7 +602,7 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
   );
 };
 
-const InspectorFooer = ({ agent }: { agent: Agent }) => {
+const InspectorFooter = ({ agent }: { agent: Agent }) => {
   return (
     <div className="p-3 bg-slate-950 border-t border-slate-800 grid grid-cols-3 gap-1.5 text-xs">
       <button
@@ -675,7 +675,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         {activeTab === "inventory" && <InventoryTab agent={agent} />}
       </div>
 
-      <InspectorFooer agent={agent} />
+      <InspectorFooter agent={agent} />
     </div>
   );
 };
