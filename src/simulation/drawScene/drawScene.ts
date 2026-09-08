@@ -320,7 +320,7 @@ function drawProjectiles(
   zoom: number,
 ) {
   for (const p of world.projectiles) {
-    const r = p.radius || 0.12 * (p.isExplosive ? 5 : 1);
+    const r = p.radius || 0.12;
     ctx.fillStyle = p.color || "#fbbf24";
     ctx.beginPath();
     ctx.arc(p.x * zoom, p.y * zoom, r * zoom, 0, Math.PI * 2);

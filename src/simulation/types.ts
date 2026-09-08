@@ -133,6 +133,8 @@ export interface ItemDef {
   bulletSpeed?: number;
   spread?: number;
   bulletCount?: number;
+  bulletColor?: string;
+  bulletRadius?: number;
   soundName?: string;
   description: string;
   icon: string;

@@ -1,3 +1,4 @@
+import debug from "../utils/debug";
 import type { ItemDef, InvItem } from "./types";
 
 export const ITEM_REGISTRY = {
@@ -126,10 +127,15 @@ export const ITEM_REGISTRY = {
   },
   grenade: {
     id: "grenade",
-    name: "Осколочная граната",
+    name: "Граната",
     type: "explosive",
     damage: 65,
     range: 10,
+    spread: 1,
+    // attackSpeed: 5,
+    bulletColor: "#999999",
+    bulletRadius: 0.16,
+    // bulletCount: 8,
     description:
       "Взрывное метательное оружие, которое разбивает стены и толпы.",
     icon: "💣",
@@ -143,7 +149,7 @@ export const ITEM_REGISTRY = {
   },
   zombie_claws: {
     id: "zombie_claws",
-    name: "Инфицированные когти",
+    name: "Когти зомби",
     type: "melee",
     damage: 14,
     range: 1.1,
@@ -167,3 +173,5 @@ export function createInvItem(defId: ItemName, count: number = 1): InvItem {
     ...("ammo" in def ? { ammo: def.ammo } : {}),
   };
 }
+
+debug.ITEM_REGISTRY = ITEM_REGISTRY;

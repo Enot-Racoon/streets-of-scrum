@@ -1,3 +1,5 @@
+import debug from "../utils/debug";
+
 export class Keyboard {
   private constructor() {}
 
@@ -36,3 +38,5 @@ export class Keyboard {
     });
   }
 }
+
+debug.Keyboard = Keyboard;

@@ -76,6 +76,7 @@ export default function App() {
   };
 
   const handleLocateEvent = (x: number, y: number) => {
+    setFollowSelectedAgent(false);
     camera.moveTo(x, y, 0.3);
   };
 
@@ -118,7 +119,7 @@ export default function App() {
         </div>
 
         {/* Right Inspector & Goal Stack Sidebar */}
-        <div className="w-80 md:w-96 h-full flex-shrink-0 z-10 shadow-2xl">
+        <div className="w-96 md:w-96 h-full flex-shrink-0 z-10 shadow-2xl">
           <AgentInspector
             agent={
               selectedAgent || world.selectedAgent || world.agents[0] || null
