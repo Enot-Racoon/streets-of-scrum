@@ -461,6 +461,8 @@ export class Agent {
 
       // Drop loot on death
       for (const item of this.inventory.items) {
+        if (item.defId === "fists") continue;
+        this.removeItem(item.uid, item.count);
         this.world.spawnDroppedItem(this.x, this.y, item.defId, item.count);
       }
 
