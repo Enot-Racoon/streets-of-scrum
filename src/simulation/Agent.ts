@@ -483,7 +483,8 @@ export class Agent {
       const agent = this;
       const world = this.world;
 
-      setTimeout(() => world.removeAgent(agent), 3_000);
+      // remove agent after few seconds if it is dead
+      setTimeout(() => agent.isDead && world.removeAgent(agent), 5_000);
     }
 
     // Only clear goals if agent is truly dead (zombie transform sets isDead=false)
@@ -492,12 +493,12 @@ export class Agent {
     }
   }
 
-  public resurrect() {
+  public resurrect(): this {
     this.health = this.maxHealth;
 
     if (!this.isDead) {
       this.say("Полностью исцелён!");
-      return;
+      return this;
     }
 
     this.killedBy = null;
@@ -519,6 +520,8 @@ export class Agent {
         agentName: this.name,
       });
     }
+
+    return this;
   }
 
   public interactAt(tileX: number, tileY: number) {

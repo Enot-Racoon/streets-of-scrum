@@ -38,6 +38,7 @@ interface AgentInspectorProps {
   onUnpossess: () => void;
   followSelectedAgent: boolean;
   onFollowSelectedAgentChange: (enabled: boolean) => void;
+  onSelectAgent: (agent: Agent) => void;
 }
 
 const InspectorHeader = ({
@@ -46,7 +47,7 @@ const InspectorHeader = ({
   onUnpossess,
   followSelectedAgent,
   onFollowSelectedAgentChange,
-}: AgentInspectorProps) => {
+}: Omit<AgentInspectorProps, "onSelectAgent">) => {
   const isPossessed = agent?.world?.possessedAgent?.id === agent?.id;
   const hpPercent = agent
     ? Math.round((agent.health / agent.maxHealth) * 100)
@@ -101,8 +102,8 @@ const InspectorHeader = ({
               </button>
             ) : (
               <button
-                onClick={() => onPossess(agent)}
                 disabled={agent.isDead}
+                onClick={() => onPossess(agent)}
                 className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white rounded transition flex items-center gap-1 shadow-sm"
               >
                 <Zap className="w-3.5 h-3.5" /> Завладеть телом
@@ -314,6 +315,7 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
       </span>
       <div className="grid grid-cols-2 gap-1.5">
         <button
+          disabled={agent.isDead}
           onClick={() => {
             if (!agent.world) return;
             const nearestEnemy = agent.world.agents.find(
@@ -328,6 +330,7 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
           <Crosshair className="w-3.5 h-3.5" /> Атаковать прохожих
         </button>
         <button
+          disabled={agent.isDead}
           onClick={() => {
             if (!agent.world) return;
             const threat = agent.world.agents.find(
@@ -342,12 +345,14 @@ const GoalsTab = ({ agent }: { agent: Agent }) => (
           <ShieldAlert className="w-3.5 h-3.5" /> Напугать
         </button>
         <button
+          disabled={agent.isDead}
           onClick={() => agent.pushGoal(new GoalWander(agent, 6))}
           className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
         >
           Бродить
         </button>
         <button
+          disabled={agent.isDead}
           onClick={() => agent.pushGoal(new GoalIdle(agent, 4.0))}
           className="px-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded flex items-center justify-center gap-1"
         >
@@ -489,7 +494,7 @@ const TraitsTab = ({ agent }: { agent: Agent }) => {
       {/* Add New Trait */}
       <div className="pt-2 border-t border-slate-800">
         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
-          Добавить особенность
+          Добавить Эффекты
         </span>
         <div className="flex gap-2">
           <select
@@ -608,14 +613,24 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
             >
               {(Object.keys(ITEM_REGISTRY) as ItemName[])
                 .map((iId) => ITEM_REGISTRY[iId])
+                .map((item) => ({
+                  ...item,
+                  dps: WeaponEvaluator.getWeaponDPS(item),
+                }))
                 .map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.icon} {item.name} ({capitalize(item.type)}:{" "}
-                    {WeaponEvaluator.getWeaponDPS(item).toFixed(1)} dps)
+                    {item.icon} {item.name}{" "}
+                    {!!item.dps && (
+                      <>
+                        ({capitalize(item.type)}:{" "}
+                        {WeaponEvaluator.getWeaponDPS(item).toFixed(1)} dps)
+                      </>
+                    )}
                   </option>
                 ))}
             </select>
             <button
+              disabled={agent.isDead}
               onClick={() => agent.addItem(selectedItemToAdd, 1)}
               className="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white rounded font-medium flex items-center gap-1"
             >
@@ -628,24 +643,28 @@ const InventoryTab = ({ agent }: { agent: Agent }) => {
   );
 };
 
-const InspectorFooter = ({ agent }: { agent: Agent }) => {
+const InspectorFooter = ({
+  agent,
+  onSelectAgent,
+}: Pick<AgentInspectorProps, "agent" | "onSelectAgent">) => {
   return (
     <div className="p-3 bg-slate-950 border-t border-slate-800 grid grid-cols-3 gap-1.5 text-xs">
       <button
-        onClick={() => agent.resurrect()}
+        onClick={() => agent && onSelectAgent(agent.resurrect())}
         className="py-1.5 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 rounded font-medium text-center"
       >
-        {agent.isDead ? "Воскресить" : "Исцелить"}
+        {agent?.isDead ? "Воскресить" : "Исцелить"}
       </button>
       <button
-        onClick={() => agent.say("Эй всем привет", true)}
+        disabled={agent?.isDead}
+        onClick={() => agent?.say("Эй всем привет", true)}
         className="py-1.5 bg-sky-950/60 hover:bg-sky-900 text-sky-300 border border-sky-800/60 rounded font-medium text-center"
       >
         Возглас
       </button>
       <button
-        onClick={() => agent.die()}
-        disabled={agent.isDead}
+        disabled={agent?.isDead}
+        onClick={() => agent?.die()}
         className="py-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/60 disabled:opacity-40 rounded font-medium text-center"
       >
         Убить агента
@@ -658,6 +677,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
   agent,
   onPossess,
   onUnpossess,
+  onSelectAgent,
   followSelectedAgent,
   onFollowSelectedAgentChange,
 }) => {
@@ -705,7 +725,7 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         {activeTab === "inventory" && <InventoryTab agent={agent} />}
       </div>
 
-      <InspectorFooter agent={agent} />
+      <InspectorFooter agent={agent} onSelectAgent={onSelectAgent} />
     </div>
   );
 };

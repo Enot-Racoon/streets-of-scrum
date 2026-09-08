@@ -128,6 +128,7 @@ export default function App() {
             onUnpossess={handleUnpossess}
             followSelectedAgent={followSelectedAgent}
             onFollowSelectedAgentChange={setFollowSelectedAgent}
+            onSelectAgent={handleSelectAgent}
           />
         </div>
       </div>
