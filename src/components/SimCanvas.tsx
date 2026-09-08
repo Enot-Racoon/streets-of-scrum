@@ -205,7 +205,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         world.unpossessCurrent();
 
       // Possess / unpossess
-      if (Keyboard.wasPressed("e")) {
+      if (Keyboard.wasPressed("e", "numpadenter")) {
         // Possess / unpossess hotkey (E)
         if (possessedAgent) {
           world.unpossessCurrent();
@@ -240,10 +240,14 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       }
 
       // Movement keys
-      const upKey = Keyboard.isDown("w", "arrowup");
-      const downKey = Keyboard.isDown("s", "arrowdown");
-      const leftKey = Keyboard.isDown("a", "arrowleft");
-      const rightKey = Keyboard.isDown("d", "arrowright");
+      const upKey = Keyboard.isDown("w", "arrowup", "numpad8");
+      const downKey = Keyboard.isDown("s", "arrowdown", "numpad2");
+      const leftKey = Keyboard.isDown("a", "arrowleft", "numpad4");
+      const rightKey = Keyboard.isDown("d", "arrowright", "numpad6");
+      const upLeftKey = Keyboard.isDown("w", "arrowup", "numpad7");
+      const upRightKey = Keyboard.isDown("w", "arrowup", "numpad9");
+      const downLeftKey = Keyboard.isDown("s", "arrowdown", "numpad1");
+      const downRightKey = Keyboard.isDown("s", "arrowdown", "numpad3");
 
       // Move possessed agent or camera
       let moveX = 0;
@@ -252,6 +256,23 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       if (downKey) moveY += 1;
       if (leftKey) moveX -= 1;
       if (rightKey) moveX += 1;
+      if (upLeftKey) {
+        moveX -= 1;
+        moveY -= 1;
+      }
+      if (upRightKey) {
+        moveX += 1;
+        moveY -= 1;
+      }
+      if (downLeftKey) {
+        moveX -= 1;
+        moveY += 1;
+      }
+      if (downRightKey) {
+        moveX += 1;
+        moveY += 1;
+      }
+
       if (moveX !== 0 || moveY !== 0) {
         if (possessedAgent) {
           possessedAgent.moveInDirection(Math.atan2(moveY, moveX));
