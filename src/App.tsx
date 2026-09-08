@@ -12,15 +12,25 @@ import { storeValue } from "./utils/storeValue";
 import { type ScenarioName, buildScenario } from "./simulation/presets";
 
 const scenarioStore = storeValue<ScenarioName>("scenario");
-
 const initScenario = scenarioStore() ?? "district";
-
 const zoomStore = storeValue("camera-zoom", String, Number);
+const followSelectedAgentStore = storeValue(
+  "follow-selected-agent",
+  String,
+  JSON.parse,
+);
 
 export default function App() {
   const forceRefresh = useForceUpdate();
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
+  const [followSelectedAgent, setFollowSelectedAgent] = useState<boolean>(
+    followSelectedAgentStore() ?? false,
+  );
+
+  useEffect(() => {
+    followSelectedAgentStore(followSelectedAgent);
+  }, [followSelectedAgent]);
 
   const worldRef = useRef<World | null>(null);
   // Initialize World on mount
@@ -94,6 +104,8 @@ export default function App() {
             camera={camera}
             onSelectAgent={handleSelectAgent}
             onPossessAgent={handlePossessAgent}
+            followSelectedAgent={followSelectedAgent}
+            onFollowSelectedAgentChange={setFollowSelectedAgent}
           />
 
           {/* Bottom Possession HUD and Event Logs */}
@@ -113,6 +125,8 @@ export default function App() {
             }
             onPossess={handlePossessAgent}
             onUnpossess={handleUnpossess}
+            followSelectedAgent={followSelectedAgent}
+            onFollowSelectedAgentChange={setFollowSelectedAgent}
           />
         </div>
       </div>

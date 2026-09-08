@@ -60,6 +60,10 @@ export class Agent {
   private readonly combat: Combat;
   private readonly pathfindingAI: PathfindingAI;
 
+  get isAlive(): boolean {
+    return !this.isDead;
+  }
+
   // Brain Facade
   get lastThought(): string {
     return this.brain.lastThought;

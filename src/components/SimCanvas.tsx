@@ -12,6 +12,8 @@ interface SimCanvasProps {
   camera: Camera;
   onSelectAgent: (agent: Agent) => void;
   onPossessAgent: (agent: Agent) => void;
+  followSelectedAgent: boolean;
+  onFollowSelectedAgentChange: (enabled: boolean) => void;
 }
 
 const zoomStore = storeValue("camera-zoom", String, Number);
@@ -21,6 +23,8 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
   camera,
   onSelectAgent,
   onPossessAgent,
+  followSelectedAgent,
+  onFollowSelectedAgentChange,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -189,8 +193,9 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           isShiftPressed ? world.selectPrevAgent() : world.selectNextAgent();
           if (world.selectedAgent) {
             onSelectAgent(world.selectedAgent);
-            if (camera)
+            if (camera) {
               camera.moveTo(world.selectedAgent.x, world.selectedAgent.y, 0.3);
+            }
           }
         }
       }
@@ -220,7 +225,18 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         } else if (mouse.buttons.right) {
           // Pan camera when right mouse button held
           camera.moveBy(-mouse.dx / camera.zoom, -mouse.dy / camera.zoom);
+
+          // if we move camera manually, stop following
+          if (followSelectedAgent) {
+            onFollowSelectedAgentChange(false);
+          }
         }
+      }
+
+      // Follow selected agent
+      const selectedAgent = world.selectedAgent;
+      if (followSelectedAgent && selectedAgent?.isAlive) {
+        camera.moveTo(selectedAgent.x, selectedAgent.y, 0.4);
       }
 
       // Movement keys
@@ -243,6 +259,11 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           const mul = isShiftPressed ? 2.5 : 1;
           const cameraSpeed = Math.max(0.2, 1 - 0.005 * camera.zoom) * mul;
           camera.moveBy(moveX * cameraSpeed, moveY * cameraSpeed);
+
+          // if we move camera manually, stop following
+          if (followSelectedAgent) {
+            onFollowSelectedAgentChange(false);
+          }
         }
       } else if (possessedAgent) {
         possessedAgent.stop();
@@ -256,7 +277,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         });
 
         if (mouse) {
-          console.log(mouse.buttons);
           if (Keyboard.isDown("control") || mouse.buttons.right)
             possessedAgent.dash(undefined, undefined, 3.0);
 
@@ -264,7 +284,10 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
             possessedAgent.attack();
         }
 
-        if (camera) camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
+        //  Follow camera to possessed agent
+        if (camera) {
+          camera.moveTo(possessedAgent.x, possessedAgent.y, 0.3);
+        }
       }
 
       // Zoom hotkeys
@@ -296,7 +319,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
     animationFrameId = requestAnimationFrame(renderLoop);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [world]);
+  }, [world, followSelectedAgent]);
 
   return (
     <div className="relative w-full h-full bg-slate-950 overflow-hidden select-none">

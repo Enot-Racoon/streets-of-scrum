@@ -26,22 +26,26 @@ import { storeValue } from "../utils/storeValue";
 import { WeaponEvaluator } from "../simulation/WeaponEvaluator";
 import { capitalize } from "../utils/capitalize";
 
-interface AgentInspectorProps {
-  agent: Agent | null;
-  onPossess: (agent: Agent) => void;
-  onUnpossess: () => void;
-}
-
 type TabName = "goals" | "relations" | "traits" | "inventory";
 
 const activeTabStore = storeValue<TabName>("active_tab");
 const selectedTraitToAddStore = storeValue<TraitType>("selected_trait_to_add");
 const selectedItemToAddStore = storeValue<ItemName>("selected_item_to_add");
 
+interface AgentInspectorProps {
+  agent: Agent | null;
+  onPossess: (agent: Agent) => void;
+  onUnpossess: () => void;
+  followSelectedAgent: boolean;
+  onFollowSelectedAgentChange: (enabled: boolean) => void;
+}
+
 const InspectorHeader = ({
   agent,
   onPossess,
   onUnpossess,
+  followSelectedAgent,
+  onFollowSelectedAgentChange,
 }: AgentInspectorProps) => {
   const isPossessed = agent?.world?.possessedAgent?.id === agent?.id;
   const hpPercent = agent
@@ -53,13 +57,26 @@ const InspectorHeader = ({
         <div className="flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2">
             <span className="text-2xl">{agent.avatarIcon}</span>
-            <div>
-              <h2 className="font-bold text-base text-slate-100 flex items-center gap-1.5">
+            <div className="w-full">
+              <h2 className="font-bold text-base text-slate-100 flex items-center justify-between gap-1.5">
                 {agent.name}
-                {isPossessed && (
+                {isPossessed ? (
                   <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-1.5 py-0.5 rounded font-mono font-normal">
                     ОДЕРЖИМ
                   </span>
+                ) : (
+                  <label className="inline-flex items-center gap-1 text-slate-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="w-3.5 h-3.5 outline-none"
+                      checked={followSelectedAgent}
+                      onChange={(e) =>
+                        onFollowSelectedAgentChange(e.target.checked)
+                      }
+                    />
+                    <Crosshair className="w-3.5 h-3.5 text-slate-400" />
+                    <span className="text-xs text-slate-500">Следить</span>
+                  </label>
                 )}
               </h2>
               <p className="text-xs text-slate-400 font-mono">
@@ -176,18 +193,6 @@ const TabsButtons = ({
     </button>
 
     <button
-      onClick={() => onTabChange("relations")}
-      className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 border-b-2 transition ${
-        activeTab === "relations"
-          ? "border-sky-500 text-sky-400 bg-slate-900/60"
-          : "border-transparent text-slate-400 hover:text-slate-200"
-      }`}
-    >
-      <Users className="w-3.5 h-3.5" /> Отношения (
-      {agent.getAllRelationships(true)?.length})
-    </button>
-
-    <button
       onClick={() => onTabChange("traits")}
       className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 border-b-2 transition ${
         activeTab === "traits"
@@ -208,6 +213,18 @@ const TabsButtons = ({
       }`}
     >
       <Package className="w-3.5 h-3.5" /> Инвентарь ({agent.items.length})
+    </button>
+
+    <button
+      onClick={() => onTabChange("relations")}
+      className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 border-b-2 transition ${
+        activeTab === "relations"
+          ? "border-sky-500 text-sky-400 bg-slate-900/60"
+          : "border-transparent text-slate-400 hover:text-slate-200"
+      }`}
+    >
+      <Users className="w-3.5 h-3.5" /> Отношения (
+      {agent.getAllRelationships(true)?.length})
     </button>
   </div>
 );
@@ -641,6 +658,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
   agent,
   onPossess,
   onUnpossess,
+  followSelectedAgent,
+  onFollowSelectedAgentChange,
 }) => {
   const [activeTab, _setActiveTab] = useState<TabName>(
     activeTabStore() ?? "goals",
@@ -669,6 +688,8 @@ export const AgentInspector: React.FC<AgentInspectorProps> = ({
         agent={agent}
         onPossess={onPossess}
         onUnpossess={onUnpossess}
+        followSelectedAgent={followSelectedAgent}
+        onFollowSelectedAgentChange={onFollowSelectedAgentChange}
       />
 
       <TabsButtons
