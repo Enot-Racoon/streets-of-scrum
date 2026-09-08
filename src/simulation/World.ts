@@ -601,12 +601,7 @@ export class World {
     return Math.atan2(impulseY, impulseX);
   }
 
-  public update(rawDt: number) {
-    if (this.isPaused) return;
-
-    const dt = Math.min(0.1, rawDt) * this.simSpeed;
-
-    // 1. Update Projectiles
+  private updateProjectiles(dt: number) {
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];
       p.x += p.vx * dt;
@@ -665,8 +660,9 @@ export class World {
         this.projectiles.splice(i, 1);
       }
     }
+  }
 
-    // 2. Update Particles
+  private updateParticles(dt: number) {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const pt = this.particles[i];
       pt.x += pt.vx * dt;
@@ -676,8 +672,9 @@ export class World {
         this.particles.splice(i, 1);
       }
     }
+  }
 
-    // 3. Update Agents
+  private updateAgents(dt: number) {
     for (const agent of this.agents) {
       agent.update(dt, this);
 
@@ -695,5 +692,15 @@ export class World {
         }
       }
     }
+  }
+
+  public update(rawDt: number) {
+    if (this.isPaused) return;
+
+    const dt = Math.min(0.1, rawDt) * this.simSpeed;
+
+    this.updateProjectiles(dt);
+    this.updateParticles(dt);
+    this.updateAgents(dt);
   }
 }
