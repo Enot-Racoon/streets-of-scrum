@@ -174,6 +174,7 @@ function drawLivingAgents(
     let lhDist = handDist;
     let rhDist = handDist;
 
+    // S
     if (agent.isSwinging) {
       if (agent.swiningHand === "left") {
         lhDist += handDist * swinigDist;
@@ -207,12 +208,12 @@ function drawLivingAgents(
 
     // Weapon sprite / barrel
     const weapon = agent.getEquippedWeapon();
-    const gunTipX = ax + Math.cos(agent.facingAngle) * (radius * 1.6);
-    const gunTipY = ay + Math.sin(agent.facingAngle) * (radius * 1.6);
+    const gunTipX = ax + Math.cos(agent.facingAngle + 0.25) * (radius * 1.6);
+    const gunTipY = ay + Math.sin(agent.facingAngle + 0.25) * (radius * 1.6);
 
     if (weapon.type === "gun") {
       ctx.strokeStyle = "#334155";
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(rhX, rhY);
       ctx.lineTo(gunTipX, gunTipY);
