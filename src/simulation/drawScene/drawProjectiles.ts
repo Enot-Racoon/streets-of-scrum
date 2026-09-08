@@ -12,7 +12,7 @@ export function drawProjectiles(
     ctx.arc(p.x * zoom, p.y * zoom, r * zoom, 0, Math.PI * 2);
     ctx.fill();
 
-    if (p.isExplosive) return;
+    if (p.isExplosive) continue;
 
     // Tracer
     ctx.strokeStyle = "rgba(251, 191, 36, 0.4)";

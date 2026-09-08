@@ -634,6 +634,10 @@ export class World {
         if (agent.id === p.sourceAgentId || agent.isDead) continue;
         const dist = Math.hypot(agent.x - p.x, agent.y - p.y);
         if (dist <= (agent.radius || 0.35) + p.radius) {
+          hitAgent = true;
+
+          if (p.isExplosive) continue;
+
           const hitImpulsePower = 10; // todo: extract to item definition
           const hitImpulseAngle = this.getHitImpulseAngle(agent, p);
           agent
@@ -647,7 +651,6 @@ export class World {
             type: "blood",
             color: "#dc2626",
           });
-          hitAgent = true;
           break;
         }
       }

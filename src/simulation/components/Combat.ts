@@ -94,6 +94,7 @@ export class Combat {
     const baseDamage = weapon.damage ?? 15;
     const bulletSpeed = weapon.bulletSpeed ?? 18;
     const spread = weapon.spread ?? 0.05;
+    const range = weapon.range ?? 10;
 
     const finalDamage =
       baseDamage * (this.agent.getStatusModificator("bulletDamageMult") ?? 1.0);
@@ -103,7 +104,6 @@ export class Combat {
       const fireAngle = aimAngle + angleOffset;
       const vx = Math.cos(fireAngle) * bulletSpeed;
       const vy = Math.sin(fireAngle) * bulletSpeed;
-      const range = weapon.range ?? 10;
 
       world.spawnProjectile({
         x: this.agent.x + Math.cos(aimAngle) * 0.4,
@@ -143,30 +143,37 @@ export class Combat {
     // });
 
     // const spread = Math.min(0, (weapon.bulletSpeed ?? 0.05) - agent.accuracy);
-    const spread = weapon.bulletSpeed ?? 0.05; // todo: implement agent accuracy, trait
+    const bulletCount = weapon.bulletCount ?? 1;
     const baseDamage = weapon.damage ?? 15;
     const bulletSpeed = weapon.bulletSpeed ?? 18;
-    const finalDamage =
-      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") ?? 1.0);
-    const angleOffset = (Math.random() - 0.5) * spread * 2;
-    const fireAngle = aimAngle + angleOffset;
-    const vx = Math.cos(fireAngle) * bulletSpeed;
-    const vy = Math.sin(fireAngle) * bulletSpeed;
+    const bulletColor = weapon.bulletColor ?? "#888888";
+    const bulletRadius = weapon.bulletRadius ?? 0.12;
+    const spread = weapon.spread ?? 0.05;
     const range = weapon.range ?? 10;
 
-    world.spawnProjectile({
-      x: this.agent.x + Math.cos(aimAngle) * 0.4,
-      y: this.agent.y + Math.sin(aimAngle) * 0.4,
-      vx,
-      vy,
-      damage: finalDamage,
-      sourceAgentId: this.agent.id,
-      lifetime: range / bulletSpeed,
-      rangeLeft: range,
-      radius: 0.12,
-      color: "#009900",
-      isExplosive: true,
-    });
+    const finalDamage =
+      baseDamage * (this.agent.getStatusModificator("bulletDamageMult") ?? 1.0);
+
+    for (let i = 0; i < bulletCount; i++) {
+      const angleOffset = (Math.random() - 0.5) * spread * 2;
+      const fireAngle = aimAngle + angleOffset;
+      const vx = Math.cos(fireAngle) * bulletSpeed;
+      const vy = Math.sin(fireAngle) * bulletSpeed;
+
+      world.spawnProjectile({
+        x: this.agent.x + Math.cos(aimAngle) * 0.4,
+        y: this.agent.y + Math.sin(aimAngle) * 0.4,
+        vx,
+        vy,
+        damage: finalDamage,
+        sourceAgentId: this.agent.id,
+        lifetime: range / bulletSpeed,
+        rangeLeft: range,
+        radius: bulletRadius,
+        color: bulletColor,
+        isExplosive: true,
+      });
+    }
   }
 
   private isEquipedFists() {

@@ -215,6 +215,13 @@ export const TRAIT_REGISTRY = {
       bulletDamageMult: 0,
     },
   },
+  Immortal: {
+    name: "Immortal",
+    displayName: "Бессмертный",
+    description: "Неуязвимый к любому урону.",
+    category: "special",
+    onTakeDamage: () => 0,
+  },
   God: {
     name: "God",
     displayName: "Бог",

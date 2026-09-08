@@ -123,23 +123,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       if (mouse.buttons.forward || mouse.buttons.back) {
         e.preventDefault();
       }
-
-      const possessedAgent = !world.possessedAgent?.isDead
-        ? world.possessedAgent
-        : null;
-
-      // Left click
-      if (mouse.buttons.left) {
-        // Select agent under cursor
-        const clickedAgent = world.agents.find((a) => {
-          const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
-          return dist <= (a.radius || 0.4) + 0.2;
-        });
-
-        if (clickedAgent) onSelectAgent(clickedAgent);
-      }
-
-      if (mouse.buttons.right && possessedAgent) possessedAgent.interact();
     };
 
     const handleDoubleClick = (e: MouseEvent) => {
@@ -242,6 +225,16 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
         }
       }
 
+      // Select agent under cursor
+      if (mouse.buttons.left && !possessedAgent) {
+        const clickedAgent = world.agents.find((a) => {
+          const dist = Math.hypot(a.x - mouse.worldX, a.y - mouse.worldY);
+          return dist <= (a.radius || 0.4) + 0.2;
+        });
+
+        if (clickedAgent) onSelectAgent(clickedAgent);
+      }
+
       // Follow selected agent
       const selectedAgent = world.selectedAgent;
       if (followSelectedAgent && selectedAgent?.isAlive) {
@@ -287,7 +280,7 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           possessedAgent.moveInDirection(Math.atan2(moveY, moveX));
         } else {
           const mul = isShiftPressed ? 2.5 : 1;
-          const cameraSpeed = Math.max(0.2, 1 - 0.005 * camera.zoom) * mul;
+          const cameraSpeed = Math.max(0.2, 1 - 0.05 * camera.zoom) * mul;
           camera.moveBy(moveX * cameraSpeed, moveY * cameraSpeed);
 
           // if we move camera manually, stop following
@@ -306,12 +299,19 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           if (Keyboard.wasPressed(`${idx + 1}`)) possessedAgent.equipIndex(idx);
         });
 
-        if (mouse) {
-          if (Keyboard.isDown("control") || mouse.buttons.right)
-            possessedAgent.dash(undefined, undefined, 3.0);
+        // Interact with object/agent under cursor
+        if (mouse.buttons.wheel || Keyboard.wasPressed("f")) {
+          possessedAgent.interact();
+        }
 
-          if (Keyboard.isDown("space") || mouse.buttons.left)
-            possessedAgent.attack();
+        // Dash
+        if (Keyboard.isDown("control") || mouse.buttons.right) {
+          possessedAgent.dash(undefined, undefined, 3.0);
+        }
+
+        // Attack
+        if (Keyboard.isDown("space") || mouse.buttons.left) {
+          possessedAgent.attack();
         }
 
         //  Follow camera to possessed agent
