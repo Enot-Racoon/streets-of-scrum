@@ -80,6 +80,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     if (!canvas) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      (["left", "right", "wheel", "back", "forward"] as const).forEach(
+        (_, idx, btns) => {
+          mouse.buttons[btns[idx]] = Boolean(e.buttons & (1 << idx));
+        },
+      );
+
       const canvas = canvasRef.current;
       if (!canvas) return;
 
