@@ -184,8 +184,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       const isShiftPressed = Keyboard.isDown("shift");
 
+      if (Keyboard.wasPressed("numpad5")) {
+        onFollowSelectedAgentChange(!followSelectedAgent);
+      }
+
       // Next / previous agent hotkeys
-      if (Keyboard.wasPressed("tab")) {
+      if (Keyboard.wasPressed("tab", "numpad0")) {
         if (possessedAgent) {
           isShiftPressed ? world.possessPrevAgent() : world.possessNextAgent();
           onSelectAgent(possessedAgent);
@@ -206,7 +210,6 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
 
       // Possess / unpossess
       if (Keyboard.wasPressed("e", "numpadenter")) {
-        // Possess / unpossess hotkey (E)
         if (possessedAgent) {
           world.unpossessCurrent();
         } else if (world.selectedAgent) {
