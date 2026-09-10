@@ -13,7 +13,7 @@ import {
 
 const postProcessConfig: PostProcessConfig = {
   enabled: true,
-  crtCurvature: 0.15,
+  crtCurvature: 0.5,
   scanlines: 0.65,
   scanlineCount: 360,
   vignette: 0.6,

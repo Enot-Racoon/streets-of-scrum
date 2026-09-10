@@ -83,3 +83,75 @@ void main() {
   gl_FragColor = vec4(col, 1.0);
 }
 `;
+
+export const POST_PROCESS_FRAGMENT_SHADER_V2 = `
+precision mediump float;
+
+varying vec2 vUv;
+uniform sampler2D uTex;
+uniform vec2 uRes;
+uniform float uTime;
+uniform float uCurvature;
+uniform float uRgbSplit;
+uniform float uScanline;
+uniform float uWobble;
+uniform float uNoise;
+uniform float uVignette;
+
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+
+vec2 curve(vec2 uv) {
+  vec2 p = uv * 2.0 - 1.0;
+  float r2 = dot(p, p);
+  p *= 1.0 + r2 * uCurvature;
+  return p * 0.5 + 0.5;
+}
+
+void main() {
+  vec2 uv = vUv;
+  vec2 cuv = curve(uv);
+
+  if (cuv.x < 0.0 || cuv.x > 1.0 || cuv.y < 0.0 || cuv.y > 1.0) {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    return;
+  }
+
+  float y = cuv.y * uRes.y;
+  float wobble = sin(y * 0.07 + uTime * 6.0) * uWobble;
+  wobble += (hash(vec2(floor(y), uTime)) - 0.5) * uWobble * 1.33;
+  cuv.x += wobble;
+
+  vec2 off = vec2(uRgbSplit, 0.0);
+
+  float r = texture2D(uTex, cuv + off).r;
+  float g = texture2D(uTex, cuv).g;
+  float b = texture2D(uTex, cuv - off).b;
+  vec3 col = vec3(r, g, b);
+
+  float scan = sin(cuv.y * uRes.y * 3.14159);
+  col *= (1.0 - uScanline) + uScanline * scan;
+
+  float px = cuv.x * uRes.x;
+  float triad = mod(floor(px), 3.0);
+  vec3 mask = vec3(0.92);
+  if (triad < 1.0) mask = vec3(1.10, 0.88, 0.88);
+  else if (triad < 2.0) mask = vec3(0.88, 1.10, 0.88);
+  else mask = vec3(0.88, 0.88, 1.10);
+  col *= mask;
+
+  float n = hash(cuv * uRes + uTime);
+  col += (n - 0.5) * uNoise;
+
+  vec2 p = uv - 0.5;
+  float vig = smoothstep(uVignette, 0.20, dot(p, p));
+  col *= vig;
+
+  col = pow(col, vec3(0.95));
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
