@@ -215,7 +215,7 @@ export const buildScenario = (scenario: ScenarioName, world: World) => {
 };
 
 export function buildDistrictMap(world: World) {
-  world.initEmptyGrid();
+  world.initEmptyGrid(24, 20);
 
   // Outer border & Rooms
   // Room 1: Police Station (Top Left 1..7, 1..7)
@@ -313,7 +313,7 @@ export function buildDistrictMap(world: World) {
 }
 
 export function buildGangWarScenario(world: World) {
-  world.initEmptyGrid();
+  world.initEmptyGrid(24, 20);
 
   // Alley barriers
   for (let y = 1; y < 19; y++) {
@@ -356,7 +356,7 @@ export function buildGangWarScenario(world: World) {
 }
 
 export function buildZombieOutbreakScenario(world: World) {
-  world.initEmptyGrid();
+  world.initEmptyGrid(24, 20);
 
   // Central Quarantine Cage
   for (let x = 9; x <= 14; x++) {
