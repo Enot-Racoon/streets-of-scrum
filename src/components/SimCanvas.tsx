@@ -6,6 +6,22 @@ import type { Camera } from "../simulation/Camera";
 import { drawScene } from "../simulation/drawScene/drawScene";
 import { storeValue } from "../utils/storeValue";
 import { Keyboard } from "../simulation/Keyboard";
+import {
+  type PostProcessConfig,
+  PostProcessor,
+} from "../simulation/drawScene/PostProcessor";
+
+const postProcessConfig: PostProcessConfig = {
+  enabled: true,
+  crtCurvature: 0.15,
+  scanlines: 0.65,
+  scanlineCount: 360,
+  vignette: 0.6,
+  chromaticAberration: 0.008,
+  filmGrain: 0.35,
+  bloom: 0.4,
+  time: 0,
+};
 
 interface SimCanvasProps {
   world: World;
@@ -27,6 +43,12 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
   onFollowSelectedAgentChange,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const postProcessorRef = useRef<PostProcessor | null>(null);
+  if (!postProcessorRef.current) {
+    postProcessorRef.current = new PostProcessor();
+  }
+  const postProcessor = postProcessorRef.current!;
 
   const mouseRef = useRef<Mouse>(null);
   if (!mouseRef.current)
@@ -341,7 +363,19 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext("2d");
-        if (ctx) drawScene(ctx, world, camera, canvas.width, canvas.height);
+        if (ctx) {
+          drawScene(ctx, world, camera, canvas.width, canvas.height);
+          if (postProcessConfig.enabled) {
+            const processedCanvas = postProcessor.render(canvas, {
+              ...postProcessConfig,
+              time: time / 1000,
+            });
+
+            // Draw processed result back to the same canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(processedCanvas, 0, 0, canvas.width, canvas.height);
+          }
+        }
       }
 
       animationFrameId = requestAnimationFrame(renderLoop);
